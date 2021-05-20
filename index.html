@@ -1,0 +1,61 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="styles/styles.css">
+    </head>
+    <body>
+    <div class="principal">
+        <h2>CONTADOR DE TEMPO</h2>
+        <div class="container">
+                    <h3 class="titleInputs">OP:</h3>
+                    <input class="input" id="inputOP" type="number">
+                    <label for="maquina"> <h3>Máquina:</h3></label>
+                    <select class="select" name="maquina" id="selectMaquina">
+                        <option value="410">410</option>
+                        <option value="411">411</option>
+                    </select>  
+                    <button class="buttonOK" id="buttonOP" onclick="insertOP()">OK</button>
+                    <br><br>
+                </div>
+                <br>
+                <div class="container">
+                    <button class="buttonStart" id="Start" onclick="insertDate('valueStart')"> 
+                        INICIAR
+                    </button> 
+                    <h3 class="container" id="valueStart"></h3>
+                    <input type="hidden" name="valueStart"> <!-- input para registar data original/ para inserir no banco de dados-->
+
+                </div>
+                <br><br>
+                <div class="container">
+                    <button class="buttonStart" id="Stop" onclick="insertDate('valueStop')">
+                        FINALIZAR
+                    </button>
+                    <h3 class="container" id="valueStop"></h3>
+                    <input type="hidden" name="valueStop"> <!-- input para registar data original/ para inserir no banco de dados-->
+                </div>
+                <br>    
+                <div class="container">
+                    <br>
+                    <h3 class="titleInputs">Quantidade:</h3>
+                    <input class="input" id="inputQuantidade" type="number">
+                    <button class="buttonOK" id="myButton"> OK</button>
+                </div>
+                <br>
+                <div class="container">
+                <button class="resetButton" id="Clean" onclick="resetButton()">Limpar </button>
+                </div>
+                <div class="container">
+                <button class="sendButton" id="sendData" onclick="inserAllData()">Enviar Dados </button>
+                </div>
+                <div class="container">
+                <button class="sendButton" id="sendData" onclick="window.location.href='/maquinas'">Listar Maquinas </button>
+                </div>
+             
+    </div>
+    </body>
+
+<script src="scripts/client.js"></script>
+<!--<script src="scripts/moment.min.js" type="text/javascript"></script> -->
+
+
+</html>
