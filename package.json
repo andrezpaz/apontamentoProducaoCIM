@@ -1,0 +1,22 @@
+{
+  "name": "cim",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrez",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-generator": "^4.16.1",
+    "fs": "0.0.1-security",
+    "http": "0.0.1-security",
+    "mysql2": "^2.2.5"
+  },
+  "devDependencies": {},
+  "description": ""
+}

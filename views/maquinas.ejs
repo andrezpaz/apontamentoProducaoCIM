@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maquina</title>
+    <style>
+        body {
+        background-color: #305c54;
+        text-align: justify;
+        color: white;
+    }
+        .opmaquina {
+            font-size: 20px;
+            font-style: bold;
+            
+        }
+    </style>
+</head>
+<body>
+
+    <div>
+        <h1>Recurso: 
+            <%= maquina[0].maquina %>
+        </h1>
+        <% maquina.forEach(function(maquina) { %>
+            <p> 
+                _____________________________________
+                <br>
+                <br>
+            <div>
+                <div name="opMaquina"> 
+                    <input type="hidden" id="idOpMaquina" value="<%= maquina.id %>">
+                    <span class="descNumeroOpMaquina">OP:</span> 
+                    <span class="numeroOpMaquina"><%= maquina.op %></span> 
+                    <% if (maquina.marcado === "S") {
+                        console.log("Tem Prducao marcada") %>
+                        <input type="checkbox" id="<%= maquina.id %>" checked=true onclick='prodMarcado(this)'>
+                        
+                    <%
+                        console.log(this.parentNode);
+                    }
+                    else {
+                        console.log("Nao tem Prod Marcado") %>
+                        <input type="checkbox" id="<%= maquina.id %>" onclick='prodMarcado(this)'>
+                    <% }
+                    %>
+                    
+                    <br>
+                    <span class="descDataInicioOpMaquina">Data Inicio:</span>
+                    <span class="dataInicioOpMaquina"><%= maquina.datainicio.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
+                    <br>
+                    <span class="descDataFimOpMaquina">Data Fim:</span>
+                    <span class="dataFimOpMaquina"><%= maquina.datafim.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
+                    <br>
+                    <span class="descQuantidadeOpMaquina">Quantidade:</span> 
+                    <span class="quantidadeOpMaquina"><%= maquina.quantidade %></span>
+                </div>
+                </div> 
+            </p>
+          <% }); %>
+          <div>
+              <button onclick="window.history.back()"> Voltar </button>
+          </div>
+        </div>    
+</body>
+<script>
+    function updateProdMarcado(id, status) {
+        let userUpdate = new XMLHttpRequest();
+            userUpdate.open('post', '/update', true);
+            userUpdate.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+            userUpdate.send(JSON.stringify({'marcado': status,
+                                            'id':id}));
+    }
+    function prodMarcado(element) {
+        let parent = element.parentNode; // coleta pai do elemento
+        let idOpMaquina = element.id; // coleta id do elemento
+        if (element.checked) {
+            parent.style.color = 'red';
+            updateProdMarcado(idOpMaquina, "S")
+        }
+        else {
+            parent.style.color = null;
+            updateProdMarcado(idOpMaquina, "N")
+        }
+    }
+</script>
+</html>
