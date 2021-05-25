@@ -95,6 +95,11 @@ router.get('/maquinas/:recurso', function(req, res) {
  
 })
 
+router.get('/defultIframe', function (req, res) {
+    res.sendFile(path.join(__dirname+'/defaultIfrme.html'))
+    //res.send("Sem Apontamento")
+})
+
 app.use('/', router);
 app.use('/scripts', express.static(__dirname+'/scripts'))
 app.use('/styles', express.static(__dirname+'/styles'))

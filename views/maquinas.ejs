@@ -18,7 +18,7 @@
         }
     </style>
 </head>
-<body>
+<body onload= "JavaScript:AutoRefresh(10000);">
     <div>
         <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
     </div>
@@ -66,6 +66,9 @@
         </div>    
 </body>
 <script>
+    function AutoRefresh ( t ) {
+        setTimeout("location.reload(true);", t)
+    }
     function updateProdMarcado(id, status) {
         let userUpdate = new XMLHttpRequest();
             userUpdate.open('post', '/update', true);

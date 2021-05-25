@@ -63,6 +63,9 @@ function insertOP() {
 
 function changeMaquina() {
     let maquinaSelected = document.getElementById("selectMaquina").value
+    if (maquinaSelected === "Selecione")
+    document.getElementById("iframeApontamentos").src = "/defultIframe"
+    else   
     document.getElementById("iframeApontamentos").src = `maquinas/${maquinaSelected}`
     hideButtonIframe();
 }
