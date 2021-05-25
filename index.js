@@ -4,8 +4,9 @@ const bodyParser = require('body-parser');
 const app = express();
 const path = require('path');
 const router = express.Router();
+const alert = require('alert');
 
-const cors = require('cors');
+
 
 //import moment from 'moment';
 
@@ -46,9 +47,18 @@ app.post('/insert', jsonParser, function(request, response) {
             datafim: dataProducao.datafim, quantidade: dataProducao.quantidade}
         console.log(testResult)
         const result = await db.insertProducao({op: dataProducao.op, maquina:dataProducao.maquina, datainicio: dataProducao.datainicio, 
-                                                datafim: dataProducao.datafim, quantidade: dataProducao.quantidade});
-        console.log(result);
-    })();
+                                                datafim: dataProducao.datafim, quantidade: dataProducao.quantidade})
+           .then ((result) => {
+                console.log("Sucesso No Insert")
+                console.log(result)
+            })
+            .catch ((error) => {
+                console.log("ERRO NO INSERT")
+                console.log(error)
+            }) 
+    }
+    )()
+    
 })
 
 app.post('/update', jsonParser, function(request, response) {
@@ -82,7 +92,7 @@ router.get('/maquinas/:recurso', function(req, res) {
         res.render('maquinas', {maquina: maquina})
         //res.send(maquina)
     })();
-    
+ 
 })
 
 app.use('/', router);

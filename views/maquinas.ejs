@@ -19,7 +19,9 @@
     </style>
 </head>
 <body>
-
+    <div>
+        <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
+    </div>
     <div>
         <h1>Recurso: 
             <%= maquina[0].maquina %>
@@ -60,9 +62,7 @@
                 </div> 
             </p>
           <% }); %>
-          <div>
-              <button onclick="window.history.back()"> Voltar </button>
-          </div>
+          
         </div>    
 </body>
 <script>

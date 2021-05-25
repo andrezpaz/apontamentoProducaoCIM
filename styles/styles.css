@@ -2,21 +2,25 @@ body {
     background-color:#305c54;
 	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
-.principal {
+.painel {
     text-align: left;
+	display: inline-block;
+	vertical-align: top;
 }
 
 .container {
     display: inline-block;
     margin: auto;
 }
-div h3 {
+div span, h1 {
     margin-right: 0px;
 	font-family: 'Times New Roman', serif;
+	color: white;
+	font-size: 20px;
 }
 .input, .select {
     width: 170px;
-    padding: 15px;
+    padding: 12px;
     font-size: 27px;
     border-width: 1px;
     border-color: #0eff04;
@@ -54,7 +58,7 @@ input[type=number] {
 	font-family:Arial;
 	font-size:19px;
 	font-weight:bold;
-	padding:30px 23px;
+	padding:23px 23px;
 	text-decoration:none;
 	text-shadow:0px -1px 0px #2b665e;
 }
@@ -68,7 +72,32 @@ input[type=number] {
 }
 .buttonOK {
 	box-shadow:inset 0px 1px 0px 0px #caefab;
-	background-color:#61a824;
+	background-color:#0eff04;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:28px;
+	font-weight:bold;
+	padding:12px 12px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #aade7c;
+}
+.buttonOK:hover {
+	background-color:#274d26;
+}
+.buttonOK:active {
+	position:relative;
+	top:1px;
+}
+.msgSend {
+	color:#0eff04;
+}
+
+.resetButton {
+	background-color: crimson;
+	box-shadow:inset 0px 1px 0px 0px #caefab;
 	border-radius:42px;
 	display:inline-block;
 	cursor:pointer;
@@ -79,11 +108,26 @@ input[type=number] {
 	padding:15px 12px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #aade7c;
+
 }
-.buttonOK:hover {
-	background-color:#5cb811;
+.resetButton:hover {
+	background-color: darkred;
 }
-.buttonOK:active {
-	position:relative;
-	top:1px;
+.sendButton {
+	background-color: #0eff04;
+	box-shadow:inset 0px 1px 0px 0px #caefab;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:28px;
+	font-weight:bold;
+	padding:12px 12px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #aade7c;
+
+}
+.sendButton:hover {
+	background-color: #274d26;
 }

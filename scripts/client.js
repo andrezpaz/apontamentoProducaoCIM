@@ -1,8 +1,25 @@
 
-const button = document.getElementById('myButton');
-button.addEventListener('click', function(e) {
-  console.log('button was clicked');
-});
+/*window.onload = function(){
+    //$('#iframeApontamentos').contents().find('#buttonMaquinasBack').hide(); 
+    console.log("CARRE")
+}
+/*$(document).ready(function(){
+    console.log("Carregando")
+    $('#iframeApontamentos').contents().find('#buttonMaquinasBack').hide();
+})*/
+/*$('#iframeApontamentos').load(function(){
+    $('#iframeApontamentos').contents().find('#buttonMaquinasBack').hide();
+});*/
+
+function onLoadFunction() { // oculta botao de voltar o iframe
+    hideButtonIframe();
+}
+
+function hideButtonIframe() {
+    let iframe = document.getElementById("iframeApontamentos");
+    let buttonBack = iframe.contentWindow.document.getElementById("buttonMaquinasBack");
+    buttonBack.style.display = "none";
+}
 
 
 function dateFormat(typeDate) {
@@ -43,6 +60,13 @@ function insertOP() {
         document.getElementById("selectMaquina").readOnly = true;
     }
 }
+
+function changeMaquina() {
+    let maquinaSelected = document.getElementById("selectMaquina").value
+    document.getElementById("iframeApontamentos").src = `maquinas/${maquinaSelected}`
+    hideButtonIframe();
+}
+
 function resetButton() {
     console.log("Clear");
     document.getElementById("valueStart").innerHTML = null;
@@ -70,21 +94,45 @@ function insertDate(id) {
         if ( (!idvaluestart.innerHTML)) {
             idvaluestart.innerHTML = dateFormat("custom");
             namevaluestart.value = dateFormat("mysql"); // input para inserir data em formato original/ para inserir no banco              
-        } 
+        }       
     }
+    else window.alert("Você precisa Digitar a OP e Pressionar OK")
 }
 function inserAllData() {
-    const userRequest = new XMLHttpRequest();
-    userRequest.open('post', '/insert', true);
-    userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-    userRequest.send(JSON.stringify({'op':document.getElementById("inputOP").value,
-                                     'maquina':document.getElementById("selectMaquina").value, 
-                                     'datainicio':document.getElementsByName("valueStart")[0].value,
-                                     'datafim':document.getElementsByName("valueStop")[0].value,
-                                     'quantidade':document.getElementById("inputQuantidade").value}));
+    let op = document.getElementById("inputOP").value;
+    let maquina = document.getElementById("selectMaquina").value;
+    let inicio = document.getElementsByName("valueStart")[0].value;
+    let fim = document.getElementsByName("valueStop")[0].value;
+    let quantidade = document.getElementById("inputQuantidade").value;
+    if (quantidade === '') quantidade = null;
+    //console.log(quantidade);
 
-    console.log(document.getElementById("valueStart").innerHTML);
-    console.log(document.getElementById("valueStop").innerHTML); 
-    console.log(document.getElementById("inputOP").value);
-    console.log(document.getElementById("inputQuantidade").value);  
+    if ((op) && (inicio) && (fim)) {
+        const userRequest = new XMLHttpRequest();
+        userRequest.open('post', '/insert', true);
+        userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+        userRequest.send(JSON.stringify({'op':op,
+                                        'maquina':maquina, 
+                                        'datainicio':inicio,
+                                        'datafim':fim,
+                                        'quantidade':quantidade}));
+        resetButton(); // reseta inputs
+        document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
+        setTimeout(function() {
+            document.getElementById("msgSend").style.display = "none"; 
+        }, 2500)
+        document.getElementById("iframeApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
+
+    } 
+    else {
+        window.alert("Voce Precisa preencher todos os dados")
+    }
+    console.log(op);
+    console.log(inicio); 
+    console.log(fim);
+    console.log(quantidade);  
+
+// para tratar as respostas do post, tentar isso:
+//https://blog.rocketseat.com.br/axios-um-cliente-http-full-stack/
+
 }
