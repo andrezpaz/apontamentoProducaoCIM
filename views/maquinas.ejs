@@ -19,6 +19,30 @@
     </style>
 </head>
 <body onload= "JavaScript:AutoRefresh(10000);">
+    <script>
+        function AutoRefresh ( t ) {
+            setTimeout("location.reload(true);", t)
+        }
+        function updateProdMarcado(id, status) {
+            let userUpdate = new XMLHttpRequest();
+                userUpdate.open('post', '/update', true);
+                userUpdate.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+                userUpdate.send(JSON.stringify({'marcado': status,
+                                                'id':id}));
+        }
+        function prodMarcado(element) {
+            let parent = element.parentNode; // coleta pai do elemento
+            let idOpMaquina = element.id; // coleta id do elemento
+            if (element.checked) {
+                parent.style.color = 'yellow';
+                updateProdMarcado(idOpMaquina, "S")
+            }
+            else {
+                parent.style.color = null;
+                updateProdMarcado(idOpMaquina, "N")
+            }
+        }
+    </script>
     <div>
         <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
     </div>
@@ -32,19 +56,16 @@
                 <br>
                 <br>
             <div>
-                <div name="opMaquina"> 
+                <div name="opMaquina" <% if (maquina.marcado === "S") { %> style="color:yellow" <% } %> >
                     <input type="hidden" id="idOpMaquina" value="<%= maquina.id %>">
                     <span class="descNumeroOpMaquina">OP:</span> 
                     <span class="numeroOpMaquina"><%= maquina.op %></span> 
-                    <% if (maquina.marcado === "S") {
-                        console.log("Tem Prducao marcada") %>
+                    <% if (maquina.marcado === "S") { %>
                         <input type="checkbox" id="<%= maquina.id %>" checked=true onclick='prodMarcado(this)'>
                         
                     <%
-                        console.log(this.parentNode);
                     }
-                    else {
-                        console.log("Nao tem Prod Marcado") %>
+                    else { %>
                         <input type="checkbox" id="<%= maquina.id %>" onclick='prodMarcado(this)'>
                     <% }
                     %>
@@ -54,7 +75,11 @@
                     <span class="dataInicioOpMaquina"><%= maquina.datainicio.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
                     <br>
                     <span class="descDataFimOpMaquina">Data Fim:</span>
-                    <span class="dataFimOpMaquina"><%= maquina.datafim.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
+                    <% if (maquina.datafim) { %>
+                        <span class="dataFimOpMaquina"><%= maquina.datafim.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
+                    <%} else { %>
+                        <span class="dataFimOpMaquina"></span>
+                    <% } %>
                     <br>
                     <span class="descQuantidadeOpMaquina">Quantidade:</span> 
                     <span class="quantidadeOpMaquina"><%= maquina.quantidade %></span>
@@ -65,28 +90,5 @@
           
         </div>    
 </body>
-<script>
-    function AutoRefresh ( t ) {
-        setTimeout("location.reload(true);", t)
-    }
-    function updateProdMarcado(id, status) {
-        let userUpdate = new XMLHttpRequest();
-            userUpdate.open('post', '/update', true);
-            userUpdate.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-            userUpdate.send(JSON.stringify({'marcado': status,
-                                            'id':id}));
-    }
-    function prodMarcado(element) {
-        let parent = element.parentNode; // coleta pai do elemento
-        let idOpMaquina = element.id; // coleta id do elemento
-        if (element.checked) {
-            parent.style.color = 'red';
-            updateProdMarcado(idOpMaquina, "S")
-        }
-        else {
-            parent.style.color = null;
-            updateProdMarcado(idOpMaquina, "N")
-        }
-    }
-</script>
+
 </html>

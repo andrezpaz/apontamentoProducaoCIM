@@ -8,6 +8,7 @@
   "author": "Andrez",
   "license": "ISC",
   "dependencies": {
+    "alert": "^5.0.10",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "ejs": "^3.1.6",
@@ -18,5 +19,13 @@
     "mysql2": "^2.2.5"
   },
   "devDependencies": {},
-  "description": ""
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrezpaz/apontamentoProducaoCIM.git"
+  },
+  "bugs": {
+    "url": "https://github.com/andrezpaz/apontamentoProducaoCIM/issues"
+  },
+  "homepage": "https://github.com/andrezpaz/apontamentoProducaoCIM#readme"
 }

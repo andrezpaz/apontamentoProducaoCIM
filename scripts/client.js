@@ -12,18 +12,20 @@
 });*/
 
 function onLoadFunction() { // oculta botao de voltar o iframe
-    hideButtonIframe();
+    //hideButtonIframe();
+    //changeMaquina();
 }
 
-function hideButtonIframe() {
-    let iframe = document.getElementById("iframeApontamentos");
+function hideButtonIframe(iframe) {
+    console.log(iframe.contentWindow.document)
     let buttonBack = iframe.contentWindow.document.getElementById("buttonMaquinasBack");
     buttonBack.style.display = "none";
 }
 
 
-function dateFormat(typeDate) {
-
+function dateFormat(typeDate, date) {
+console.log(typeDate)
+console.log(date)
     /*var data = new Date(),
     dia  = data.getDate().toString().padStart(2, '0'),
     mes  = (data.getMonth()+1).toString().padStart(2, '0'), //+1 pois no getMonth Janeiro começa com zero.
@@ -40,49 +42,105 @@ function dateFormat(typeDate) {
         timeZone: "America/Sao_Paulo"
     }
     if (typeDate === "custom")
-    return new Date().toLocaleDateString('pt-BR', options)
-    if (typeDate === "mysql") {
-        var tzoffset = (new Date()).getTimezoneOffset() * 60000;
-        var localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 19).replace('T', ' ')
+    return new Date(date).toLocaleDateString('pt-BR', options)
+    if (typeDate === "mysql") { 
+        var tzoffset = new Date().getTimezoneOffset() * 60000;
+        var localISOTime = new Date((new Date(date).getTime() - tzoffset)).toISOString().slice(0, 19).replace('T', ' ')
+        //var localISOTime = new Date(date).toISOString({timeZone:"America/Sao_Paulo"}).slice(0, 19).replace('T', ' ');
+        console.log(localISOTime)
         return localISOTime;
     }
     //return moment().format('D/MM/YYYY, hh:mm')
 }
-function insertOP() {
-    let idinputOP = document.getElementById("inputOP").value;
-    console.log(idinputOP);
-    if (idinputOP) {
-        console.log(idinputOP);
-        //document.getElementById("inputOP").value = "TESTE";
-        document.getElementById("inputOP").style.color = "green"
-        document.getElementById("selectMaquina").style.color = "green"
-        document.getElementById("inputOP").readOnly = true;
-        document.getElementById("selectMaquina").readOnly = true;
+
+/*function insertOP() {
+        let idinputOP = document.getElementById("inputOP");
+        let idButtonOP = document.getElementById("buttonOP");
+        function changeInput (event) {
+            console.log(event);
+        if (event.code === 'Enter') {
+            console.log("ENTER REALIZD")
+                if (idinputOP.value) {
+                //document.getElementById("inputOP").value = "TESTE";
+                document.getElementById("inputOP").style.color = "green"
+                //document.getElementById("selectMaquina").style.color = "green"
+                document.getElementById("inputOP").readOnly = true;
+                //document.getElementById("selectMaquina").readOnly = true;
+                //findOP(idinputOP.value);
+                }
+            }
+        }
+
+        idinputOP.addEventListener('keyup', function(event){
+            changeInput(event)
+        })
+        idButtonOP.addEventListener('click', function(event){
+            changeInput(event)
+        })
+} */
+
+function findOP(numeroOP) {
+    //let numeroOP = document.getElementById("inputOP").value;
+    const userRequest = new XMLHttpRequest();
+        userRequest.open('post', '/apont', true);
+        userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+        userRequest.send(JSON.stringify({'op':numeroOP}));
+        //parent.document.getElementById("iframeApontamentosAtual").src = "/opatual";
+        //setTimeout(function(){
+        //    parent.document.getElementById("iframeApontamentosAtual").src = "/buscaop";
+        //}, 1000)
+        
+}
+
+
+var GlobalMaquinaSelecionada;
+function GetMaqSelecGlobal(maq) {
+    console.log(maq);
+    GlobalMaquinaSelecionada = maq;
+    return GlobalMaquinaSelecionada;
+}
+function changeMaquina() {
+    console.log("Maquina Selecionada")
+    let  maquinaSelected = document.getElementById("selectMaquina").value;
+    let iframeUltimosApontamento = parent.document.getElementById("iframeUltimosApontamentos");
+    //parent.document.getElementById("GlobalMaqSelecionada").innerHTML = maquinaSelected;
+    GetMaqSelecGlobal(maquinaSelected);
+    if (maquinaSelected === "Selecione")
+    iframeUltimosApontamento.src = "/defultIframe"
+    else {  
+    iframeUltimosApontamento.src = `maquinas/${maquinaSelected}`
+    hideButtonIframe(iframeUltimosApontamento);
     }
 }
+//window.onload = changeMaquina();
 
-function changeMaquina() {
-    let maquinaSelected = document.getElementById("selectMaquina").value
-    if (maquinaSelected === "Selecione")
-    document.getElementById("iframeApontamentos").src = "/defultIframe"
-    else   
-    document.getElementById("iframeApontamentos").src = `maquinas/${maquinaSelected}`
-    hideButtonIframe();
+function resetButton(askUpdateOrInsert) {
+    console.log(askUpdateOrInsert);
+    let iframeApontamentosAtual = parent.document.getElementById("iframeApontamentosAtual").contentWindow;
+    if (askUpdateOrInsert) { // usado quando encontado apontamento ja existe e usuario selecionar insert, deixa apenas a op e maquina digitada
+        CleanAfterInsertUpdate()
+    }
+    else {
+        console.log("Clean Geral")
+        CleanAfterInsertUpdate();
+        iframeApontamentosAtual.document.getElementById("inputOP").value = null;
+        iframeApontamentosAtual.document.getElementById("inputOP").readOnly = false;
+        iframeApontamentosAtual.document.getElementById("inputOP").style.color = "white";
+        iframeApontamentosAtual.document.getElementById("selectMaquina").style.color = "white";
 }
 
-function resetButton() {
-    console.log("Clear");
-    document.getElementById("valueStart").innerHTML = null;
-    document.getElementById("valueStop").innerHTML = null;
-    document.getElementsByName("valueStart")[0].value = null;
-    document.getElementsByName("valueStop")[0].value = null;
-    document.getElementById("inputOP").value = null;
-    document.getElementById("inputQuantidade").value = null;
-    document.getElementById("inputOP").readOnly = false;
-    document.getElementById("inputOP").style.color = "white";
-    document.getElementById("selectMaquina").style.color = "white";
-
 }
+function CleanAfterInsertUpdate() {
+    let iframeApontamentosAtual = parent.document.getElementById("iframeApontamentosAtual").contentWindow;
+    console.log("Clear After Insert");
+    iframeApontamentosAtual.document.getElementById("valueStart").innerHTML = null;
+    iframeApontamentosAtual.document.getElementById("valueStop").innerHTML = null;
+    iframeApontamentosAtual.document.getElementsByName("valueStart")[0].value = null;
+    iframeApontamentosAtual.document.getElementsByName("valueStop")[0].value = null;
+    iframeApontamentosAtual.document.getElementById("inputQuantidade").value = null;
+    iframeApontamentosAtual.document.getElementById("idUpdate").value = null;
+}
+
 function checkInput(id) {
     let valueInput = document.getElementById(id);
     console.log(valueInput.innerHTML);
@@ -92,25 +150,38 @@ function checkInput(id) {
 function insertDate(id) {
     let idvaluestart = document.getElementById(id);
     let namevaluestart = document.getElementsByName(id)[0];
+    let idSelectMaquina = document.getElementById("selectMaquina").value;
+    if  (idSelectMaquina === "Selecione") idSelectMaquina = false;
     console.log(namevaluestart);
-    if ((checkInput('valueStart')) && (id === 'valueStop') || ((id ==='valueStart') && checkInput('inputOP')) ) {
+    console.log(idvaluestart);
+    if ((checkInput('valueStart')) && (id === 'valueStop') || ((id ==='valueStart') && checkInput('inputOP') && (idSelectMaquina)) ) {
         if ( (!idvaluestart.innerHTML)) {
-            idvaluestart.innerHTML = dateFormat("custom");
-            namevaluestart.value = dateFormat("mysql"); // input para inserir data em formato original/ para inserir no banco              
+            console.log("OKOKKKKx")
+            idvaluestart.innerHTML = dateFormat("custom", new Date());
+            namevaluestart.value = dateFormat("mysql", new Date()); // input para inserir data em formato original/ para inserir no banco              
         }       
     }
-    else window.alert("Você precisa Digitar a OP e Pressionar OK")
+    else window.alert("Você precisa Digitar a OP, Maquina e Pressionar OK")
 }
 function inserAllData() {
-    let op = document.getElementById("inputOP").value;
-    let maquina = document.getElementById("selectMaquina").value;
-    let inicio = document.getElementsByName("valueStart")[0].value;
-    let fim = document.getElementsByName("valueStop")[0].value;
-    let quantidade = document.getElementById("inputQuantidade").value;
+    let iframeApontamentosAtual = parent.document.getElementById("iframeApontamentosAtual").contentWindow;
+    let op = iframeApontamentosAtual.document.getElementById("inputOP").value;
+    let maquina = iframeApontamentosAtual.document.getElementById("selectMaquina").value;
+    let inicio = iframeApontamentosAtual.document.getElementsByName("valueStart")[0].value;
+    let fim = iframeApontamentosAtual.document.getElementsByName("valueStop")[0].value;
+    let quantidade = iframeApontamentosAtual.document.getElementById("inputQuantidade").value;
     if (quantidade === '') quantidade = null;
+    if (maquina === "Selecione") maquina = null;
+    if (fim === '') fim = null;
+    let idUpdate = iframeApontamentosAtual.document.getElementById("idUpdate").value;
     //console.log(quantidade);
 
-    if ((op) && (inicio) && (fim)) {
+    if ((op) && (inicio) && (maquina)) {
+        if(idUpdate) { // se for update
+            console.log("Realizando Update "+ idUpdate);
+            updateProducao(idUpdate, maquina, inicio, fim, quantidade)
+        } else {
+        console.log("REalizando Insert")
         const userRequest = new XMLHttpRequest();
         userRequest.open('post', '/insert', true);
         userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
@@ -119,23 +190,52 @@ function inserAllData() {
                                         'datainicio':inicio,
                                         'datafim':fim,
                                         'quantidade':quantidade}));
-        resetButton(); // reseta inputs
+        }
+        CleanAfterInsertUpdate(); // reseta inputs
         document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
         setTimeout(function() {
             document.getElementById("msgSend").style.display = "none"; 
         }, 2500)
-        document.getElementById("iframeApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
-
+        parent.document.getElementById("iframeUltimosApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
+        
     } 
     else {
         window.alert("Voce Precisa preencher todos os dados")
     }
-    console.log(op);
+    /*console.log(op);
     console.log(inicio); 
     console.log(fim);
-    console.log(quantidade);  
+    console.log(quantidade);*/  
 
 // para tratar as respostas do post, tentar isso:
 //https://blog.rocketseat.com.br/axios-um-cliente-http-full-stack/
 
 }
+
+function updateProducao(id, maquina, inicio, fim, quantidade) {
+        const userRequest = new XMLHttpRequest();
+        userRequest.open('post', '/updateProducao', true);
+        userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+        userRequest.send(JSON.stringify({'maquina': maquina,
+                                        'datainicio': inicio,
+                                        'datafim': fim,
+                                        'quantidade': quantidade,
+                                        'id':id}));
+}
+
+function askUserUpdateOrInsert(){
+    console.log("EXECC")
+    if (document.getElementById("idUpdate").value) {
+        if(!(window.confirm("Apontamento encontrado nessa OP, Continuar com o último apontamento ?"))) {
+            resetButton(true) 
+        }
+    }
+}
+
+function onLoadApontamentos() { // para ser usado no ejs de apontamento, carregando funcoes apos carregar a pagina
+    
+    askUserUpdateOrInsert();
+    changeMaquina();
+}
+
+module.exports = {dateFormat: dateFormat, changeMaquina:changeMaquina, onLoadApontamentos:onLoadApontamentos, GetMaqSelecGlobal:GetMaqSelecGlobal}; // para ser usado no render ejs

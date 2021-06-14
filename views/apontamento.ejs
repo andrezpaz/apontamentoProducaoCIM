@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/styles.css">
+    <title>Apontamentos</title>
+
+</head>
+<script src="scripts/client.js"></script>    
+<body onload="onLoadApontamentos();"> <!-- Utilizada para carregar maquina quando for inserido uma OP ja existente no banco-->
+   
+    <div>
+        <% producao.forEach(function(producao) { %>
+        <!--<span class="titleInputs">OP:</span><br>
+                    <input class="input" id="inputOP" type="number" value="<%= producao.op %>">
+                    <button class="buttonOK" id="buttonOP" onclick="insertOP()">OK</button> -->
+
+                    <form action="/apont" method="post">
+                        <label class="titleInputs" for="name"><span>OP</span></label><br>
+                        <% if (producao.op) { %>
+                            <input style="color:green" readOnly = true class="input" type="number" name="op" id="inputOP" placeholder="Digite a OP" value="<%= producao.op %>"/>
+                       <% } else { %>
+                            <input class="input" type="number" name="op" id="inputOP" placeholder="Digite a OP" value="<%= producao.op %>"/>
+                        <%} %>
+                        <button type="submit" class="buttonOK" id="buttonOP" onclick="insertOP()">OK</button>
+                    </form>
+
+                    <label for="maquina">
+                    <br> 
+                    <span>Máquina:</span></label> 
+                    <br>
+                    <select class="select" name="maquina" id="selectMaquina" onchange="changeMaquina()">
+                        <option value="410">410</option>
+                        <option value="411">411</option>
+                        <% if (producao.maquina) {%>
+                        <option selected="<%= producao.maquina %>"><%= producao.maquina %></option>
+                        <% } else { %> <option selected="Default"> <%= functions.GetMaqSelecGlobal() %></option>
+                        <% } %>
+                    </select>  
+                    <br><br>
+                </div>
+                <br>
+                <div class="container">
+                    <button class="buttonStart" id="Start" onclick="insertDate('valueStart')"> 
+                        INICIAR
+                    </button> 
+                    <h3 class="container" id="valueStart"><% if (producao.datainicio) { %> <%=functions.dateFormat("custom",producao.datainicio)%><%} else null %></h3>
+                    <input type="hidden" name="valueStart" value="<% if (producao.datainicio) { %> <%=functions.dateFormat('mysql', producao.datainicio)%> <%} else null %>"> <!-- input para registar data original/ para inserir no banco de dados-->
+
+                </div>
+                <br><br>
+                <div class="container">
+                    <button class="buttonStart" id="Stop" onclick="insertDate('valueStop')">
+                        FINALIZAR
+                    </button>
+                    <h3 class="container" id="valueStop"><% if (producao.datafim) { %> <%=functions.dateFormat("custom",producao.datafim)%> <%} else null %></h3>
+                    <input type="hidden" name="valueStop" value="<% if (producao.datafim) { %> <%=functions.dateFormat('mysql', producao.datafim)%> <%} else null %>"> <!-- input para registar data original/ para inserir no banco de dados-->
+                </div>
+                <br>    
+                <div class="container">
+                    <br>
+                    <span class="titleInputs">Quantidade:</span><br>
+                    <input class="input" id="inputQuantidade" type="number" value="<%= producao.quantidade %>">
+                    <input type="hidden" class="input" id="idUpdate" type="number" value="<%= producao.id %>">
+                    <!--<button class="buttonOK" id="myButton"> OK</button> -->
+                </div>    
+        <% }); %>
+    </div>    
+    
+</body>
+
+</html>
