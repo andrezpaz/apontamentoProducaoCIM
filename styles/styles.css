@@ -20,8 +20,8 @@ div span, h1 {
 }
 .input, .select {
     width: 170px;
-    padding: 12px;
-    font-size: 27px;
+    padding: 10px;
+    font-size: 26px;
     border-width: 1px;
     border-color: #0eff04;
     background-color: #0000ff;
@@ -58,7 +58,7 @@ input[type=number] {
 	font-family:Arial;
 	font-size:19px;
 	font-weight:bold;
-	padding:23px 23px;
+	padding:20px 20px;
 	text-decoration:none;
 	text-shadow:0px -1px 0px #2b665e;
 }
@@ -78,9 +78,9 @@ input[type=number] {
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Arial;
-	font-size:28px;
+	font-size:26px;
 	font-weight:bold;
-	padding:12px 12px;
+	padding:10px 10px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #aade7c;
 }
@@ -103,9 +103,9 @@ input[type=number] {
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Arial;
-	font-size:28px;
+	font-size:26px;
 	font-weight:bold;
-	padding:15px 12px;
+	padding:10px 10px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #aade7c;
 
@@ -121,9 +121,9 @@ input[type=number] {
 	cursor:pointer;
 	color:#ffffff;
 	font-family:Arial;
-	font-size:28px;
+	font-size:26px;
 	font-weight:bold;
-	padding:12px 12px;
+	padding:10px 10px;
 	text-decoration:none;
 	text-shadow:0px 1px 0px #aade7c;
 
