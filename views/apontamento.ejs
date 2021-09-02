@@ -8,7 +8,13 @@
     <title>Apontamentos</title>
 
 </head>
-<script src="scripts/client.js"></script>    
+<script src="scripts/client.js"></script> 
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
+<script type="text/javascript" src="/fancybox/jquery.fancybox-1.3.4.pack.js"></script>  
+<script type="text/javascript" src="/fancybox/jquery.easing-1.4.pack.js"></script> 
+<script type="text/javascript" src="/fancybox/jquery.mousewheel-3.0.4.pack.js"></script>
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox-1.3.4.css" type="text/css" media="screen" />
 <body onload="onLoadApontamentos();"> <!-- Utilizada para carregar maquina quando for inserido uma OP ja existente no banco-->
    
     <div>
@@ -18,13 +24,14 @@
                     <button class="buttonOK" id="buttonOP" onclick="insertOP()">OK</button> -->
 
                     <form action="/apont" method="post">
-                        <label class="titleInputs" for="name"><span>OP</span></label><br>
+                        <label class="titleInputs" for="name"><span>OP:</span></label><br>
                         <% if (producao.op) { %>
-                            <input style="color:green" readOnly = true class="input" type="number" name="op" id="inputOP" placeholder="Digite a OP" value="<%= producao.op %>"/>
+                            <input style="color:rgb(167, 164, 164)" readOnly = true class="input" type="number" name="op" id="inputOP" placeholder="Digite a OP" value="<%= producao.op %>"/>
                        <% } else { %>
                             <input class="input" type="number" name="op" id="inputOP" placeholder="Digite a OP" value="<%= producao.op %>"/>
                         <%} %>
                         <button type="submit" class="buttonOK" id="buttonOP" onclick="insertOP()">OK</button>
+                        <!--<a class="iframe" href="files/228080.html" id="buttonPrintOP"><img src="images/printimg.png" style="width:30px;height:30px;"></a> -->
                     </form>
 
                     <label for="maquina">

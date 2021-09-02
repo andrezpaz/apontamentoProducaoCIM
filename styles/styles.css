@@ -1,5 +1,5 @@
 body {
-    background-color:#305c54;
+    background-color:#171717;
 	font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }
 .painel {
@@ -7,7 +7,22 @@ body {
 	display: inline-block;
 	vertical-align: top;
 }
-
+.logoCIM, .titleCIM1, .titleCIM2 {
+	display: inline-block;
+	vertical-align: text-top;
+}
+.titleCIM1 {
+	margin-left: 0px;
+}
+.titleCIM2 {
+	margin-left: 355px;
+}
+#iframeApontamentosAtual, #iframeUltimosApontamentos{
+	border-color: #ffffff;
+	border-radius: 5px;
+	border-width: 3px;
+	border-style: solid;
+}
 .container {
     display: inline-block;
     margin: auto;
@@ -23,8 +38,8 @@ div span, h1 {
     padding: 10px;
     font-size: 26px;
     border-width: 1px;
-    border-color: #0eff04;
-    background-color: #0000ff;
+    border-color: #ffffff;
+    background-color: #0055b3;
     color: #ffffff;
     border-style: solid;
     border-radius: 22px;
@@ -45,25 +60,27 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+#valueStart, #valueStop {
+	color: white;
+}
 .buttonStart, .buttonMaquina {
 	width: 280px;
     box-shadow:inset 0px 1px 3px 0px #91b8b3;
-	background:linear-gradient(to bottom, #768d87 5%, #6c7c7c 100%);
+	background:linear-gradient(to bottom, #c0c0c0 5%, #adadad 100%);
 	background-color:#768d87;
 	border-radius:5px;
-	border:1px solid #566963;
-	
+	border:1px solid #ffffff;
 	cursor:pointer;
-	color:#ffffff;
+	color:black;
 	font-family:Arial;
 	font-size:19px;
 	font-weight:bold;
 	padding:20px 20px;
 	text-decoration:none;
-	text-shadow:0px -1px 0px #2b665e;
 }
 .buttonStart:hover, .buttonMaquina:hover {
-	background:linear-gradient(to bottom, #6c7c7c 5%, #768d87 100%);
+	background:linear-gradient(to bottom, #00f9ff 5%, #0055b3 100%);
 	background-color:#6c7c7c;
 }
 .buttonStart:active, .buttonMaquina:active {
@@ -72,7 +89,7 @@ input[type=number] {
 }
 .buttonOK {
 	box-shadow:inset 0px 1px 0px 0px #caefab;
-	background-color:#0eff04;
+	background-color:#288f24;
 	border-radius:42px;
 	display:inline-block;
 	cursor:pointer;
@@ -96,7 +113,7 @@ input[type=number] {
 }
 
 .resetButton {
-	background-color: crimson;
+	background-color: firebrick;
 	box-shadow:inset 0px 1px 0px 0px #caefab;
 	border-radius:42px;
 	display:inline-block;
@@ -114,7 +131,22 @@ input[type=number] {
 	background-color: darkred;
 }
 .sendButton {
-	background-color: #0eff04;
+	background-color: #1d940b;
+	box-shadow:inset 0px 1px 0px 0px #caefab;
+	border-radius:42px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:26px;
+	font-weight:bold;
+	padding:10px 10px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #aade7c;
+
+}
+.listMaqButton {
+	background-color: #013e80;
 	box-shadow:inset 0px 1px 0px 0px #caefab;
 	border-radius:42px;
 	display:inline-block;
@@ -130,4 +162,10 @@ input[type=number] {
 }
 .sendButton:hover {
 	background-color: #274d26;
+}
+.listMaqButton:hover {
+	background-color: #225b97;
+}
+.maquinas h2 {
+	color: white;
 }

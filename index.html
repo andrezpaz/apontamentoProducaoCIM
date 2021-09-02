@@ -3,16 +3,19 @@
         <link rel="stylesheet" href="styles/styles.css">
         
     </head>
-    <body onload="onLoadFunction()"> 
+    <body onload="onLoadFunction()">
+      <img class="logoCIM" src="images/CIM.png" style="width:50px;height:50px;">
+      <h1 class="titleCIM1">CONTADOR DE TEMPO</h1>
+      <h1 class="titleCIM2">ÚLTIMOS APONTAMENTOS</h1>
+      <br> 
+      <div class="container">  
         <div class="painel" id="painelApontamento">
-            <h1>CIM - CONTADOR DE TEMPO</h1>
             <iframe id="iframeApontamentosAtual" width="600px" height="450px" src="/apontamento">  </iframe>
         </div>
-        
         <div class="painel">
-            <h1>ÚLTIMOS APONTAMENTOS</h1>
             <iframe class="iframeApontamentosClass" id="iframeUltimosApontamentos" width="320px" height="450px" src="/defultIframe">  </iframe>
         </div>
+      </div>
     <br>
     <div class="container">
         <p>
@@ -23,18 +26,51 @@
         <button class="sendButton" id="sendData" onclick="inserAllData()">✔ Enviar Dados </button>
         </div>
         <div class="container">
-        <button class="sendButton" id="sendData" onclick="window.location.href='/maquinas'">Listar Maquinas </button>
+        <button class="listMaqButton" id="sendData" onclick="window.location.href='/maquinas'">Listar Máquinas </button>
         </div>
         </p>
         <div class="msgSend" id="msgSend" style="display: none;">
-            <h3>Enviado com sucesso !</h3>
+            <h3>Enviado com sucesso!</h3>
         </div>
         <div class="GlobalMaqSelecionada" id="GlobalMaqSelecionada" style="display: none;"></div>
      
     </div>
+
+    <div id="dialog-confirm" title="APONTAMENTO ENCONTRADO !" style="display: none;">
+        <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;">
+            </span>Selecione abaixo o que deseja fazer:</p>
+    </div>
     
 
 
+
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script>
+  let functionJS
+  //$("#Clean").click( function() {
+    $( function() {
+    
+    jqueryAlert = function() {  
+      $( "#dialog-confirm" ).dialog({
+      resizable: false,
+      height: "auto",
+      width: 400,
+      modal: true,
+      buttons: {
+        "CONTINUAR com último apontamento": function() {
+          $( this ).dialog( "close" );
+        },
+        "Iniciar um NOVO apontamento": function() {
+          resetButton(true);
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+  }
+  functionJS = jqueryAlert;
+  } );
+</script>
 <script src="scripts/client.js"></script>
 </body>
 <!--<script src="scripts/moment.min.js" type="text/javascript"></script> -->

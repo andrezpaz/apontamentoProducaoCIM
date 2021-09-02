@@ -7,7 +7,7 @@
     <title>Maquina</title>
     <style>
         body {
-        background-color: #305c54;
+        background-color: #013e80;
         text-align: justify;
         color: white;
     }
@@ -16,6 +16,23 @@
             font-style: bold;
             
         }
+        .removeButton {
+            margin-top: 5px;
+            margin-left: 200px;
+            box-shadow:inset 0px 1px 3px 0px #91b8b3;
+            background:linear-gradient(to bottom, firebrick 5%, rgb(238, 91, 65) 100%);
+            border-radius:5px;
+            border:1px solid 768d87;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:12px;
+            font-weight:bold;
+            padding:3px 3px;
+            text-decoration:none;
+            text-shadow:0px -1px 0px #2b665e;
+        }
+        
     </style>
 </head>
 <body onload= "JavaScript:AutoRefresh(10000);">
@@ -30,6 +47,12 @@
                 userUpdate.send(JSON.stringify({'marcado': status,
                                                 'id':id}));
         }
+        function deleteProd(id) {
+            let userDelete = new XMLHttpRequest();
+                userDelete.open('post', '/deleteProducao', true);
+                userDelete.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+                userDelete.send(JSON.stringify({'id':id}));
+        }
         function prodMarcado(element) {
             let parent = element.parentNode; // coleta pai do elemento
             let idOpMaquina = element.id; // coleta id do elemento
@@ -42,6 +65,11 @@
                 updateProdMarcado(idOpMaquina, "N")
             }
         }
+        function removeApont(element) {
+            let idOpMaquina = element.id;
+            deleteProd(idOpMaquina);
+            location.reload(true);
+        }
     </script>
     <div>
         <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
@@ -51,10 +79,7 @@
             <%= maquina[0].maquina %>
         </h1>
         <% maquina.forEach(function(maquina) { %>
-            <p> 
-                _____________________________________
-                <br>
-                <br>
+            ____________________________________
             <div>
                 <div name="opMaquina" <% if (maquina.marcado === "S") { %> style="color:yellow" <% } %> >
                     <input type="hidden" id="idOpMaquina" value="<%= maquina.id %>">
@@ -71,7 +96,7 @@
                     %>
                     
                     <br>
-                    <span class="descDataInicioOpMaquina">Data Inicio:</span>
+                    <span class="descDataInicioOpMaquina">Data Início:</span>
                     <span class="dataInicioOpMaquina"><%= maquina.datainicio.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
                     <br>
                     <span class="descDataFimOpMaquina">Data Fim:</span>
@@ -79,13 +104,16 @@
                         <span class="dataFimOpMaquina"><%= maquina.datafim.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
                     <%} else { %>
                         <span class="dataFimOpMaquina"></span>
-                    <% } %>
+                    <% } %>  
                     <br>
                     <span class="descQuantidadeOpMaquina">Quantidade:</span> 
                     <span class="quantidadeOpMaquina"><%= maquina.quantidade %></span>
+                    <br>
+                    <button class="removeButton" id="<%= maquina.id %>" onclick="removeApont(this)">X Excluir</button> 
+                     
                 </div>
                 </div> 
-            </p>
+            
           <% }); %>
           
         </div>    

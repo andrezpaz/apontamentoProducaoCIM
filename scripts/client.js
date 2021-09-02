@@ -226,6 +226,8 @@ function updateProducao(id, maquina, inicio, fim, quantidade) {
 function askUserUpdateOrInsert(){
     console.log("EXECC")
     if (document.getElementById("idUpdate").value) {
+        console.log("Executando funcao alert")
+        //functionJS();
         if(!(window.confirm("Apontamento encontrado nessa OP, Continuar com o último apontamento ?"))) {
             resetButton(true) 
         }
