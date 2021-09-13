@@ -163,6 +163,45 @@ function insertDate(id) {
     }
     else window.alert("Você precisa Digitar a OP, Maquina e Pressionar OK")
 }
+function updateProducao(id, maquina, inicio, fim, quantidade) {
+    return new Promise(resolve => {
+    const userRequest = new XMLHttpRequest();
+          userRequest.open('post', '/updateProducao', true);
+          userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+          userRequest.send(JSON.stringify({'maquina': maquina,
+                                    'datainicio': inicio,
+                                    'datafim': fim,
+                                    'quantidade': quantidade,
+                                    'id':id}));
+        setTimeout(() => {
+        resolve("Resolvido")
+            },1200);
+    })
+}
+function XMLInsertProducao (op,maquina, inicio, fim, quantidade) {
+    return new Promise(resolve => {
+    const userRequest = new XMLHttpRequest();
+          userRequest.open('post', '/insert', true);
+          userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
+          userRequest.send(JSON.stringify({'op':op,
+                                        'maquina':maquina, 
+                                        'datainicio':inicio,
+                                        'datafim':fim,
+                                        'quantidade':quantidade}));
+        setTimeout(() => {
+        resolve ("Resolvido")
+            },1200);
+        })
+}
+function msgSendUpdate() {
+    CleanAfterInsertUpdate(); // reseta inputs
+    document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
+    setTimeout(function() {
+            document.getElementById("msgSend").style.display = "none"; 
+        }, 2500)
+    parent.document.getElementById("iframeUltimosApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
+        
+}
 function inserAllData() {
     let iframeApontamentosAtual = parent.document.getElementById("iframeApontamentosAtual").contentWindow;
     let op = iframeApontamentosAtual.document.getElementById("inputOP").value;
@@ -179,49 +218,29 @@ function inserAllData() {
     if ((op) && (inicio) && (maquina)) {
         if(idUpdate) { // se for update
             console.log("Realizando Update "+ idUpdate);
-            updateProducao(idUpdate, maquina, inicio, fim, quantidade)
+            updateProducao(idUpdate, maquina, inicio, fim, quantidade).then((result) =>{
+            //let result = await updateProducao(idUpdate, maquina, inicio, fim, quantidade) // para fins de estuo, de como usar com await a funcao async
+                console.log(result)
+                msgSendUpdate() 
+            })
         } else {
-        console.log("REalizando Insert")
-        const userRequest = new XMLHttpRequest();
-        userRequest.open('post', '/insert', true);
-        userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-        userRequest.send(JSON.stringify({'op':op,
-                                        'maquina':maquina, 
-                                        'datainicio':inicio,
-                                        'datafim':fim,
-                                        'quantidade':quantidade}));
+            console.log("REalizando Insert")
+            XMLInsertProducao(op,maquina, inicio, fim, quantidade).then((result) => {
+                console.log(result)
+                msgSendUpdate()
+            })
         }
-        CleanAfterInsertUpdate(); // reseta inputs
-        document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
-        setTimeout(function() {
-            document.getElementById("msgSend").style.display = "none"; 
-        }, 2500)
-        parent.document.getElementById("iframeUltimosApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
-        
     } 
     else {
         window.alert("Voce Precisa preencher todos os dados")
     }
-    /*console.log(op);
-    console.log(inicio); 
-    console.log(fim);
-    console.log(quantidade);*/  
 
 // para tratar as respostas do post, tentar isso:
 //https://blog.rocketseat.com.br/axios-um-cliente-http-full-stack/
 
 }
 
-function updateProducao(id, maquina, inicio, fim, quantidade) {
-        const userRequest = new XMLHttpRequest();
-        userRequest.open('post', '/updateProducao', true);
-        userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-        userRequest.send(JSON.stringify({'maquina': maquina,
-                                        'datainicio': inicio,
-                                        'datafim': fim,
-                                        'quantidade': quantidade,
-                                        'id':id}));
-}
+
 
 function askUserUpdateOrInsert(){
     console.log("EXECC")

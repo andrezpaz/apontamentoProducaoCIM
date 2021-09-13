@@ -28,7 +28,7 @@ app.use('/images', express.static('images'));
 app.use('/files', express.static('files'));
 
 router.get('/', function(req,res) {
-    res.sendFile(path.join(__dirname+'/index.html') )
+    res.sendFile(path.join(__dirname+'/index.html'))
 })
 
 router.get('/apontamento', function(req, res) {
@@ -59,52 +59,6 @@ app.post('/insert', jsonParser, function(request, response) {
                 let ress = result[0].insertId.toString();
                 console.log(ress);
                 //response.send(console.log(ress));
-                    setTimeout(function(){
-                        const axios = require('axios');
-                        var querystring = require('querystring');
-                        const data = {
-                            
-                        };
-                        console.log(data);
-                        axios.post('http://localhost:8000/apont', querystring.stringify({
-                            op: '123'
-                    }), {
-                        headers: { 
-                            "Content-Type": "application/x-www-form-urlencoded"
-                          }
-                    })
-                            .then((res) => {
-                                console.log(`Status: ${res.status}`);
-                                //console.log('Body: ', res.data);
-                                response.send(res.data)
-                            }).catch((err) => {
-                                console.error(err);
-                            });
-                        //response.render('apontamento', {producao:prod, functions:functions})
-                        
-                    },2500)
-                //response.send(true);
-                //response.sendStatus(status);
-                //result[0].insertId
-                /*const axios = require('axios');
-                const data = {
-                    op: 12131
-                };
-                axios.post('/apont', data)
-                .then((res) => {
-                    console.log(`Status: ${res.status}`);
-                    console.log('Body: ', res.data.op);
-                }).catch((err) => {
-                    console.error(err);
-                });
-                //return result[0].insertId;
-                /*var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-                const userRequest = new XMLHttpRequest();
-                userRequest.open('post', '/apont2', true);
-                userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-                userRequest.send(JSON.stringify({'op':12131}));*/
-                //res.render('apontamento', {producao:result, functions:functions})
-
             })
             .catch ((error) => {
                 console.log("ERRO NO INSERT")
@@ -229,6 +183,20 @@ router.get('/maquinas/:recurso', function(req, res) {
 router.get('/defultIframe', function (req, res) {
     res.sendFile(path.join(__dirname+'/defaultIfrme.html'))
     //res.send("Sem Apontamento")
+})
+
+router.get('/fila/:recurso', function(req, res) {
+    //res.send('Hello World');
+    (async () => {
+        const db = require("./db");
+        const recurso = req.params.recurso;
+        const maquina = await db.selectFila(recurso);
+        //console.log(maquina);
+        //console.log(maquina[0].maquina)
+        res.render('fila', {maquina: maquina})
+        //res.send(maquina)
+    })();
+ 
 })
 
 app.use('/', router);
