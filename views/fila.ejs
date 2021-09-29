@@ -14,6 +14,7 @@
     
     table, th {
         border:3px solid black;
+        text-align: center;
     }
     th {
         background-color: rgb(59, 59, 59);
@@ -53,9 +54,12 @@
         width: 40px;
         height: 28px;
     }
-    .buttonIframe {
+    .buttonIframeClose {
         width: 80px;
         height: 40px;
+        font-weight: bold;
+        background-color: firebrick;
+        color: whitesmoke
     }
    
     /* The Modal (background) */
@@ -133,8 +137,8 @@
 </head>
 <body>
     <div style="display: none;" class="containerIframe" id ="containerIframe">
-    <button class="buttonIframe" onclick="closeIFrame();">X</button><br>
-    <iframe id="iframePerfil" src="/" width="900" height="280"></iframe>
+    <button class="buttonIframeClose" onclick="closeIFrame();">X</button><br>
+    <iframe id="iframePerfil" src="/" width="50%" height="40%"></iframe>
     </div>
 
     <div>
