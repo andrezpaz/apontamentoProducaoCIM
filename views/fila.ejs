@@ -11,15 +11,29 @@
         text-align: justify;
         color: white;
     }
+    
     table, th {
-        border:2px solid black;
+        border:3px solid black;
     }
     th {
-        background-color: grey;
+        background-color: rgb(59, 59, 59);
     }
     td {
-        border:2px solid indigo;
+        border:3px solid rgb(0, 0, 0);
         background-color: rgb(97, 97, 97);
+        text-align: center;
+    }
+    .containerIframe {
+        position:fixed;
+    top:300px;
+    left:500px;
+    width:100%;
+    height:100%;
+    /*background:#000;
+    opacity:0.8;
+    /*background:rgba(255,255,255,0.8); or just this*/
+    z-index:50;
+    color:#fff;
     }
 
     /* Style the Image Used to Trigger the Modal */
@@ -31,6 +45,19 @@
 
     #myImg:hover {opacity: 0.7;}
 
+    .buttonImagem {
+        width: 90px;
+        height: 30px;
+    }
+    .iconPerfil{
+        width: 30px;
+        height: 30px;
+    }
+    .buttonIframe {
+        width: 80px;
+        height: 40px;
+    }
+   
     /* The Modal (background) */
     .modal {
     display: none; /* Hidden by default */
@@ -105,7 +132,11 @@
     
 </head>
 <body>
-   
+    <div style="display: none;" class="containerIframe" id ="containerIframe">
+    <button class="buttonIframe" onclick="closeIFrame();">X</button><br>
+    <iframe id="iframePerfil" src="/" width="900" height="280"></iframe>
+    </div>
+
     <div>
         <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
     </div>
@@ -118,20 +149,37 @@
                 <tr>
                     <th>Seq. Fila</th>
                     <th>Número OP</th>
-                    <th>Nome Cliente</th>
                     <th>Código Item</th>
                     <th>Descrição Item</th>
                     <th>Imagem do Item</th>
+                    <th>Perfil de Cores</th>
                 </tr>
                 <tr>
-                    <% maquina.forEach(function(maquina) { %>
+                    <% 
+                    let opMRP = maquina.filter(ele => ele.mrp !== null);
+                    let guposDeMrp = [];
+                    //const db = require("../db.js");
+                    //const tipo_imagem = await db.selectPerfilCores(codigo_item);
+                    //opMRP.forEach(function(element){
+                    //    console.log(element);
+                    //    let tem = guposDeMrp.filter(nummrp => nummrp.mrp === element.mrp);
+                    //})
+                    maquina.forEach(function(maquina) 
+                    { 
+                        %>
                         <td><%=maquina.seq_fila%></td>
                         <td><%=maquina.op%></td>
-                        <td><%=maquina.nomecliente%></td>
-                        <td><%=maquina.codigo_item%></td>
+                        <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
-                        <td><button><a target="_blank" href="/images/<%=maquina.codigo_item%>.jpg">Abrir Imagem</a></button>
-                            
+                        <td>
+                            <% if (maquina.TIPO_IMAGEM) {
+                                maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){ 
+                                let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
+                                <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>.jpg"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
+                            <%  })
+                            } %>
+                        <td>
+                            <% if (maquina.tem_perfil > 0) {%> <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> <% } %>
                         </td>
                         <!-- Trigger the Modal -->
                         <!--<td><img onclick="modalImage(this)" id="<%=maquina.codigo_item%>" src="/images/<%=maquina.codigo_item%>.jpg" alt="Snow" style="width:100%;max-width:300px">-->
@@ -154,6 +202,19 @@
             </p> 
         </div>    
         <script>
+            function openIframe(element) {
+                elementParent = element.parentNode.parentNode;
+                let codigo_item = elementParent.querySelector('.codigo_item').innerHTML;
+                var containerFrame = document.getElementById("containerIframe");
+                containerFrame.style.display = "block";
+                iframe = document.getElementById("iframePerfil");
+                iframe.src = `/perfilcores/${codigo_item}`;
+            }
+            function closeIFrame() {
+                var frame = document.getElementById("containerIframe");
+                console.log(frame)
+                frame.style.display = "none";
+            }
             function modalImage(element) {
                 console.log(element);
                 //let im = document.getElementById(element.id).parentElement;

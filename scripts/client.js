@@ -24,8 +24,8 @@ function hideButtonIframe(iframe) {
 
 
 function dateFormat(typeDate, date) {
-console.log(typeDate)
-console.log(date)
+//console.log(typeDate)
+//console.log(date)
     /*var data = new Date(),
     dia  = data.getDate().toString().padStart(2, '0'),
     mes  = (data.getMonth()+1).toString().padStart(2, '0'), //+1 pois no getMonth Janeiro começa com zero.
@@ -47,7 +47,7 @@ console.log(date)
         var tzoffset = new Date().getTimezoneOffset() * 60000;
         var localISOTime = new Date((new Date(date).getTime() - tzoffset)).toISOString().slice(0, 19).replace('T', ' ')
         //var localISOTime = new Date(date).toISOString({timeZone:"America/Sao_Paulo"}).slice(0, 19).replace('T', ' ');
-        console.log(localISOTime)
+        //console.log(localISOTime)
         return localISOTime;
     }
     //return moment().format('D/MM/YYYY, hh:mm')
@@ -143,20 +143,20 @@ function CleanAfterInsertUpdate() {
 
 function checkInput(id) {
     let valueInput = document.getElementById(id);
-    console.log(valueInput.innerHTML);
     if ((valueInput.innerHTML) || (valueInput.value) && (valueInput.readOnly)) return true;
     else return false;
 }
+function buttonPress(element){
+    console.log(element);
+}
+
 function insertDate(id) {
     let idvaluestart = document.getElementById(id);
     let namevaluestart = document.getElementsByName(id)[0];
     let idSelectMaquina = document.getElementById("selectMaquina").value;
     if  (idSelectMaquina === "Selecione") idSelectMaquina = false;
-    console.log(namevaluestart);
-    console.log(idvaluestart);
     if ((checkInput('valueStart')) && (id === 'valueStop') || ((id ==='valueStart') && checkInput('inputOP') && (idSelectMaquina)) ) {
         if ( (!idvaluestart.innerHTML)) {
-            console.log("OKOKKKKx")
             idvaluestart.innerHTML = dateFormat("custom", new Date());
             namevaluestart.value = dateFormat("mysql", new Date()); // input para inserir data em formato original/ para inserir no banco              
         }       
@@ -244,12 +244,15 @@ function inserAllData() {
 
 function askUserUpdateOrInsert(){
     console.log("EXECC")
-    if (document.getElementById("idUpdate").value) {
-        console.log("Executando funcao alert")
+    if ( document.getElementById("idUpdate").value && document.getElementById("valueStart").innerHTML && !document.getElementById("valueStop").innerHTML) {
+        console.log("Apontamento sem preenchimento encontrado")
         //functionJS();
-        if(!(window.confirm("Apontamento encontrado nessa OP, Continuar com o último apontamento ?"))) {
-            resetButton(true) 
-        }
+        //if(!(window.confirm("Apontamento encontrado nessa OP, Continuar com o último apontamento ?"))) {
+        //    resetButton(true) 
+        //}
+    } 
+    else { // caso for novo apontamento ou inicio e fim estiverem preenchidos, limpa dados para nova insercao
+        resetButton(true) 
     }
 }
 

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Cores</title>
+    <style>
+        body {
+        background-color: #013e80;
+        text-align: center;
+        color: white;
+        font-style:initial;
+    }
+    table, th {
+        border:2px solid black;
+    }
+    th {
+        background-color: grey;
+    }
+    td {
+        border:2px solid rgb(0, 0, 0);
+        background-color: rgb(97, 97, 97);
+        font-weight:bold;
+    }
+     
+    </style>
+    
+</head>
+<body>
+
+    <div>
+        <h1>Perfil de Cores do Item: 
+            <%= perfilcores[0].codigo_item %>
+        </h1>
+        
+            <table style="width:100%">
+                <tr>
+                    <th>Seq. Cor</th>
+                    <th>Cor</th>
+                    <th>Anilox</th>
+                    <th>Densidade</th>
+                    <th>TV</th>
+                    <th>LAB</th>
+                </tr>
+                <tr>
+                    <% perfilcores.forEach(function(perfilcores) { 
+                        let cor; 
+                        if (perfilcores.seq_cor === 1) cor = "#00CED1"
+                        if (perfilcores.seq_cor === 2) cor = "#d73851"
+                        if (perfilcores.seq_cor === 3) cor = "#f5a82d"
+                        if (perfilcores.seq_cor === 4) cor = "#080808"
+                        %>
+                        <td style="background-color:<%=cor%>;"><%=perfilcores.seq_cor%></td>
+                        <td style="background-color:<%=cor%>;"><%=perfilcores.desc_cor%></td>
+                        <td style="background-color:<%=cor%>;"><%=perfilcores.anilox%></td>
+                        <td style="background-color:<%=cor%>;"><%=perfilcores.densidade%></td>
+                        <td style="background-color:<%=cor%>;"><%=perfilcores.tv%></td>
+                        <td style="background-color:<%=cor%>;"><%=perfilcores.lab%></td>
+                        <tr></tr>
+                    <% }); %>
+                </tr>
+            </table>
+            <p> 
+                Perfil de Cores - CIM
+            </p> 
+        </div>    
+        <script>
+        </script>
+</body>
+
+</html>

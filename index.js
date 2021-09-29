@@ -11,6 +11,9 @@ var functions = require('./scripts/client');
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
+function showDate() {
+    return " - Data: " + new Date()
+}
 
 //import moment from 'moment';
 
@@ -42,26 +45,23 @@ router.get('/apontamento', function(req, res) {
 
 app.post('/insert', jsonParser, function(request, response) {
     
-    console.log(request.body);
-    const dataProducao = request.body
-    
-    console.log('INSERT INTO PRODUCAO');
+    const dataProducao = request.body;
+    console.log('\nIniciando insercao do apontamento ' + showDate());
+    console.log(dataProducao);
     ( async () => {
         const db = require("./db");
-        const testResult = {op: dataProducao.op, maquina:dataProducao.maquina, datainicio: dataProducao.datainicio, 
-            datafim: dataProducao.datafim, quantidade: dataProducao.quantidade}
-        console.log(testResult)
+        let numbob = await db.numBob({op:dataProducao.op});
+        let bob = numbob[0].bob;
         const result = await db.insertProducao({op: dataProducao.op, maquina:dataProducao.maquina, datainicio: dataProducao.datainicio, 
-                                                datafim: dataProducao.datafim, quantidade: dataProducao.quantidade})
-           .then ((result) => {
-                console.log("Sucesso No Insert")
-                console.log(result);
-                let ress = result[0].insertId.toString();
-                console.log(ress);
+                                                datafim: dataProducao.datafim, quantidade: dataProducao.quantidade, numbob:bob})
+           .then ((resultInsert) => {
+                console.log("Sucesso No Insert" + showDate())
+                console.log(resultInsert);
+                let ress = resultInsert[0].insertId.toString();
                 //response.send(console.log(ress));
             })
             .catch ((error) => {
-                console.log("ERRO NO INSERT")
+                console.log("ERRO NO INSERT" + showDate())
                 console.log(error)
             }) 
     }
@@ -71,12 +71,12 @@ app.post('/insert', jsonParser, function(request, response) {
 
 app.post('/update', jsonParser, function(request, response) {
     const updateOPMaquina = request.body
-    console.log('UPDATE OP MAQUINA');
+    console.log('\nUPDATE OP MAQUINA' + showDate());
     console.log(updateOPMaquina);
     ( async () => {
         const db = require("./db");
         const testResult = {marcado: updateOPMaquina.marcado, id:updateOPMaquina.id}
-        console.log(testResult)
+        //console.log(testResult)
         const result = await db.updateOPMaquina({marcado: updateOPMaquina.marcado, id:updateOPMaquina.id});
         console.log(result);
     })();
@@ -84,7 +84,7 @@ app.post('/update', jsonParser, function(request, response) {
 
 app.post('/updateProducao', jsonParser, function(request, response) {
     const updateProd = request.body;
-    console.log('UPDATE PRODUCAO');
+    console.log('\nUPDATE PRODUCAO' + showDate());
     console.log(updateProd);
     ( async () => {
         const db = require("./db");
@@ -100,8 +100,7 @@ app.post('/updateProducao', jsonParser, function(request, response) {
 
 app.post('/deleteProducao', jsonParser, function(request, response) {
     const deleteProd = request.body;
-    console.log('DELETE PRODUCAO');
-    console.log(deleteProd.id);
+    console.log('\nDELETE PRODUCAO ID: ' + deleteProd.id + showDate());
     ( async () => {
         const db = require("./db");
         const result = await db.deleteOPMaquina({id:deleteProd.id});
@@ -114,8 +113,7 @@ function queryOP(buscaOP) {
     return (async () => {
         const db = require("./db");
         //const op = req.params.op;
-        console.log('Começou!');
-        console.log('SELECT * FROM PRODUCAO');
+        console.log('\nBuscando OP : ' + buscaOP + showDate());
         const producao = await db.selectProducao(buscaOP)
         console.log(producao)
         return producao; 
@@ -125,12 +123,15 @@ function queryOP(buscaOP) {
 
 app.post("/apont", (req, res) => {
     const buscaOP = req.body;
-    console.log(req.body)
+    //console.log(req.body)
     queryOP(buscaOP.op).then(function (result){
     if (result.length > 0){
-        console.log("Dados Encontrados")
+        console.log("\nApontamento Encontrado" + showDate());
+        console.log(result);
         res.render('apontamento', {producao:result, functions:functions})
     } else {
+        console.log("\nSem Dados Encontrados")
+        console.log("Iniciando com novo apontamento")
         let producao = [{op:buscaOP.op, maquina:'', datainicio: '', datafim: '', quantidade:''}]; // define o array para quando carregar a primeira vez
         res.render('apontamento', {producao: producao, functions:functions})
     }
@@ -172,8 +173,8 @@ router.get('/maquinas/:recurso', function(req, res) {
         const db = require("./db");
         const recurso = req.params.recurso;
         const maquina = await db.selectMaquina(recurso);
+        console.log("Iniciando busca de apontamentos do recurso : " + maquina[0].maquina + showDate());
         //console.log(maquina);
-        console.log(maquina[0].maquina)
         res.render('maquinas', {maquina: maquina})
         //res.send(maquina)
     })();
@@ -186,17 +187,39 @@ router.get('/defultIframe', function (req, res) {
 })
 
 router.get('/fila/:recurso', function(req, res) {
-    //res.send('Hello World');
     (async () => {
         const db = require("./db");
         const recurso = req.params.recurso;
         const maquina = await db.selectFila(recurso);
-        //console.log(maquina);
-        //console.log(maquina[0].maquina)
-        res.render('fila', {maquina: maquina})
-        //res.send(maquina)
+        const tipo_imagem = await db.selectTipoImagem(recurso);
+        let novafila = maquina.reduce((acumula, element) =>{
+            let tipo_imagem_item = tipo_imagem.filter(item => item.codigo_item === element.codigo_item )
+            acumula.push({'op':element.op,
+                          'recurso': element.recurso,
+                          'seq_fila': element.seq_fila,
+                          'nomecliente': element.nomecliente,
+                          'descricao_item': element.descricao_item,
+                          'cod_clicheria': element.cod_clicheria,
+                          'codigo_item': element.codigo_item,
+                          'tem_perfil': element.tem_perfil,
+                          'TIPO_IMAGEM':tipo_imagem_item})
+        return acumula
+        },[]);
+        console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
+        console.log(novafila);
+        res.render('fila', {maquina: novafila})
     })();
  
+})
+router.get('/perfilcores/:item', function(req, res) {
+    (async () => {
+        const db = require("./db");
+        const codigo_item = req.params.item;
+        const perfilcores = await db.selectPerfilCores(codigo_item);
+        console.log("\nIniciando busca do perfil do item : " + codigo_item + showDate())
+        console.log(perfilcores);
+        res.render('perfilcores', {perfilcores: perfilcores})
+    })();
 })
 
 app.use('/', router);
@@ -206,5 +229,5 @@ app.use('/styles', express.static(__dirname+'/styles'))
 
 
 app.listen(8000, function () {
-    console.log('Example app listening on port 8000')
+    console.log("CIM Rodando na Porta 8000 \\o/")
 })

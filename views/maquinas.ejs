@@ -32,6 +32,9 @@
             text-decoration:none;
             text-shadow:0px -1px 0px #2b665e;
         }
+        .descNumBob {
+            margin-left: 121px;
+        }
         
     </style>
 </head>
@@ -74,10 +77,8 @@
             }
         }
         async function removeApont(element) {
-            console.log(element);
             let idOpMaquina = element.id;
             xmlHTTPDelete(idOpMaquina).then(ele =>{
-                console.log(ele)
                 location.reload(true);
             });
             //location.reload(true);
@@ -104,8 +105,9 @@
                     }
                     else { %>
                         <input type="checkbox" id="<%= maquina.id %>" onclick='prodMarcado(this)'>
-                    <% }
-                    %>
+                    <% } %>
+                    <span class="descNumBob">N°:</span>
+                    <span class="NumBob"><%= maquina.numbob %></span>
                     <br>
                     <span class="descDataInicioOpMaquina">Data Início:</span>
                     <span class="dataInicioOpMaquina"><%= maquina.datainicio.toLocaleDateString('pt-BR', {hour: 'numeric', minute: 'numeric'}) %></span>
