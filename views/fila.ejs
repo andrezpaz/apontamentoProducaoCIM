@@ -62,6 +62,21 @@
         color: whitesmoke
     }
    
+    .imgRefreshFila {
+        width: 22px;
+        height: 22px;
+        margin-top: 2px;
+    }
+    .buttonRefreshFila {
+        margin-left: 30px;
+        font-size: 25px;
+        font-weight: bold;
+        padding: 2px;
+    }
+    .titleFila {
+        font-size: 40px;
+        font-weight: bold;
+    }
     /* The Modal (background) */
     .modal {
     display: none; /* Hidden by default */
@@ -138,16 +153,15 @@
 <body>
     <div style="display: none;" class="containerIframe" id ="containerIframe">
     <button class="buttonIframeClose" onclick="closeIFrame();">X</button><br>
-    <iframe id="iframePerfil" src="/" width="50%" height="40%"></iframe>
+    <iframe id="iframePerfil" src="/" width="50%" height="45%"></iframe>
     </div>
 
     <div>
         <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
     </div>
     <div>
-        <h1>Recurso: 
-            <%= maquina[0].recurso %>
-        </h1>
+        <span class="titleFila">Recurso: <%= maquina[0].recurso %></span>
+        <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
         
             <table style="width:100%">
                 <tr>
