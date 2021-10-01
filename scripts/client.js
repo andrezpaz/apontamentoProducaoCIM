@@ -165,7 +165,7 @@ function insertDate(id) {
     }
     else window.alert("Você precisa Digitar a OP, Maquina e Pressionar OK")
 }
-function updateProducao(id, maquina, inicio, fim, quantidade) {
+function XMLupdateProducao(id, maquina, inicio, fim, quantidade) {
     return new Promise(resolve => {
     const userRequest = new XMLHttpRequest();
           userRequest.open('post', '/updateProducao', true);
@@ -177,7 +177,7 @@ function updateProducao(id, maquina, inicio, fim, quantidade) {
                                     'id':id}));
         setTimeout(() => {
         resolve("Resolvido")
-            },1200);
+            },1500);
     })
 }
 function XMLInsertProducao (op,maquina, inicio, fim, quantidade) {
@@ -192,15 +192,15 @@ function XMLInsertProducao (op,maquina, inicio, fim, quantidade) {
                                         'quantidade':quantidade}));
         setTimeout(() => {
         resolve ("Resolvido")
-            },1200);
+            },1500);
         })
 }
 function msgSendUpdate() {
     CleanAfterInsertUpdate(); // reseta inputs
     document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
-    setTimeout(function() {
-            document.getElementById("msgSend").style.display = "none"; 
-        }, 2500)
+    //setTimeout(function() {
+    //        document.getElementById("msgSend").style.display = "none"; 
+    //    }, 3500)
     parent.document.getElementById("iframeUltimosApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
         
 }
@@ -218,18 +218,21 @@ function inserAllData() {
     //console.log(quantidade);
 
     if ((op) && (inicio) && (maquina)) {
+        document.getElementById("sendData").disabled = true;
         if(idUpdate) { // se for update
             console.log("Realizando Update "+ idUpdate);
-            updateProducao(idUpdate, maquina, inicio, fim, quantidade).then((result) =>{
+            XMLupdateProducao(idUpdate, maquina, inicio, fim, quantidade).then((result) =>{
             //let result = await updateProducao(idUpdate, maquina, inicio, fim, quantidade) // para fins de estuo, de como usar com await a funcao async
                 console.log(result)
-                msgSendUpdate() 
+                msgSendUpdate()
+                document.getElementById("sendData").disabled = false; 
             })
         } else {
             console.log("REalizando Insert")
             XMLInsertProducao(op,maquina, inicio, fim, quantidade).then((result) => {
                 console.log(result)
                 msgSendUpdate()
+                document.getElementById("sendData").disabled = false;
             })
         }
     } 
