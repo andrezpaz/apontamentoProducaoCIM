@@ -167,6 +167,8 @@
                 <tr>
                     <th>Seq. Fila</th>
                     <th>Número OP</th>
+                    <th>Ini Prog.</th>
+                    <th>Fim Prog.</th>
                     <th>Código Item</th>
                     <th>Descrição Item</th>
                     <th>Imagem do Item</th>
@@ -187,6 +189,8 @@
                         %>
                         <td><%=maquina.seq_fila%></td>
                         <td><%=maquina.op%></td>
+                        <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
+                        <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
                         <td>

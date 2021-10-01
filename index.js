@@ -197,6 +197,8 @@ router.get('/fila/:recurso', function(req, res) {
             acumula.push({'op':element.op,
                           'recurso': element.recurso,
                           'seq_fila': element.seq_fila,
+                          'inicioprog':element.inicioprog,
+                          'fimprog': element.fimprog, 
                           'nomecliente': element.nomecliente,
                           'descricao_item': element.descricao_item,
                           'cod_clicheria': element.cod_clicheria,
@@ -207,7 +209,7 @@ router.get('/fila/:recurso', function(req, res) {
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
         console.log(novafila);
-        res.render('fila', {maquina: novafila})
+        res.render('fila', {maquina: novafila, functions:functions})
     })();
  
 })

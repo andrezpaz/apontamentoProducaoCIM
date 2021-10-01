@@ -154,6 +154,8 @@ function insertDate(id) {
     let idvaluestart = document.getElementById(id);
     let namevaluestart = document.getElementsByName(id)[0];
     let idSelectMaquina = document.getElementById("selectMaquina").value;
+    console.log(namevaluestart)
+    console.log(idSelectMaquina)
     if  (idSelectMaquina === "Selecione") idSelectMaquina = false;
     if ((checkInput('valueStart')) && (id === 'valueStop') || ((id ==='valueStart') && checkInput('inputOP') && (idSelectMaquina)) ) {
         if ( (!idvaluestart.innerHTML)) {
