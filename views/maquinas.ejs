@@ -78,6 +78,7 @@
         }
         async function removeApont(element) {
             let idOpMaquina = element.id;
+            element.disabled = true; //desabilita botao para evitar duplicacao, depois da promisse é resolvida, a pagina recarrega e botao voltao ao default
             xmlHTTPDelete(idOpMaquina).then(ele =>{
                 location.reload(true);
             });

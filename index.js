@@ -109,12 +109,12 @@ app.post('/deleteProducao', jsonParser, function(request, response) {
 })
 
 
-function queryOP(buscaOP) {
+function queryOP(buscaOP, recurso) {
     return (async () => {
         const db = require("./db");
         //const op = req.params.op;
         console.log('\nBuscando OP : ' + buscaOP + showDate());
-        const producao = await db.selectProducao(buscaOP)
+        const producao = await db.selectProducao(buscaOP, recurso)
         console.log(producao)
         return producao; 
     })
@@ -123,16 +123,16 @@ function queryOP(buscaOP) {
 
 app.post("/apont", (req, res) => {
     const buscaOP = req.body;
-    //console.log(req.body)
-    queryOP(buscaOP.op).then(function (result){
-    if (result.length > 0){
-        console.log("\nApontamento Encontrado" + showDate());
+    console.log(buscaOP)
+    queryOP(buscaOP.op, buscaOP.maquina).then(function (result){
+    if ((result.length > 0) && !(result.datafim)){
+        console.log("\nApontamento em aberto encontrado" + showDate());
         console.log(result);
         res.render('apontamento', {producao:result, functions:functions})
     } else {
         console.log("\nSem Dados Encontrados")
         console.log("Iniciando com novo apontamento")
-        let producao = [{op:buscaOP.op, maquina:'', datainicio: '', datafim: '', quantidade:''}]; // define o array para quando carregar a primeira vez
+        let producao = [{op:buscaOP.op, maquina:buscaOP.maquina, datainicio: '', datafim: '', quantidade:''}]; // define o array para quando carregar a primeira vez
         res.render('apontamento', {producao: producao, functions:functions})
     }
     });

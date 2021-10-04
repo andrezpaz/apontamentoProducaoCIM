@@ -198,9 +198,9 @@ function XMLInsertProducao (op,maquina, inicio, fim, quantidade) {
 function msgSendUpdate() {
     CleanAfterInsertUpdate(); // reseta inputs
     document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
-    //setTimeout(function() {
-    //        document.getElementById("msgSend").style.display = "none"; 
-    //    }, 3500)
+    setTimeout(function() {
+            document.getElementById("msgSend").style.display = "none"; 
+        }, 3500)
     parent.document.getElementById("iframeUltimosApontamentos").contentWindow.location.reload(true)// atualiza iframe de ultimos apontamentos
         
 }
