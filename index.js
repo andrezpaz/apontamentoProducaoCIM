@@ -235,8 +235,8 @@ const server = app.listen(8000, function () {
     console.log("CIM Rodando na Porta 8000 \\o/")
 })
 
-process.on('SIGTERM', () => {
-    console.info('SIGTERM recebido.');
+process.on('SIGINT', () => {
+    console.info('SIGINT recebido.');
     console.log('Fechando conexoes com o servidor')
     server.close(()=> {
         console.log('HTTP Server Fechado')
