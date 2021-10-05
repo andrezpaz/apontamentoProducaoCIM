@@ -232,17 +232,17 @@ app.use('/styles', express.static(__dirname+'/styles'))
 
 
 const server = app.listen(8000, function () {
-    console.log("CIM Rodando na Porta 8000 \\o/")
+    console.log("\nCIM Rodando na Porta 8000 \\o/")
 })
 
 process.on('SIGINT', () => {
-    console.info('SIGINT recebido.');
-    console.log('Fechando conexoes com o servidor')
+    console.info('\nSIGINT recebido.');
+    console.log('Fechando conexoes com o servidor' + showDate())
     server.close(()=> {
-        console.log('HTTP Server Fechado')
+        console.log('HTTP Server Fechado' + showDate())
         const db = require("./db");
         db.connectionClose()
-            console.log('Banco desconectado')
+            console.log('Banco desconectado' + showDate())
             process.exit(0);
     })
 });
