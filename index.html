@@ -44,33 +44,6 @@
 
 
 
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<script>
-  let functionJS
-  //$("#Clean").click( function() {
-    $( function() {
-    
-    jqueryAlert = function() {  
-      $( "#dialog-confirm" ).dialog({
-      resizable: false,
-      height: "auto",
-      width: 400,
-      modal: true,
-      buttons: {
-        "CONTINUAR com último apontamento": function() {
-          $( this ).dialog( "close" );
-        },
-        "Iniciar um NOVO apontamento": function() {
-          resetButton(true);
-          $( this ).dialog( "close" );
-        }
-      }
-    });
-  }
-  functionJS = jqueryAlert;
-  } );
-</script>
 <script src="scripts/client.js"></script>
 </body>
 <!--<script src="scripts/moment.min.js" type="text/javascript"></script> -->

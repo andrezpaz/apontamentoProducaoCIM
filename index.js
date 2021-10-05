@@ -123,19 +123,21 @@ function queryOP(buscaOP, recurso) {
 
 app.post("/apont", (req, res) => {
     const buscaOP = req.body;
-    console.log(buscaOP)
-    queryOP(buscaOP.op, buscaOP.maquina).then(function (result){
-    if ((result.length > 0) && !(result.datafim)){
-        console.log("\nApontamento em aberto encontrado" + showDate());
-        console.log(result);
-        res.render('apontamento', {producao:result, functions:functions})
-    } else {
-        console.log("\nSem Dados Encontrados")
-        console.log("Iniciando com novo apontamento")
-        let producao = [{op:buscaOP.op, maquina:buscaOP.maquina, datainicio: '', datafim: '', quantidade:''}]; // define o array para quando carregar a primeira vez
-        res.render('apontamento', {producao: producao, functions:functions})
+    if (buscaOP.op && buscaOP.maquina !=="Selecione") {
+        console.log(buscaOP)
+        queryOP(buscaOP.op, buscaOP.maquina).then(function (result){
+        if ((result.length > 0) && !(result.datafim)){
+            console.log("\nApontamento em aberto encontrado" + showDate());
+            console.log(result);
+            res.render('apontamento', {producao:result, functions:functions})
+        } else {
+            console.log("\nSem Dados Encontrados")
+            console.log("Iniciando com novo apontamento")
+            let producao = [{op:buscaOP.op, maquina:buscaOP.maquina, datainicio: '', datafim: '', quantidade:''}]; // define o array para quando carregar a primeira vez
+            res.render('apontamento', {producao: producao, functions:functions})
+        }
+        });
     }
-    });
 })
 
 /*
@@ -168,18 +170,17 @@ router.get('/maquinas', function(req,res) {
     res.sendFile(path.join(__dirname+'/maquinas.html') )
 })
 router.get('/maquinas/:recurso', function(req, res) {
-    //res.send('Hello World');
     (async () => {
         const db = require("./db");
         const recurso = req.params.recurso;
         const maquina = await db.selectMaquina(recurso);
+        if (maquina) {
         console.log("Iniciando busca de apontamentos do recurso : " + maquina[0].maquina + showDate());
-        //console.log(maquina);
         res.render('maquinas', {maquina: maquina})
-        //res.send(maquina)
+        }
     })();
- 
 })
+
 
 router.get('/defultIframe', function (req, res) {
     res.sendFile(path.join(__dirname+'/defaultIfrme.html'))
@@ -230,6 +231,18 @@ app.use('/styles', express.static(__dirname+'/styles'))
 
 
 
-app.listen(8000, function () {
+const server = app.listen(8000, function () {
     console.log("CIM Rodando na Porta 8000 \\o/")
 })
+
+process.on('SIGTERM', () => {
+    console.info('SIGTERM recebido.');
+    console.log('Fechando conexoes com o servidor')
+    server.close(()=> {
+        console.log('HTTP Server Fechado')
+        const db = require("./db");
+        db.connectionClose()
+            console.log('Banco desconectado')
+            process.exit(0);
+    })
+});

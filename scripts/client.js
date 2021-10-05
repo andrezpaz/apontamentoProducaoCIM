@@ -218,6 +218,7 @@ function inserAllData() {
     //console.log(quantidade);
 
     if ((op) && (inicio) && (maquina)) {
+        iframeApontamentosAtual.document.getElementById("buttonOP").disabled = true; // desabilitar pra evitar uma busca logo em seguida após um insert
         document.getElementById("sendData").disabled = true;
         if(idUpdate) { // se for update
             console.log("Realizando Update "+ idUpdate);
@@ -225,14 +226,18 @@ function inserAllData() {
             //let result = await updateProducao(idUpdate, maquina, inicio, fim, quantidade) // para fins de estuo, de como usar com await a funcao async
                 console.log(result)
                 msgSendUpdate()
-                document.getElementById("sendData").disabled = false; 
+                document.getElementById("sendData").disabled = false;
+                iframeApontamentosAtual.document.getElementById("buttonOP").disabled = false; 
             })
         } else {
-            console.log("REalizando Insert")
+            console.log("Realizando Insert")
+            console.log(idUpdate);
+            console.log("OP: " + op + " Rec: " + maquina + " INICIO : " + inicio + " FIM: " + fim + " Quanti: " + quantidade)
             XMLInsertProducao(op,maquina, inicio, fim, quantidade).then((result) => {
                 console.log(result)
                 msgSendUpdate()
                 document.getElementById("sendData").disabled = false;
+                iframeApontamentosAtual.document.getElementById("buttonOP").disabled = false;
             })
         }
     } 
