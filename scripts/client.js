@@ -182,7 +182,10 @@ function XMLupdateProducao(id, maquina, inicio, fim, quantidade) {
 }
 function XMLInsertProducao (op,maquina, inicio, fim, quantidade) {
     return new Promise(resolve => {
+        // PROBLEMA ESTA AQUI E NO UPDATE, SEMPRE QUNADO RESTART O PM2, ELE EXECUTA ESSA PROMISSE
+        // TESTAR SE EXECUTANDO NO NODE DIRETO, PROBLEMA ACONTECE
     const userRequest = new XMLHttpRequest();
+          userRequest.timeout = 2000;
           userRequest.open('post', '/insert', true);
           userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
           userRequest.send(JSON.stringify({'op':op,
@@ -191,10 +194,11 @@ function XMLInsertProducao (op,maquina, inicio, fim, quantidade) {
                                         'datafim':fim,
                                         'quantidade':quantidade}));
         setTimeout(() => {
-        resolve ("Resolvido")
+           resolve ("Resolvido")
             },1500);
         })
 }
+
 function msgSendUpdate() {
     CleanAfterInsertUpdate(); // reseta inputs
     document.getElementById("msgSend").style.display = "block"; // exibe mensagem de sucesso
