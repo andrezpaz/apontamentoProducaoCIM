@@ -47,7 +47,7 @@
         }
         function updateProdMarcado(id, status) {
             let userUpdate = new XMLHttpRequest();
-                userRequest.timeout = 2000;
+                userUpdate.timeout = 2000;
                 userUpdate.open('post', '/update', true);
                 userUpdate.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
                 userUpdate.send(JSON.stringify({'marcado': status,
@@ -56,7 +56,7 @@
         function xmlHTTPDelete(id) {
             return new Promise(resolve => {
             let userDelete = new XMLHttpRequest();
-                userRequest.timeout = 2000;
+                userDelete.timeout = 2000;
                 userDelete.open('post', '/deleteProducao', true);
                 userDelete.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
                 userDelete.send(JSON.stringify({'id':id}));
