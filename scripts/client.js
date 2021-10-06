@@ -82,6 +82,7 @@ function dateFormat(typeDate, date) {
 function findOP(numeroOP) {
     //let numeroOP = document.getElementById("inputOP").value;
     const userRequest = new XMLHttpRequest();
+        userRequest.timeout = 2000;
         userRequest.open('post', '/apont', true);
         userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
         userRequest.send(JSON.stringify({'op':numeroOP}));
@@ -168,6 +169,7 @@ function insertDate(id) {
 function XMLupdateProducao(id, maquina, inicio, fim, quantidade) {
     return new Promise(resolve => {
     const userRequest = new XMLHttpRequest();
+          userRequest.timeout = 2000;
           userRequest.open('post', '/updateProducao', true);
           userRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
           userRequest.send(JSON.stringify({'maquina': maquina,
