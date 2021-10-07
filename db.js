@@ -103,10 +103,17 @@ async function selectTipoImagem(recurso) {
 }
 async function selectOPsMrp(recurso) {
     const conn = await connect();
-    const [rows] = await conn.query(`SELECT max(mrp) 
-                                       FROM pcpfila where recurso = ${recurso} and mrp is not null group by mrp order by mrp`)
+    const [rows] = await conn.query(`select mrp, (select codigo_cor from coresmrp where seq_cor = coresmrp.rownum) as codigo_cor 
+                                       from (
+                                            SELECT (@row_number :=@row_number +1) as rownum, 
+                                                    max(mrp) as mrp 
+                                              FROM pcpfila, (SELECT @row_number:=0) AS t 
+                                             WHERE recurso = ${recurso}
+                                               and mrp is not null 
+                                          group by mrp 
+                                          order by mrp) as coresmrp`)
     conn.end();
     return rows;
 }
 module.exports = {connectionClose, selectProducao, insertProducao, selectMaquina, updateOPMaquina, deleteOPMaquina, updateProducao, selectFila, 
-    numBob, selectPerfilCores, selectTipoImagem}
+    numBob, selectPerfilCores, selectTipoImagem, selectOPsMrp}

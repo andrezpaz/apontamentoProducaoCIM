@@ -186,8 +186,12 @@
                     //})
                     maquina.forEach(function(maquina) 
                     { 
+                        if (maquina.codigo_cor_mrp !== null) {
                         %>
-                        <td><%=maquina.seq_fila%></td>
+                            <td style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></td>
+                        <% } 
+                        else { %>
+                            <td><%=maquina.seq_fila%></td> <% } %>
                         <td><%=maquina.op%></td>
                         <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
                         <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>

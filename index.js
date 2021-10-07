@@ -193,8 +193,13 @@ router.get('/fila/:recurso', function(req, res) {
         const recurso = req.params.recurso;
         const maquina = await db.selectFila(recurso);
         const tipo_imagem = await db.selectTipoImagem(recurso);
+        const mrpList = await db.selectOPsMrp(recurso);
+        let codigo_cor_mrp;
         let novafila = maquina.reduce((acumula, element) =>{
             let tipo_imagem_item = tipo_imagem.filter(item => item.codigo_item === element.codigo_item )
+            let cor_mrp = mrpList.find(mrp => mrp.mrp === element.mrp)
+            if (cor_mrp) codigo_cor_mrp = cor_mrp.codigo_cor 
+            else codigo_cor_mrp = null;
             acumula.push({'op':element.op,
                           'recurso': element.recurso,
                           'seq_fila': element.seq_fila,
@@ -205,6 +210,7 @@ router.get('/fila/:recurso', function(req, res) {
                           'cod_clicheria': element.cod_clicheria,
                           'codigo_item': element.codigo_item,
                           'tem_perfil': element.tem_perfil,
+                          'codigo_cor_mrp': codigo_cor_mrp,
                           'TIPO_IMAGEM':tipo_imagem_item})
         return acumula
         },[]);
