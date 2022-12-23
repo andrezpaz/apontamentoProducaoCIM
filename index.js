@@ -18,7 +18,15 @@ function showDate() {
 }
 
 function listDirectoryImages() {
-    return fs.readdirSync(__dirname+'/images/itens/');
+    let dir = __dirname+'/images/itens/';
+    let filesDir = fs.readdirSync(dir);
+    let statFiles = filesDir.map((file)=>{
+        let statFile = fs.statSync(dir+file)
+        let dateModFile = statFile.mtime.toLocaleString()
+        return {file:file, date:dateModFile}
+    })
+
+    return statFiles
 }
 
 //import moment from 'moment';
@@ -210,6 +218,7 @@ router.get('/perfilcores/:item', function(req, res) {
 
 
 const auth = require('./auth');
+const e = require('express');
 
 
 router.get('/images/itens/delete', auth, function(req, res){
