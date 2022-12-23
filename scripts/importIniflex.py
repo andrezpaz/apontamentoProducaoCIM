@@ -77,12 +77,15 @@ with open ('./import/CIMINIFLEX.csv', newline='', encoding='latin-1') as csvfile
                                    int(ini_prog.split("/")[0]), #Dia
                                    int(ini_prog.split(" ")[1].split(":")[0]), ##Hora 
                                    int(ini_prog.split(" ")[1].split(":")[1])).isoformat().replace("T", " ") # Minuto e transformacao
-        fim_prog_format = datetime(int(fim_prog.split("/")[2].split(" ")[0]),
-                                   int(fim_prog.split("/")[1]), 
-                                   int(fim_prog.split("/")[0]), 
-                                   int(fim_prog.split(" ")[1].split(":")[0]), 
-                                   int(fim_prog.split(" ")[1].split(":")[1])).isoformat().replace("T", " ")
-        
+        if (row[11] is ''):
+            fim_prog_format = ini_prog_format
+        else:
+            fim_prog_format = datetime(int(fim_prog.split("/")[2].split(" ")[0]),
+                                    int(fim_prog.split("/")[1]), 
+                                    int(fim_prog.split("/")[0]), 
+                                    int(fim_prog.split(" ")[1].split(":")[0]), 
+                                    int(fim_prog.split(" ")[1].split(":")[1])).isoformat().replace("T", " ")
+            
         if (row[13] is ''):
             numeroMRP = None
         else:

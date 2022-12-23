@@ -7,12 +7,18 @@ const router = express.Router();
 const alert = require('alert');
 const { render } = require('ejs');
 var functions = require('./scripts/client');
+var fs = require('fs');
+const { resourceLimits } = require('worker_threads');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
 function showDate() {
     return " - Data: " + new Date()
+}
+
+function listDirectoryImages() {
+    return fs.readdirSync(__dirname+'/images/itens/');
 }
 
 //import moment from 'moment';
@@ -58,7 +64,6 @@ app.post('/insert', jsonParser, function(request, response) {
                 console.log("Sucesso No Insert" + showDate())
                 console.log(resultInsert);
                 let ress = resultInsert[0].insertId.toString();
-                //response.send(console.log(ress));
             })
             .catch ((error) => {
                 console.log("ERRO NO INSERT" + showDate())
@@ -76,7 +81,6 @@ app.post('/update', jsonParser, function(request, response) {
     ( async () => {
         const db = require("./db");
         const testResult = {marcado: updateOPMaquina.marcado, id:updateOPMaquina.id}
-        //console.log(testResult)
         const result = await db.updateOPMaquina({marcado: updateOPMaquina.marcado, id:updateOPMaquina.id});
         console.log(result);
     })();
@@ -140,32 +144,6 @@ app.post("/apont", (req, res) => {
     }
 })
 
-/*
-app.route('/apontamento')
-.post(jsonParser,(req, res) => getOP(req, res))
-.get((req,res) => {
-    res.render('apontamento', {producao:result})
-})
-
-getOP = (req, res) => {
-    let buscaOP = req.body;
-    queryOP(buscaOP).then(function (result){
-    res.render('apontamento', {producao:result})
-})
-}
-*/
-
-/*router.post('/buscaop', jsonParser, function (req, res) {
-    let buscaOP = req.body;
-    queryOP(buscaOP).then(function (result){
-        res.render('apontamento', {producao:result})
-        //router.get('/opatual', function(req, res) {
-        //    res.render('apontamento', {producao:result})  
-        //})
-        
-    });
-})*/
-
 router.get('/maquinas', function(req,res) {
     res.sendFile(path.join(__dirname+'/maquinas.html') )
 })
@@ -184,7 +162,6 @@ router.get('/maquinas/:recurso', function(req, res) {
 
 router.get('/defultIframe', function (req, res) {
     res.sendFile(path.join(__dirname+'/defaultIfrme.html'))
-    //res.send("Sem Apontamento")
 })
 
 router.get('/fila/:recurso', function(req, res) {
@@ -231,6 +208,33 @@ router.get('/perfilcores/:item', function(req, res) {
     })();
 })
 
+
+const auth = require('./auth');
+
+
+router.get('/images/itens/delete', auth, function(req, res){
+    let files = listDirectoryImages()
+    res.render('deleteitens', {itens:files})
+})
+
+router.post('/images/itens/deletefile', auth, function(req, res) {
+    const item = req.body.file;
+    let files = listDirectoryImages()
+    var filePath = __dirname+'/images/itens/'+item;
+    if (item) {
+        console.log("Item Preenchido:  " + item)
+        if (fs.existsSync(filePath)) {
+            console.log("Item deletado: " + item);
+            fs.unlinkSync(filePath)
+            res.redirect('/images/itens/delete')
+        } else {
+            res.redirect('/images/itens/delete')
+        }
+    } else {
+        res.redirect('/images/itens/delete')
+    }
+})
+
 app.use('/', router);
 app.use('/scripts', express.static(__dirname+'/scripts'))
 app.use('/styles', express.static(__dirname+'/styles'))
@@ -242,36 +246,6 @@ const server = app.listen(8000, function () {
     process.send('ready');
 })
 
-/*process.on('SIGINT', () => {
-    console.info('\nSIGINT recebido.');
-    console.log('Fechando conexoes com o servidor' + showDate())
-    server.close((err)=> {
-        if (err) {
-            console.error(err)
-            process.exit(1)
-        }
-        console.log('HTTP Server Fechado' + showDate())
-        const db = require("./db");
-        db.connectionClose()
-            console.log('Banco desconectado' + showDate())
-            process.exit(0);
-    })
-});*/
-/*process.on('exit', () => {
-    console.info('\nExit recebido.');
-    console.log('Fechando conexoes com o servidor' + showDate())
-    server.close((err)=> {
-        if (err) {
-            console.error(err)
-            process.exit(1)
-        }
-        console.log('HTTP Server Fechado' + showDate())
-        const db = require("./db");
-        db.connectionClose()
-            console.log('Banco desconectado' + showDate())
-            process.exit(0);
-    })
-});*/
 
 process.on('message', function(msg) {
     if (msg == 'shutdown') {

@@ -46,10 +46,13 @@
                 <tr>
                     <% perfilcores.forEach(function(perfilcores) { 
                         let cor; 
-                        if (perfilcores.seq_cor === 1) cor = "#00CED1"
-                        if (perfilcores.seq_cor === 2) cor = "#d73851"
-                        if (perfilcores.seq_cor === 3) cor = "#f5a82d"
+                        if (perfilcores.seq_cor === 1) cor = "#2ce4e9"
+                        if (perfilcores.seq_cor === 2) cor = "#d351ae"
+                        if (perfilcores.seq_cor === 3) cor = "#f3e81ce0"
                         if (perfilcores.seq_cor === 4) cor = "#080808"
+                        if (perfilcores.seq_cor === 5) cor = "#db9049"
+                        if (perfilcores.seq_cor === 6) cor = "#51d376"
+                        if (perfilcores.seq_cor === 7) cor = "#9251d3"
                         %>
                         <td style="background-color:<%=cor%>;"><%=perfilcores.seq_cor%></td>
                         <td style="background-color:<%=cor%>;"><%=perfilcores.desc_cor%></td>

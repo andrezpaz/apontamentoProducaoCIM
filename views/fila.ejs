@@ -11,15 +11,20 @@
         text-align: justify;
         color: white;
     }
-    
-    table, th {
+    .headerFila {
+        display: inline-block;
+    }
+    .tableLegenda {
+        margin-left: 1px;
+    }
+    .tableFila, .tableFila th {
         border:3px solid black;
         text-align: center;
     }
-    th {
+    .tableFila th {
         background-color: rgb(59, 59, 59);
     }
-    td {
+    .tableFila td {
         border:3px solid rgb(0, 0, 0);
         background-color: rgb(97, 97, 97);
         text-align: center;
@@ -30,9 +35,15 @@
     left:25%;
     width:100%;
     height:100%;
-    /*background:#000;
-    opacity:0.8;
-    /*background:rgba(255,255,255,0.8); or just this*/
+    z-index:50;
+    color:#fff;
+    }
+    .containerIframeOP {
+    position:fixed;
+    top:15%;
+    left:10%;
+    width:100%;
+    height:100%;
     z-index:50;
     color:#fff;
     }
@@ -50,7 +61,7 @@
         width: 90px;
         height: 30px;
     }
-    .iconPerfil{
+    .iconPerfil, .iconOP{
         width: 40px;
         height: 28px;
     }
@@ -152,18 +163,29 @@
 </head>
 <body>
     <div style="display: none;" class="containerIframe" id ="containerIframe">
-    <button class="buttonIframeClose" onclick="closeIFrame();">X</button><br>
+    <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
     <iframe id="iframePerfil" src="/" width="50%" height="45%"></iframe>
     </div>
 
-    <div>
+    <div style="display: none;" class="containerIframeOP" id ="containerIframeOP">
+        <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
+        <iframe id="iframeOP" src="/" width="80%" height="70%"></iframe>
+        </div>
+
+    <div class=headerFila>
         <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
+    </div>
+    
+    <div class="headerFila">
+        <table class="tableLegenda" style="width: 100%;">
+            <tr><td>Cores Iguais = </td><td>OPs Casadas/MRP</td></tr>
+            <tr><td>Visualizar Perfil = </td><td>Clique na imagem do "olho" </td></tr>
+        </table>
     </div>
     <div>
         <span class="titleFila">Recurso: <%= maquina[0].recurso %></span>
         <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
-        
-            <table style="width:100%">
+            <table class="tableFila" style="width:100%">
                 <tr>
                     <th>Seq. Fila</th>
                     <th>Número OP</th>
@@ -173,6 +195,7 @@
                     <th>Descrição Item</th>
                     <th>Imagem do Item</th>
                     <th>Perfil de Cores</th>
+                    <th>Visualizar OP</th>
                 </tr>
                 <tr>
                     <% 
@@ -192,7 +215,7 @@
                         <% } 
                         else { %>
                             <td><%=maquina.seq_fila%></td> <% } %>
-                        <td><%=maquina.op%></td>
+                        <td class="numero_op"><%=maquina.op%></td>
                         <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
                         <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
@@ -206,6 +229,9 @@
                             } %>
                         <td>
                             <% if (maquina.tem_perfil > 0) {%> <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> <% } %>
+                        </td>
+                        <td>
+                            <img src="/images/iconView.png" class="iconOP" onclick="openIframe(this)"></a></img> 
                         </td>
                         <!-- Trigger the Modal -->
                         <!--<td><img onclick="modalImage(this)" id="<%=maquina.codigo_item%>" src="/images/<%=maquina.codigo_item%>.jpg" alt="Snow" style="width:100%;max-width:300px">-->
@@ -229,16 +255,22 @@
         </div>    
         <script>
             function openIframe(element) {
+                function executeIfrmae(idContainer, idElement, src) {
+                    var containerFrame = document.getElementById(idContainer);
+                    containerFrame.style.display = "block";
+                    iframe = document.getElementById(idElement);
+                    iframe.src = src; 
+                }
                 elementParent = element.parentNode.parentNode;
                 let codigo_item = elementParent.querySelector('.codigo_item').innerHTML;
-                var containerFrame = document.getElementById("containerIframe");
-                containerFrame.style.display = "block";
-                iframe = document.getElementById("iframePerfil");
-                iframe.src = `/perfilcores/${codigo_item}`;
+                let numeroOP = elementParent.querySelector('.numero_op').innerHTML;
+                console.log(numeroOP);
+                let className = element.className;
+                if (className === 'iconPerfil') executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)
+                if (className === 'iconOP') executeIfrmae("containerIframeOP", "iframeOP", `/op/${numeroOP}`)
             }
-            function closeIFrame() {
-                var frame = document.getElementById("containerIframe");
-                console.log(frame)
+            function closeIFrame(element) {
+                var frame = element.parentElement;
                 frame.style.display = "none";
             }
             function modalImage(element) {
