@@ -1,0 +1,27 @@
+const auth = require('basic-auth');
+
+const users = [
+    { name: "admin", password: "admin"},
+    { name: "andrez", password: "and"}
+];
+
+function checkUserAndPass(reqUser) {
+    let indexUser = users.findIndex(user => user.name === reqUser.name);
+    let passUser = false;
+    if (indexUser >= 0) {
+        passUser = users[indexUser].password === reqUser.pass;
+    }
+    return passUser;
+}
+
+module.exports = function (req, res, next) {
+    var user = auth(req);
+
+    if (!user || !checkUserAndPass(user)) {
+        res.set('WWW-Authenticate', 'Basic realm="exameple"')
+        return res.status(401).send()
+    } else {
+        console.log("Usuário " + user.name + " logado com sucesso !" + new Date())
+    }
+    return next()
+}

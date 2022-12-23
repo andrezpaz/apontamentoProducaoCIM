@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remoção de Itens </title>
+    <style>
+    body {
+        background-color: #013e80;
+        text-align: center;
+        color: white;
+        font-style:initial;
+    }
+    .delete_file {
+        margin-top: 20%;
+    }
+
+    .item img {
+        margin-top: 5px;
+    }
+    .item img:hover {
+        cursor: pointer;
+    }
+     
+    </style>
+   
+</head>
+
+<script>
+    function copyItem(item){
+        navigator.clipboard.writeText(item)
+    }
+</script>
+
+<body>
+    <div class="delete_file">
+        Digite o código do item e o tipo (Ex.: 0000-I.jpg)<br>
+        <form action="/images/itens/deletefile" method="post">
+            <input name="file" id="input_delete" class="input_delete">
+            <button type="submit" class="buttonDel" id="buttonDel">X DELETE</button>
+        </form>
+        
+    </div>
+
+    
+    <div>
+        
+    </div>
+
+    <div class="list_itens">
+        <p>Arquivos existentes no diretório</p>
+        
+        <% itens.forEach((item)=>{ %>
+        <div class="item">
+            <span><%=item%> - </span>
+            <img width="20px" src="/images/copy.png" onclick="copyItem('<%=item%>')">
+            <br>--------------------<br>
+        </div>
+        <%}) %>
+        
+    </div>
+</body>
+
+</html>
