@@ -25,8 +25,6 @@ function listDirectoryImages() {
         let dateModFile = statFile.mtime.toLocaleString()
         return {file:file, date:dateModFile}
     })
-    console.log(dir);
-    console.log(statFiles);
     return statFiles
 }
 
