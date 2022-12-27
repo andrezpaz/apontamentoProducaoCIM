@@ -32,6 +32,12 @@
         text-align: center;
     }
      
+    div.dataTables_info, div.dataTables_paginate.a, div.dataTables_filter, div.dataTables_filter input, div.dataTables_length, div.dataTables_length select {
+        color: white !important;
+    }
+    div.dataTables_length select {
+        background-color:#294034 !important;
+    }
     </style>
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
@@ -73,7 +79,7 @@
                         <td>
                             <div class="item">
                             <span><%=item.file%> - </span>
-                            <img width="20px" src="/images/copy.png" onclick="copyItem('<%=item.file%>')">
+                            <img width="20px" src="/images/copy.png" onclick="copyToClipboard('<%=item.file%>')">
                             </div>
                         </td>
                         <td>
@@ -99,14 +105,18 @@
             "createdCell": function (td, cellData, rowData, row, col) {
                 $(td).css('background-color', '#294034');
             }
+            },
+            {
+            "targets": [ 0,1 ],
+            "createdCell": function (div) {
+                $(div).css('color', 'white');
+            }
             }
         ]
         });
     } );
 
-    function copyItem(item){
-        navigator.clipboard.writeText(item)
-    }
+
 
     // return a promise
     function copyToClipboard(textToCopy) {
