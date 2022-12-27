@@ -7,7 +7,7 @@
     <title>Remoção de Itens </title>
     <style>
     body {
-        background-color: #013e80;
+        background-color: #4f6276;
         text-align: center;
         color: white;
         font-style:initial;
@@ -17,12 +17,34 @@
         margin-right: auto;
     }
     .delete_file {
-        margin-top: 20%;
+        margin-top: 10%;
     }
 
-    .item img {
-        margin-top: 5px;
+    input#input_delete {
+        border-radius: 5px;
+        border-style: double;
+        border-color:#202828;
     }
+
+    button#buttonDel {
+        padding: 2px;
+        border-radius: 5px;
+        border-color: crimson;
+    }
+
+    button#buttonDel:hover {
+        background-color: crimson;
+        border-color: aqua;
+        color: whitesmoke;
+        cursor: pointer;
+        font-weight: bolder;
+        
+    }
+
+    .item img, #item span {
+        vertical-align: middle;
+    }
+
     .item img:hover {
         cursor: pointer;
     }
@@ -31,12 +53,22 @@
         display: inline-block;
         text-align: center;
     }
-     
-    div.dataTables_info, div.dataTables_paginate.a, div.dataTables_filter, div.dataTables_filter input, div.dataTables_length, div.dataTables_length select {
+    
+    tr {
+        background-color: #202828 !important;
+    }
+    
+    td {
+        background-color: #3b3c3c !important;
+    }
+    div.dataTables_info, div.dataTables_filter, div.dataTables_filter input, div.dataTables_length, div.dataTables_length select {
         color: white !important;
     }
     div.dataTables_length select {
-        background-color:#294034 !important;
+        background-color:#3b3c3c !important;
+    }
+    #table_id_paginate a {
+        color: #a3a3a3 !important;
     }
     </style>
     <!-- DataTables CSS -->
@@ -64,7 +96,7 @@
     <div class="list_itens">
         <p>Arquivos existentes no diretório</p>
         <div class="div-container">
-            <table id="table_id" class="row-border">
+            <table id="table_id" class="display">
                 <thead>
                     <tr>
                         <th>Arquivo</th>
@@ -72,8 +104,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% 
-                    
+                    <%
                     itens.forEach((item)=>{%>
                     <tr>
                         <td>
@@ -82,9 +113,7 @@
                             <img width="20px" src="/images/copy.png" onclick="copyToClipboard('<%=item.file%>')">
                             </div>
                         </td>
-                        <td>
-                            <%=item.date%>
-                        </td>
+                        <td><%=new Date(item.date).toLocaleDateString('pt-BR', {hour:'numeric', minute:'numeric'})%></td>
                         <%}) %>
                     </tr>
                 </tbody>
@@ -99,24 +128,9 @@
   <script>
     $(document).ready( function () {
         $('#table_id').DataTable({
-            "columnDefs": [
-            {
-            "targets": [ 0,1 ],
-            "createdCell": function (td, cellData, rowData, row, col) {
-                $(td).css('background-color', '#294034');
-            }
-            },
-            {
-            "targets": [ 0,1 ],
-            "createdCell": function (div) {
-                $(div).css('color', 'white');
-            }
-            }
-        ]
+            
         });
     } );
-
-
 
     // return a promise
     function copyToClipboard(textToCopy) {
