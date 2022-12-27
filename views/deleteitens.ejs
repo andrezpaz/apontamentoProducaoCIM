@@ -33,7 +33,11 @@
     }
      
     </style>
-   
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <script>
@@ -53,39 +57,84 @@
 
     <div class="list_itens">
         <p>Arquivos existentes no diretório</p>
-        <% 
-        function divideNumber(number, parts) {
-            const chunkSize = Math.floor(number / parts);
-            const remainder = number % parts;
-            const result = [];
-            for (let i = 0; i < parts; i++) {
-              result.push(chunkSize);
-            }
-            for (let i = 0; i < remainder; i++) {
-              result[i] += 1;
-            }
-            return result;
-          }
-
-        
-        let totalDivPorQuatro = divideNumber(itens.length, 4);
-        
-        let parte1 = totalDivPorQuatro[0];
-        let parte2 = totalDivPorQuatro[0]+totalDivPorQuatro[1];
-        let parte3 = parte2+totalDivPorQuatro[2];
-        let parte4 = parte3+totalDivPorQuatro[3];
-        let qtdPrmeiraTabela = itens.slice(0,parte1);
-        let qtdSegundaTabela = itens.slice(parte1, parte2);
-        let qtdTerceiraTabela = itens.slice(parte2, parte3);
-        let qtdQuartaTabela = itens.slice(parte3, parte4); 
-        %>
         <div class="div-container">
-        <div class="div-table"><%- include('./deleteitenstable', {itens:qtdPrmeiraTabela}); %></div>
-        <div class="div-table"><%- include('./deleteitenstable', {itens:qtdSegundaTabela}); %></div>
-        <div class="div-table"><%- include('./deleteitenstable', {itens:qtdTerceiraTabela}); %></div>
-        <div class="div-table"><%- include('./deleteitenstable', {itens:qtdQuartaTabela}); %></div>
+            <table id="table_id" class="row-border">
+                <thead>
+                    <tr>
+                        <th>Arquivo</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% 
+                    
+                    itens.forEach((item)=>{%>
+                    <tr>
+                        <td>
+                            <div class="item">
+                            <span><%=item.file%> - </span>
+                            <img width="20px" src="/images/copy.png" onclick="copyItem('<%=item.file%>')">
+                            </div>
+                        </td>
+                        <td>
+                            <%=item.date%>
+                        </td>
+                        <%}) %>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+  <!-- Ativando tabela-->
+  <script>
+    $(document).ready( function () {
+        $('#table_id').DataTable({
+            "columnDefs": [
+            {
+            "targets": [ 0,1 ],
+            "createdCell": function (td, cellData, rowData, row, col) {
+                $(td).css('background-color', '#294034');
+            }
+            }
+        ]
+        });
+    } );
+
+    function copyItem(item){
+        navigator.clipboard.writeText(item)
+    }
+
+    // return a promise
+    function copyToClipboard(textToCopy) {
+    // navigator clipboard api needs a secure context (https)
+    if (navigator.clipboard && window.isSecureContext) {
+        // navigator clipboard api method'
+        return navigator.clipboard.writeText(textToCopy);
+    } else {
+        // text area method
+        let textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        // make the textarea out of viewport
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        return new Promise((res, rej) => {
+            // here the magic happens
+            document.execCommand('copy') ? res() : rej();
+            textArea.remove();
+        });
+    }
+}
+  </script>
+
+  
 </body>
 
 </html>
