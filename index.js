@@ -189,6 +189,8 @@ router.get('/fila/:recurso', function(req, res) {
                           'seq_fila': element.seq_fila,
                           'inicioprog':element.inicioprog,
                           'fimprog': element.fimprog, 
+                          'peso': element.peso,
+                          'quantidade': element.quantidade,
                           'nomecliente': element.nomecliente,
                           'descricao_item': element.descricao_item,
                           'cod_clicheria': element.cod_clicheria,
