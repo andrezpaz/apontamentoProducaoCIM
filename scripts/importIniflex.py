@@ -38,7 +38,7 @@ def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item
         connection = create_server_connection()
         cursor = connection.cursor()
         mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
 
         record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso)
         print(record)
