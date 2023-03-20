@@ -229,7 +229,7 @@
                         <td><%=maquina.descricao_item%></td>
                         <% if ( maquina.recurso.toString().startsWith("2") ){ %>
                         <td style="background-color:rgb(2, 167, 52)">
-                            <%=maquina.velocidade_item%>
+                            <%=maquina.velocidade_item.slice(0,3)%>
                         </td>
                         <% } %>
                         <td>
