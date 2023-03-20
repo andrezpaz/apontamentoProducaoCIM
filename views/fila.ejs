@@ -230,7 +230,7 @@
                         <td><%=maquina.descricao_item%></td>
                         <% if ( maquina.recurso.toString().startsWith("2") ){ 
                             velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
-                            <td style="background-color:rgb(2, 167, 52)"><%=velocidade_item%></td>
+                            <td style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
                         <% } %>
                         <td>
                             <% if (maquina.TIPO_IMAGEM) {
