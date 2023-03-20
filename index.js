@@ -202,8 +202,12 @@ router.get('/fila/:recurso', function(req, res) {
         return acumula
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
-        console.log(novafila);
-        res.render('fila', {maquina: novafila, functions:functions})
+        if (novafila.length > 0) {
+            res.render('fila', {maquina: novafila, functions:functions})
+        } else {
+            res.render('fila_sem_prog')
+        }
+        
     })();
  
 })
