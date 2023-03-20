@@ -227,7 +227,7 @@
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
-                        <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
+                        <% if ( maquina.recurso.toString().startsWith("2") ){ %>
                         <td style="background-color:rgb(2, 167, 52)">
                             <%=maquina.velocidade_item%>
                         </td>
