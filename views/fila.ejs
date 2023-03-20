@@ -195,6 +195,9 @@
                     <th>Quantidade OP</th>   
                     <th>Código Item</th>
                     <th>Descrição Item</th>
+                    <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
+                        <th>Velocidade</th>
+                    <% } %>
                     <th>Imagem do Item</th>
                     <th>Perfil de Cores</th>
                     <!--<th>Visualizar OP</th>-->
@@ -224,6 +227,11 @@
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
+                        <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
+                        <td style="background-color:rgb(2, 167, 52)">
+                            <%=maquina.velocidade_item%>
+                        </td>
+                        <% } %>
                         <td>
                             <% if (maquina.TIPO_IMAGEM) {
                                 maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){ 

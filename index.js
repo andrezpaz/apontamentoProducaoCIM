@@ -197,7 +197,8 @@ router.get('/fila/:recurso', function(req, res) {
                           'codigo_item': element.codigo_item,
                           'tem_perfil': element.tem_perfil,
                           'codigo_cor_mrp': codigo_cor_mrp,
-                          'TIPO_IMAGEM':tipo_imagem_item})
+                          'TIPO_IMAGEM':tipo_imagem_item,
+                          'velocidade_item': element.velocidade_item})
         return acumula
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
