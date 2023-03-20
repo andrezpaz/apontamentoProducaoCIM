@@ -206,6 +206,7 @@
                     <% 
                     let opMRP = maquina.filter(ele => ele.mrp !== null);
                     let guposDeMrp = [];
+                    let velocidade_item;
                     //const db = require("../db.js")
                     //const tipo_imagem = await db.selectPerfilCores(codigo_item);
                     //opMRP.forEach(function(element){
@@ -227,10 +228,9 @@
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
-                        <% if ( maquina.recurso.toString().startsWith("2") ){ %>
-                        <td style="background-color:rgb(2, 167, 52)">
-                            <%=maquina.velocidade_item.slice(0,3)%>
-                        </td>
+                        <% if ( maquina.recurso.toString().startsWith("2") ){ 
+                            velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
+                            <td style="background-color:rgb(2, 167, 52)"><%=velocidade_item%></td>
                         <% } %>
                         <td>
                             <% if (maquina.TIPO_IMAGEM) {
