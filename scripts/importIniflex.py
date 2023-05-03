@@ -33,14 +33,14 @@ def remove_table():
             cursor.close()
             connection.close()
             print("MySQL connection is closed")
-def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item):
+def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores):
     try:
         connection = create_server_connection()
         cursor = connection.cursor()
-        mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso, velocidade_item) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
+        mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores) 
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
 
-        record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item)
+        record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores)
         print(record)
         cursor.execute(mySql_insert_query, record)
         connection.commit()
@@ -96,5 +96,17 @@ with open ('./CIMINIFLEX.csv', newline='', encoding='latin-1') as csvfile:
             velocidadeItem = None
         else:
             velocidadeItem = row[14]
+
+        if (row[15] == ''):
+            previsaoEntrega = None
+        else:
+            previsaoEntrega = row[15]
+
+        if (row[16] == ''):
+            quantidadeCores = None
+        else:
+            quantidadeCores = row[16]
+
         insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
-                                   ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem) ## Inicia insert no banco, de forma individual
+                                   ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
+                                   previsaoEntrega, quantidadeCores) ## Inicia insert no banco, de forma individual
