@@ -195,6 +195,8 @@
                     <th>Quantidade OP</th>   
                     <th>Código Item</th>
                     <th>Descrição Item</th>
+                    <th>Entrega</th>
+                    <th>Cores</th>
                     <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
                         <th>Velocidade (mpm)</th>
                     <% } %>
@@ -228,6 +230,8 @@
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
+                        <td><%=maquina.previsoes_entregas%></td>
+                        <td><%=maquina.quantidade_cores%></td>
                         <% if ( maquina.recurso.toString().startsWith("2") ){ 
                             velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
                             <td style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
