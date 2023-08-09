@@ -23,6 +23,9 @@
         background-color: rgb(97, 97, 97);
         font-weight:bold;
     }
+    .td-cor {
+        text-shadow: 0 0 3px #000000, 0 0 5px #000000;
+    }
      
     </style>
     
@@ -53,13 +56,16 @@
                         if (perfilcores.seq_cor === 5) cor = "#db9049"
                         if (perfilcores.seq_cor === 6) cor = "#51d376"
                         if (perfilcores.seq_cor === 7) cor = "#9251d3"
+                        if (perfilcores.seq_cor === 8) cor = "#a5dfd3"
+                        if (perfilcores.seq_cor === 9) cor = "#9e007e"
+                        if (perfilcores.seq_cor === 10) cor = "#00b1ac"
                         %>
-                        <td style="background-color:<%=cor%>;"><%=perfilcores.seq_cor%></td>
-                        <td style="background-color:<%=cor%>;"><%=perfilcores.desc_cor%></td>
-                        <td style="background-color:<%=cor%>;"><%=perfilcores.anilox%></td>
-                        <td style="background-color:<%=cor%>;"><%=perfilcores.densidade%></td>
-                        <td style="background-color:<%=cor%>;"><%=perfilcores.tv%></td>
-                        <td style="background-color:<%=cor%>;"><%=perfilcores.lab%></td>
+                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.seq_cor%></td>
+                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.desc_cor%></td>
+                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.anilox%></td>
+                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.densidade%></td>
+                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.tv%></td>
+                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.lab%></td>
                         <tr></tr>
                     <% }); %>
                 </tr>

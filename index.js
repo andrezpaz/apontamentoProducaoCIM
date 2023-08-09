@@ -200,7 +200,8 @@ router.get('/fila/:recurso', function(req, res) {
                           'TIPO_IMAGEM':tipo_imagem_item,
                           'velocidade_item': element.velocidade_item,
                           'previsoes_entregas': element.previsoes_entregas,
-                          'quantidade_cores': element.quantidade_cores})
+                          'quantidade_cores': element.quantidade_cores,
+                          'situacao_recurso': element.situacao_recurso})
         return acumula
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());

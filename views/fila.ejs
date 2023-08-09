@@ -6,88 +6,126 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fila Producao</title>
     <style>
-        body {
-        background-color: #013e80;
-        text-align: justify;
-        color: white;
-    }
-    .headerFila {
-        display: inline-block;
-    }
-    .tableLegenda {
-        margin-left: 1px;
-    }
-    .tableFila, .tableFila th {
-        border:3px solid black;
-        text-align: center;
-    }
-    .tableFila th {
-        background-color: rgb(59, 59, 59);
-    }
-    .tableFila td {
-        border:3px solid rgb(0, 0, 0);
-        background-color: rgb(97, 97, 97);
-        text-align: center;
-    }
-    .containerIframe {
-    position:fixed;
-    top:25%;
-    left:25%;
-    width:100%;
-    height:100%;
-    z-index:50;
-    color:#fff;
-    }
-    .containerIframeOP {
-    position:fixed;
-    top:15%;
-    left:10%;
-    width:100%;
-    height:100%;
-    z-index:50;
-    color:#fff;
-    }
+    body {
+    background-color: #0a192f;
+    font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
 
-    /* Style the Image Used to Trigger the Modal */
-    #myImg {
+
+
+
+.tableFila {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tableFila th {
+    border: 3px solid #ffffff;
+    padding: 10px;
+    text-align: center;
+    background-color: #394867;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tableFila td {
+    border: 1px solid #2e3d58;
+    padding: 8px;
+    text-align: center;
+    background-color: #4f608b;
+}
+
+.containerIframe,
+.containerIframeOP {
+    position: fixed;
+    top: 15%;
+    left: 20%;
+    width: 80%;
+    max-width: 800px;
+    height: 50%;
+    z-index: 50;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 70px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+#myImg {
     border-radius: 5px;
     cursor: pointer;
     transition: 0.3s;
-    }
+}
 
-    #myImg:hover {opacity: 0.7;}
+#myImg:hover {
+    opacity: 0.8;
+}
 
-    .buttonImagem {
-        width: 90px;
-        height: 30px;
-    }
-    .iconPerfil, .iconOP{
-        width: 40px;
-        height: 28px;
-    }
-    .buttonIframeClose {
-        width: 80px;
-        height: 40px;
-        font-weight: bold;
-        background-color: firebrick;
-        color: whitesmoke
-    }
-   
-    .imgRefreshFila {
-        width: 22px;
-        height: 22px;
-        margin-top: 2px;
-    }
-    .buttonRefreshFila {
-        margin-left: 30px;
-        font-size: 25px;
-        font-weight: bold;
-        padding: 2px;
-    }
-    .titleFila {
-        font-size: 40px;
-        font-weight: bold;
-    }
+.buttonImagem,
+.buttonIframeClose {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buttonImagem {
+    background-color: #3d84b8;
+    color: #ffffff;
+    margin-top: 10px;
+}
+
+.buttonImagem:hover,
+.buttonIframeClose:hover {
+    opacity: 0.8;
+}
+
+.iconPerfil,
+.iconOP {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+}
+
+.imgRefreshFila {
+    width: 18px;
+    height: 18px;
+    margin-right: 5px;
+}
+
+.buttonRefreshFila {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #70a9a1;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buttonRefreshFila:hover {
+    opacity: 0.8;
+}
+
+.titleFila {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
     /* The Modal (background) */
     .modal {
     display: none; /* Hidden by default */
@@ -164,7 +202,7 @@
 <body>
     <div style="display: none;" class="containerIframe" id ="containerIframe">
     <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-    <iframe id="iframePerfil" src="/" width="50%" height="45%"></iframe>
+    <iframe id="iframePerfil" src="/" width="100%" height="100%"></iframe>
     </div>
 
     <div style="display: none;" class="containerIframeOP" id ="containerIframeOP">
@@ -172,16 +210,7 @@
         <iframe id="iframeOP" src="/" width="80%" height="70%"></iframe>
         </div>
 
-    <div class=headerFila>
-        <button id="buttonMaquinasBack" onclick="window.history.back()"> Voltar </button>
-    </div>
     
-    <div class="headerFila">
-        <table class="tableLegenda" style="width: 100%;">
-            <tr><td>Cores Iguais = </td><td>OPs Casadas/MRP</td></tr>
-            <tr><td>Visualizar Perfil = </td><td>Clique na imagem do "olho" </td></tr>
-        </table>
-    </div>
     <div>
         <span class="titleFila">Recurso: <%= maquina[0].recurso %></span>
         <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
@@ -222,8 +251,16 @@
                             <td style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></td>
                         <% } 
                         else { %>
-                            <td><%=maquina.seq_fila%></td> <% } %>
-                        <td class="numero_op"><%=maquina.op%></td>
+                            <td><%=maquina.seq_fila%></td> <% } 
+                        
+                        if (maquina.situacao_recurso === 'P') { %>
+                            <td style="background-color:#7a366d;" class="numero_op"><%=maquina.op%><br>Em Prod.</td> <%
+                        }
+                        else { %>
+                            <td class="numero_op"><%=maquina.op%></td>
+                        <%
+                        }%>
+                        
                         <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
                         <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>
                         <td><%=maquina.peso.toLocaleString('pt-BR')%></td>

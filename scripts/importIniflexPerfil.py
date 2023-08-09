@@ -59,13 +59,13 @@ def insert_varibles_into_table(codigo_item, seq_cor, desc_cor, anilox, densidade
 remove_table() # Remove dados atuais da tablea, já que os novos virão da importação
 
 ### Inicia leitura do arquivo em CSV
-with open ('./import/PERFIL_CORES.csv', newline='', encoding='latin-1') as csvfile:
+with open ('../import/PERFIL_CORES.csv', newline='', encoding='latin-1') as csvfile:
     fila = csv.reader(csvfile,delimiter=';', quotechar='"')
     for row in fila:
         #print(', '.join(row))
         codigo_item = row[0]
         seq_cor = row[1]
-        desc_cor = row[3]
+        desc_cor = row[2]
         anilox = row[3]
         densidade = row[4]
         tv = row[5]
