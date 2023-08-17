@@ -277,7 +277,7 @@
                             <% if (maquina.TIPO_IMAGEM) {
                                 maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){ 
                                 let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
-                                <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>.jpg"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
+                                <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
                             <%  })
                             } %>
                         <td>

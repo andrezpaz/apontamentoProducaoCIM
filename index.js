@@ -28,6 +28,14 @@ function listDirectoryImages() {
     return statFiles
 }
 
+function fileExists(filePath) {
+    try {
+        return fs.statSync(filePath).isFile();
+    } catch (err) {
+        return false;
+    }
+}
+
 //import moment from 'moment';
 
 //const database = require("./db");
@@ -251,6 +259,33 @@ router.post('/images/itens/deletefile', auth, function(req, res) {
     } else {
         res.redirect('/images/itens/delete')
     }
+})
+
+router.get('/images/itens/:imageName', (req, res) =>{
+    const imageName = req.params.imageName;
+
+    const imagePaths = [
+        path.join(__dirname, 'images', 'itens', imageName + '.jpg'),
+        path.join(__dirname, 'images', 'itens', imageName + '.webp')
+    ];
+    let imagePath = null;
+
+    for (const path of imagePaths) {
+        if (fileExists(path)) {
+            imagePath = path
+            break
+        }
+    }
+
+    if (imagePath) {
+        const extension = path.extname(imagePath)
+        const contentType = extension === '.webp' ? 'image/webp' : 'image/jpg';
+        res.type(contentType);
+        res.sendFile(imagePath)
+    } else {
+        res.status(404).send('Imagem não encontrada')
+    }
+
 })
 
 app.use('/', router);
