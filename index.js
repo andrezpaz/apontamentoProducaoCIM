@@ -186,12 +186,36 @@ router.get('/fila/:recurso', function(req, res) {
         const maquina = await db.selectFila(recurso);
         const tipo_imagem = await db.selectTipoImagem(recurso);
         const mrpList = await db.selectOPsMrp(recurso);
+        const componentes_fila = await db.selectComponetesFila(recurso);
+        console.log(componentes_fila);
         let codigo_cor_mrp;
+        let saldo_somado_comp_op = {}
+
+        componentes_fila.forEach(componente => {
+            const chave = `${componente.op}-${componente.etapa}`;
+            if (componente.saldo === undefined || componente.saldo === null) {
+                componente.saldo = 0; // Define o saldo como 0 se for nulo ou indefinido
+            }
+            if (!saldo_somado_comp_op[chave]) {
+                saldo_somado_comp_op[chave] = parseFloat(componente.saldo);
+            } else {
+                saldo_somado_comp_op[chave] += parseFloat(componente.saldo);
+            }
+        });
+
         let novafila = maquina.reduce((acumula, element) =>{
             let tipo_imagem_item = tipo_imagem.filter(item => item.codigo_item === element.codigo_item )
             let cor_mrp = mrpList.find(mrp => mrp.mrp === element.mrp)
             if (cor_mrp) codigo_cor_mrp = cor_mrp.codigo_cor 
             else codigo_cor_mrp = null;
+            let componente_op_negativo = componentes_fila.some(componentes => 
+                    componentes.op === element.op && componentes.etapa === element.etapa && componentes.saldo < 1
+                )
+            let componente_bob_extrusada = componentes_fila.some(componentes => 
+                componentes.op === element.op && componentes.etapa === element.etapa && componentes.tipo_componente === 'bobina_extrusada'
+            )
+            
+        
             acumula.push({'op':element.op,
                           'recurso': element.recurso,
                           'seq_fila': element.seq_fila,
@@ -209,7 +233,11 @@ router.get('/fila/:recurso', function(req, res) {
                           'velocidade_item': element.velocidade_item,
                           'previsoes_entregas': element.previsoes_entregas,
                           'quantidade_cores': element.quantidade_cores,
-                          'situacao_recurso': element.situacao_recurso})
+                          'situacao_recurso': element.situacao_recurso,
+                          'componente_op_negativo': componente_op_negativo,
+                          'etapa': element.etapa,
+                          'saldo_componentes': saldo_somado_comp_op[`${element.op}-${element.etapa}`],
+                          'tipo_componente': componente_bob_extrusada})
         return acumula
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
@@ -230,6 +258,18 @@ router.get('/perfilcores/:item', function(req, res) {
         console.log("\nIniciando busca do perfil do item : " + codigo_item + showDate())
         console.log(perfilcores);
         res.render('perfilcores', {perfilcores: perfilcores})
+    })();
+})
+
+router.get('/componentes/:op/:etapa/:recurso', function(req, res) {
+    (async () => {
+        const db = require("./db");
+        const op = req.params.op;
+        const etapa = req.params.etapa;
+        const recurso = req.params.recurso;
+        const componentes_op = await db.selectComponetesFilaDetalhes(recurso, op, etapa);
+        console.log("\nIniciando busca dos componentes da OP : " + op + showDate())
+        res.render('componentes_detalhes', {componentes_op: componentes_op})
     })();
 })
 

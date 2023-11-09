@@ -39,9 +39,10 @@
 
 .tableFila td {
     border: 1px solid #2e3d58;
-    padding: 8px;
+    padding: 5px;
     text-align: center;
     background-color: #4f608b;
+    font-size: 16px;
 }
 
 .containerIframe,
@@ -97,6 +98,10 @@
     width: 32px;
     height: 32px;
     margin-right: 5px;
+}
+
+.iconPerfil:hover {
+    cursor: pointer;
 }
 
 .imgRefreshFila {
@@ -195,7 +200,33 @@
     .modal-content {
         width: 100%;
     }
-    }    
+    }
+    
+    .gradiente-animado {
+        background: linear-gradient(45deg, #cedb57, rgb(211, 7, 51), #5c0c0c, #fa7373);
+        background-size: 400% 400%;
+        animation: gradientAnimation 2s ease infinite;
+    }
+
+    @keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+    }
+
+    .componentesOP:hover {
+        cursor: pointer;
+    }
+
+
+
+    
     </style>
     
 </head>
@@ -205,6 +236,11 @@
     <iframe id="iframePerfil" src="/" width="100%" height="100%"></iframe>
     </div>
 
+    <div style="display:none;" class="containerIframe" id ="containerIframeComponentes">
+        <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
+        <iframe id="iframeComponentesOP" src="/" width="100%" height="100%"></iframe>
+        </div>
+
     <div style="display: none;" class="containerIframeOP" id ="containerIframeOP">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
         <iframe id="iframeOP" src="/" width="80%" height="70%"></iframe>
@@ -212,17 +248,18 @@
 
     
     <div>
-        <span class="titleFila">Recurso: <%= maquina[0].recurso %></span>
+        <span class="titleFila">Recurso: <strong class="codRecurso"><%= maquina[0].recurso %> </strong> </span>
+        <span class="titleFila">Etapa: <strong class="codEtapa"><%= maquina[0].etapa %> </strong> </span>
         <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
             <table class="tableFila" style="width:100%">
                 <tr>
-                    <th>Seq. Fila</th>
-                    <th>Número OP</th>
+                    <th>Seq.</th>
+                    <th>OP</th>
                     <th>Ini Prog.</th>
                     <th>Fim Prog.</th>
                     <th>Peso OP.</th>
-                    <th>Quantidade OP</th>   
-                    <th>Código Item</th>
+                    <th>Qtd. OP</th>   
+                    <th>Item</th>
                     <th>Descrição Item</th>
                     <th>Entrega</th>
                     <th>Cores</th>
@@ -232,6 +269,7 @@
                     <th>Imagem do Item</th>
                     <th>Perfil de Cores</th>
                     <!--<th>Visualizar OP</th>-->
+                    <th>Componentes</th>
                 </tr>
                 <tr>
                     <% 
@@ -254,7 +292,7 @@
                             <td><%=maquina.seq_fila%></td> <% } 
                         
                         if (maquina.situacao_recurso === 'P') { %>
-                            <td style="background-color:#7a366d;" class="numero_op"><%=maquina.op%><br>Em Prod.</td> <%
+                            <td style="background-color:#7a366d;"><strong class="numero_op"><%=maquina.op%></strong> <br>Em Prod.</td> <%
                         }
                         else { %>
                             <td class="numero_op"><%=maquina.op%></td>
@@ -283,6 +321,20 @@
                         <td>
                             <% if (maquina.tem_perfil > 0) {%> <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> <% } %>
                         </td>
+                            <%
+                            let fraseColunaComponentes;
+                            if (maquina.tipo_componente) {
+                                fraseColunaComponentes = 'Qtd Extrusada: ' + maquina.saldo_componentes;
+                            }
+                            if (!maquina.tipo_componente) {
+                                fraseColunaComponentes = 'Bob Terceiro Disponível';
+                            }
+                            console.log(maquina.componete_bob_extrusada)
+                            if (!maquina.componente_op_negativo) {%> 
+                                <td> <strong class="componentesOP" onclick="openIframe(this)" ><%=fraseColunaComponentes%> </strong> </td> <% } %>
+                            <% if (maquina.componente_op_negativo) {%> 
+                                <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
+                        
                         <!--<td>
                             <img src="/images/iconView.png" class="iconOP" onclick="openIframe(this)"></a></img> 
                         </td> -->
@@ -309,17 +361,21 @@
         <script>
             function openIframe(element) {
                 function executeIfrmae(idContainer, idElement, src) {
+                    console.log(src)
                     var containerFrame = document.getElementById(idContainer);
                     containerFrame.style.display = "block";
                     iframe = document.getElementById(idElement);
                     iframe.src = src; 
                 }
                 elementParent = element.parentNode.parentNode;
+                
                 let codigo_item = elementParent.querySelector('.codigo_item').innerHTML;
                 let numeroOP = elementParent.querySelector('.numero_op').innerHTML;
-                console.log(numeroOP);
+                let codEtapa = document.querySelector('.codEtapa').innerHTML;
+                let codRecurso = document.querySelector('.codRecurso').innerHTML;
                 let className = element.className;
                 if (className === 'iconPerfil') executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)
+                if (className === 'componentesOP') executeIfrmae("containerIframeComponentes", "iframeComponentesOP", `/componentes/${numeroOP}/${codEtapa}/${codRecurso}`)
                 if (className === 'iconOP') executeIfrmae("containerIframeOP", "iframeOP", `/op/${numeroOP}`)
             }
             function closeIFrame(element) {

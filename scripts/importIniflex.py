@@ -4,14 +4,20 @@ import mysql.connector
 from mysql.connector import Error, connect
 from mysql.connector import connection
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
 ### Definições das Funções ###
 def create_server_connection():
     connection = None
     try:
-        connection = mysql.connector.connect(host='localhost',
-                                             database='CIM',
-                                             user='CIM',
-                                             password='CIM')
+        connection = mysql.connector.connect(host=os.getenv("MYSQL_HOST"),
+                                             database=os.getenv("MYSQL_DB"),
+                                             user=os.getenv("MYSQL_USER"),
+                                             password=os.getenv("MYSQL_PASS")
+                                             )
         print("Mysql Database Connected")
     except Error as err:
             print(f"Error: '{err}'")
@@ -59,7 +65,7 @@ def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item
 remove_table() # Remove dados atuais da tablea, já que os novos virão da importação
 
 ### Inicia leitura do arquivo em CSV
-with open ('../import/CIMINIFLEX.csv', newline='', encoding='latin-1') as csvfile:
+with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding='latin-1') as csvfile:
     fila = csv.reader(csvfile,delimiter=';', quotechar='"')
     for row in fila:
         recurso = row[2]

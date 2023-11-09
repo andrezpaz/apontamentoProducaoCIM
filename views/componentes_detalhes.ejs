@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Cores</title>
+    <style>
+ body {
+    background-color: #0a192f;
+    font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid #2e3d58;
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+th {
+    border: 2px solid #2e3d58;
+    background-color: #394867;
+    color: #ffffff;
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+td {
+    border: 2px solid #2e3d58;
+    background-color: #4f608b;
+    padding: 8px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.td-cor {
+    text-shadow: 0 0 3px #000000, 0 0 5px #000000;
+}
+     
+    </style>
+    
+</head>
+<body>
+
+    <div>
+        <h1>Componentes da OP: 
+            <%= componentes_op[0].op %>
+        </h1>
+        
+            <table style="width:100%">
+                <tr>
+                    <th>OP</th>
+                    <th>Etapa</th>
+                    <th>Recurso</th>
+                    <th>Componete</th>
+                    <th>Saldo</th>
+                    <th>Tipo Material</th>
+                </tr>
+                <tr>
+                    <% componentes_op.forEach(function(componentes) { 
+                        %>
+                        <td class= "td-cor"><%=componentes.op%></td>
+                        <td class= "td-cor"><%=componentes.etapa%></td>
+                        <td class= "td-cor"><%=componentes.recurso%></td>
+                        <td class= "td-cor"><%=componentes.componente%></td>
+                        <td class= "td-cor"><%=componentes.saldo%></td>
+                        <td class= "td-cor"><%=componentes.tipo_componente%></td>
+                        <tr></tr>
+                    <% }); %>
+                </tr>
+            </table>
+            <p> 
+                Componentes da OP - CIM
+            </p> 
+        </div>    
+        <script>
+        </script>
+</body>
+
+</html>

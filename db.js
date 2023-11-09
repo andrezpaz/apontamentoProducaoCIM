@@ -115,5 +115,25 @@ async function selectOPsMrp(recurso) {
     conn.end();
     return rows;
 }
+async function selectComponetesFila(recurso) {
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * 
+                                       FROM pcpfilacomponentes
+                                      WHERE recurso = ${recurso}
+                                   ORDER BY prioridade`)
+    conn.end();
+    return rows;
+}
+
+async function selectComponetesFilaDetalhes(recurso, op, etapa) {
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT * 
+                                       FROM pcpfilacomponentes
+                                      WHERE recurso = ${recurso}
+                                        AND etapa   = ${etapa}
+                                        AND op      = ${op}`)
+    conn.end();
+    return rows;
+}
 module.exports = {connectionClose, selectProducao, insertProducao, selectMaquina, updateOPMaquina, deleteOPMaquina, updateProducao, selectFila, 
-    numBob, selectPerfilCores, selectTipoImagem, selectOPsMrp}
+    numBob, selectPerfilCores, selectTipoImagem, selectOPsMrp, selectComponetesFila, selectComponetesFilaDetalhes}
