@@ -323,13 +323,12 @@
                         </td>
                             <%
                             let fraseColunaComponentes;
-                            if (maquina.tipo_componente) {
+                            if (maquina.componente_bob_extrusada) {
                                 fraseColunaComponentes = 'Qtd Extrusada: ' + maquina.saldo_componentes;
                             }
-                            if (!maquina.tipo_componente) {
+                            if (maquina.componente_bob_terceiro) {
                                 fraseColunaComponentes = 'Bob Terceiro Disponível';
                             }
-                            console.log(maquina.componete_bob_extrusada)
                             if (!maquina.componente_op_negativo) {%> 
                                 <td> <strong class="componentesOP" onclick="openIframe(this)" ><%=fraseColunaComponentes%> </strong> </td> <% } %>
                             <% if (maquina.componente_op_negativo) {%> 

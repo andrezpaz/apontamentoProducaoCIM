@@ -187,7 +187,6 @@ router.get('/fila/:recurso', function(req, res) {
         const tipo_imagem = await db.selectTipoImagem(recurso);
         const mrpList = await db.selectOPsMrp(recurso);
         const componentes_fila = await db.selectComponetesFila(recurso);
-        console.log(componentes_fila);
         let codigo_cor_mrp;
         let saldo_somado_comp_op = {}
 
@@ -214,6 +213,9 @@ router.get('/fila/:recurso', function(req, res) {
             let componente_bob_extrusada = componentes_fila.some(componentes => 
                 componentes.op === element.op && componentes.etapa === element.etapa && componentes.tipo_componente === 'bobina_extrusada'
             )
+            let componente_bob_terceiro = componentes_fila.some(componentes => 
+                componentes.op === element.op && componentes.etapa === element.etapa && componentes.tipo_componente === 'bobina_terceiro'
+            )
             
         
             acumula.push({'op':element.op,
@@ -237,7 +239,8 @@ router.get('/fila/:recurso', function(req, res) {
                           'componente_op_negativo': componente_op_negativo,
                           'etapa': element.etapa,
                           'saldo_componentes': saldo_somado_comp_op[`${element.op}-${element.etapa}`],
-                          'tipo_componente': componente_bob_extrusada})
+                          'componente_bob_extrusada': componente_bob_extrusada,
+                          'componente_bob_terceiro':componente_bob_terceiro})
         return acumula
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
