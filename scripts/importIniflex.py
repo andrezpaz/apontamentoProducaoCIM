@@ -61,6 +61,23 @@ def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item
             connection.close()
             print("MySQL connection is closed")
 
+
+def check_value_index(data, index, newData=None):
+    if len(data) > index and data[index] != '':
+        return data[index]
+    else:
+        if newData is not None:
+            return newData
+        else:
+            return None
+
+def format_date(data):
+    return datetime(int(data.split("/")[2].split(" ")[0]), #Ano
+                    int(data.split("/")[1]), #Mes
+                    int(data.split("/")[0]), #Dia
+                    int(data.split(" ")[1].split(":")[0]), ##Hora 
+                    int(data.split(" ")[1].split(":")[1])).isoformat().replace("T", " ") # Minuto e transformacao
+
 ### Inicio do Script ####
 remove_table() # Remove dados atuais da tablea, já que os novos virão da importação
 
@@ -70,56 +87,22 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding=
     for row in fila:
         recurso = row[2]
         etapa = row[1]
-        if (row[3] == ''):
-            seq_fila = 0
-        else:
-            seq_fila = row[3]
+        seq_fila = check_value_index(row,3,0)
         op = row[4]
         cod_item = row[5]
         desc_item = row[7]
         quantidade = round(float(row[8].replace(',','.')),3)
         peso = round(float(row[9].replace(',','.')),3)
-        ini_prog = row[10]
-        fim_prog = row[11]
-        cod_clicheria = row[12]
-        ini_prog_format = datetime(int(ini_prog.split("/")[2].split(" ")[0]), #Ano
-                                   int(ini_prog.split("/")[1]), #Mes
-                                   int(ini_prog.split("/")[0]), #Dia
-                                   int(ini_prog.split(" ")[1].split(":")[0]), ##Hora 
-                                   int(ini_prog.split(" ")[1].split(":")[1])).isoformat().replace("T", " ") # Minuto e transformacao
-        if (row[11] == ''):
-            fim_prog_format = ini_prog_format
-        else:
-            fim_prog_format = datetime(int(fim_prog.split("/")[2].split(" ")[0]),
-                                    int(fim_prog.split("/")[1]), 
-                                    int(fim_prog.split("/")[0]), 
-                                    int(fim_prog.split(" ")[1].split(":")[0]), 
-                                    int(fim_prog.split(" ")[1].split(":")[1])).isoformat().replace("T", " ")
-            
-        if (row[13] == ''):
-            numeroMRP = None
-        else:
-            numeroMRP = row[13]
-    
-        if (row[14] == ''):
-            velocidadeItem = None
-        else:
-            velocidadeItem = row[14]
-
-        if (row[15] == ''):
-            previsaoEntrega = None
-        else:
-            previsaoEntrega = row[15]
-
-        if (row[16] == ''):
-            quantidadeCores = None
-        else:
-            quantidadeCores = row[16]
-        
-        if (row[17] == ''):
-            situacaoRecurso = None
-        else:
-            situacaoRecurso = row[17]
-        insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
-                                   ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
-                                   previsaoEntrega, quantidadeCores, situacaoRecurso) ## Inicia insert no banco, de forma individual
+        ini_prog = check_value_index(row,10)
+        fim_prog = check_value_index(row,11)
+        cod_clicheria = check_value_index(row,12)
+        ini_prog_format = format_date(ini_prog)
+        fim_prog_format = ini_prog_format if fim_prog is None else format_date(fim_prog)
+        numeroMRP = check_value_index(row,13)
+        velocidadeItem = check_value_index(row,14)
+        previsaoEntrega = check_value_index(row,15)
+        quantidadeCores = check_value_index(row,16)
+        situacaoRecurso = check_value_index(row,17)
+        #insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
+        #                           ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
+        #                           previsaoEntrega, quantidadeCores, situacaoRecurso) ## Inicia insert no banco, de forma individual
