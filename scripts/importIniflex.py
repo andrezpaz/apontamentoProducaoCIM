@@ -103,6 +103,6 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding=
         previsaoEntrega = check_value_index(row,15)
         quantidadeCores = check_value_index(row,16)
         situacaoRecurso = check_value_index(row,17)
-        #insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
-        #                           ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
-        #                           previsaoEntrega, quantidadeCores, situacaoRecurso) ## Inicia insert no banco, de forma individual
+        insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
+                                   ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
+                                   previsaoEntrega, quantidadeCores, situacaoRecurso) ## Inicia insert no banco, de forma individual
