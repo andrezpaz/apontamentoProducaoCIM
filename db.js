@@ -69,7 +69,6 @@ async function deleteOPMaquina(producao) {
 }
 async function selectFila(recurso) {
     const conn = await connect();
-    //const [rows] = await conn.query(`SELECT * FROM pcpfila where recurso = ${recurso} order by seq_fila`);
     const [rows] = await conn.query(`SELECT *, 
                                     (select count(codigo_item) from perfilcores where codigo_item = pcpfila.codigo_item) as tem_perfil 
                                      FROM pcpfila where recurso = ${recurso} order by seq_fila`);

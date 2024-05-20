@@ -69,7 +69,6 @@ app.post('/insert', jsonParser, function(request, response) {
     
     const dataProducao = request.body;
     console.log('\nIniciando insercao do apontamento ' + showDate());
-    console.log(dataProducao);
     ( async () => {
         const db = require("./db");
         let numbob = await db.numBob({op:dataProducao.op});
@@ -93,7 +92,6 @@ app.post('/insert', jsonParser, function(request, response) {
 app.post('/update', jsonParser, function(request, response) {
     const updateOPMaquina = request.body
     console.log('\nUPDATE OP MAQUINA' + showDate());
-    console.log(updateOPMaquina);
     ( async () => {
         const db = require("./db");
         const testResult = {marcado: updateOPMaquina.marcado, id:updateOPMaquina.id}
@@ -105,12 +103,10 @@ app.post('/update', jsonParser, function(request, response) {
 app.post('/updateProducao', jsonParser, function(request, response) {
     const updateProd = request.body;
     console.log('\nUPDATE PRODUCAO' + showDate());
-    console.log(updateProd);
     ( async () => {
         const db = require("./db");
         const result = await db.updateProducao({maquina:updateProd.maquina, datainicio: updateProd.datainicio, datafim: updateProd.datafim, 
                                                 quantidade: updateProd.quantidade, id:updateProd.id});
-        console.log(result);
     })();
 })
 
@@ -124,7 +120,6 @@ app.post('/deleteProducao', jsonParser, function(request, response) {
     ( async () => {
         const db = require("./db");
         const result = await db.deleteOPMaquina({id:deleteProd.id});
-        console.log(result);
     })();
 })
 
@@ -135,7 +130,6 @@ function queryOP(buscaOP, recurso) {
         //const op = req.params.op;
         console.log('\nBuscando OP : ' + buscaOP + showDate());
         const producao = await db.selectProducao(buscaOP, recurso)
-        console.log(producao)
         return producao; 
     })
     ();
@@ -148,7 +142,6 @@ app.post("/apont", (req, res) => {
         queryOP(buscaOP.op, buscaOP.maquina).then(function (result){
         if ((result.length > 0) && !(result.datafim)){
             console.log("\nApontamento em aberto encontrado" + showDate());
-            console.log(result);
             res.render('apontamento', {producao:result, functions:functions})
         } else {
             console.log("\nSem Dados Encontrados")
@@ -260,7 +253,6 @@ router.get('/perfilcores/:item', function(req, res) {
         const codigo_item = req.params.item;
         const perfilcores = await db.selectPerfilCores(codigo_item);
         console.log("\nIniciando busca do perfil do item : " + codigo_item + showDate())
-        console.log(perfilcores);
         res.render('perfilcores', {perfilcores: perfilcores})
     })();
 })
