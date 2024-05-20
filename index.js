@@ -9,6 +9,7 @@ const { render } = require('ejs');
 var functions = require('./scripts/client');
 var fs = require('fs');
 const { resourceLimits } = require('worker_threads');
+const axios = require('axios')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -329,6 +330,49 @@ router.get('/images/itens/:imageName', (req, res) =>{
         res.status(404).send('Imagem não encontrada')
     }
 
+})
+
+router.post('/gerarOP', jsonParser, async (req, res) =>{
+    let connCreds = require('./connectionsConfig.json');
+    const apiURL = connCreds['API_URL_INIFLEX'];
+    const token = connCreds['API_TOKEN_INIFLEX'];
+
+    const params = {
+        eOrigemExecucao:'ROTINA',
+        relatorio: 'rpcp156',
+        empresa: 1,
+        pEmpresa: 1, 
+        pUsuario: 1027,
+        pOp: req.body.op,
+        pEtapa: req.body.etapa,
+        pSeqEtapa: req.body.seqEtapa,
+        pRecurso: req.body.recurso
+
+    };
+
+    try {
+        const response = await axios.get(apiURL, {
+            headers: {
+                 'Authorization': `Bearer ${token}`
+            },
+            params: params
+        });
+    
+        //Dados PDF em Base64
+        const base64Data = response.data.binario;
+        const nameFile = response.data.nome;
+        const pdfBuffer = Buffer.from(base64Data, 'base64');
+        const pdfFilePath = path.join(__dirname, 'files', nameFile);
+    
+        //Salvando arquivo PDF
+        fs.writeFileSync(pdfFilePath, pdfBuffer);
+    
+        res.json({fileURL: `/files/${nameFile}`})
+    } catch (error) {
+        console.log('Erro ao gerar OP', error);
+        res.status(500).send('Erro ao gerar OP');
+    }
+    
 })
 
 app.use('/', router);

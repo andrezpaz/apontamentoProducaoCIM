@@ -45,8 +45,7 @@
     font-size: 16px;
 }
 
-.containerIframe,
-.containerIframeOP {
+.containerIframe {
     position: fixed;
     top: 15%;
     left: 20%;
@@ -57,6 +56,18 @@
     color: #ffffff;
     background-color: rgba(0, 0, 0, 0.8);
     padding: 70px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+.containerIframeOP {
+    position: fixed;
+    top: 1%;
+    width: 95%;
+    height: 90%;
+    z-index: 50;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
 }
@@ -100,7 +111,7 @@
     margin-right: 5px;
 }
 
-.iconPerfil:hover {
+.iconPerfil:hover, .iconOP:hover {
     cursor: pointer;
 }
 
@@ -225,6 +236,34 @@
     }
 
 
+    /* CSS para o ícone de carregamento */
+    .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-spinner {
+            border: 8px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 8px solid #3498db;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
 
     
     </style>
@@ -241,11 +280,13 @@
         <iframe id="iframeComponentesOP" src="/" width="100%" height="100%"></iframe>
         </div>
 
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+    </div>
     <div style="display: none;" class="containerIframeOP" id ="containerIframeOP">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-        <iframe id="iframeOP" src="/" width="80%" height="70%"></iframe>
+        <iframe id="iframeOP" src="/" width="100%" height="100%"></iframe>
         </div>
-
     
     <div>
         <span class="titleFila">Recurso: <strong class="codRecurso"><%= maquina[0].recurso %> </strong> </span>
@@ -270,6 +311,7 @@
                     <th>Perfil de Cores</th>
                     <!--<th>Visualizar OP</th>-->
                     <th>Componentes</th>
+                    <th>OP</th>
                 </tr>
                 <tr>
                     <% 
@@ -334,9 +376,9 @@
                             <% if (maquina.componente_op_negativo) {%> 
                                 <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
                         
-                        <!--<td>
-                            <img src="/images/iconView.png" class="iconOP" onclick="openIframe(this)"></a></img> 
-                        </td> -->
+                        <td>
+                            <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img> 
+                        </td>
                         <!-- Trigger the Modal -->
                         <!--<td><img onclick="modalImage(this)" id="<%=maquina.codigo_item%>" src="/images/<%=maquina.codigo_item%>.jpg" alt="Snow" style="width:100%;max-width:300px">-->
                         <!-- The Modal -->
@@ -358,7 +400,32 @@
             </p> 
         </div>    
         <script>
-            function openIframe(element) {
+            async function gerarOP(op, etapa, seqEtapa, recurso) {
+                const params = {
+                    op: op,
+                    etapa: etapa,
+                    seqEtapa: seqEtapa,
+                    recurso: recurso
+                }
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                try {
+                    const response = await fetch('/gerarOP', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(params)
+                    });
+                    const data = await response.json();
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    return data.fileURL
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração de OP', error);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            }
+            async function openIframe(element) {
+                console.log(element);
                 function executeIfrmae(idContainer, idElement, src) {
                     console.log(src)
                     var containerFrame = document.getElementById(idContainer);
@@ -373,9 +440,17 @@
                 let codEtapa = document.querySelector('.codEtapa').innerHTML;
                 let codRecurso = document.querySelector('.codRecurso').innerHTML;
                 let className = element.className;
-                if (className === 'iconPerfil') executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)
-                if (className === 'componentesOP') executeIfrmae("containerIframeComponentes", "iframeComponentesOP", `/componentes/${numeroOP}/${codEtapa}/${codRecurso}`)
-                if (className === 'iconOP') executeIfrmae("containerIframeOP", "iframeOP", `/op/${numeroOP}`)
+                if (className === 'iconPerfil') {
+                    executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)
+                }
+                if (className === 'componentesOP') {
+                    executeIfrmae("containerIframeComponentes", "iframeComponentesOP", `/componentes/${numeroOP}/${codEtapa}/${codRecurso}`)
+                }
+                if (className === 'iconOP') {
+                    let urlOP = await gerarOP(numeroOP, codEtapa, 1, codRecurso);
+                    console.log(urlOP);
+                    executeIfrmae("containerIframeOP", "iframeOP", urlOP)
+                }
             }
             function closeIFrame(element) {
                 var frame = element.parentElement;
