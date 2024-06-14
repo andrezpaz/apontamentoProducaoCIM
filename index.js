@@ -241,7 +241,7 @@ router.get('/fila/:recurso', function(req, res) {
         if (novafila.length > 0) {
             res.render('fila', {maquina: novafila, functions:functions})
         } else {
-            res.render('fila_sem_prog')
+            res.render('errorPage', {msg:"Recurso não encontrado ou Sem OPs programadas !"})
         }
         
     })();
@@ -249,7 +249,8 @@ router.get('/fila/:recurso', function(req, res) {
 })
 
 router.get('/errorPage', function(req,res){
-    res.render('fila_sem_prog')
+    let msg = "Erro 404 - Não encontrado"
+    res.render('errorPage', {msg:msg})
 })
 
 router.get('/perfilcores/:item', function(req, res) {
