@@ -72,6 +72,19 @@
         box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
     }
 
+    .containerIframeChecklist, .containerIframeError{
+        position: fixed;
+        top: 1%;
+        width: 70%;
+        height: 95%;
+        z-index: 50;
+        color: #ffffff;
+        background-color: rgba(0, 0, 0, 0.8);
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    }
+
     #myImg {
         border-radius: 5px;
         cursor: pointer;
@@ -105,13 +118,14 @@
     }
 
     .iconPerfil,
-    .iconOP {
+    .iconOP,
+    .iconChecklist {
         width: 32px;
         height: 32px;
         margin-right: 5px;
     }
 
-    .iconPerfil:hover, .iconOP:hover {
+    .iconPerfil:hover, .iconOP:hover, .iconChecklist:hover {
         cursor: pointer;
     }
 
@@ -236,11 +250,21 @@
     <div style="display: none;" class="containerIframeOP" id ="containerIframeOP">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
         <iframe id="iframeOP" src="/" width="100%" height="100%"></iframe>
-        </div>
+    </div>
+
+    <div style="display: none;" class="containerIframeChecklist" id ="containerIframeChecklist">
+        <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
+        <iframe id="iframeChecklist" src="/" width="100%" height="95%"></iframe>
+    </div>
+
+    <div style="display: none;" class="containerIframeError" id ="containerIframeError">
+        <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
+        <iframe id="iframeError" src="/errorPage" width="100%" height="95%"></iframe>
+    </div>
     
     <div>
-        <span class="titleFila">Recurso: <strong class="codRecurso"><%= maquina[0].recurso %> </strong> </span>
-        <span class="titleFila">Etapa: <strong class="codEtapa"><%= maquina[0].etapa %> </strong> </span>
+        <span class="titleFila">Recurso: <strong class="codRecurso"><%=maquina[0].recurso %> </strong> </span>
+        <span class="titleFila">Etapa: <strong class="codEtapa"><%=maquina[0].etapa%></strong> </span>
         <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
             <table class="tableFila" style="width:100%">
                 <tr>
@@ -320,7 +344,8 @@
                                 <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
                         
                         <td>
-                            <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img> 
+                            <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img>
+                            <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>  
                         </td>
                         <tr></tr>
                     <% }); %>
@@ -355,6 +380,29 @@
                     document.getElementById('loadingOverlay').style.display = 'none';
                 }
             }
+            async function getUrlChecklist(op, etapa, recurso) {
+                const params = {
+                    op: op,
+                    etapa: etapa,
+                    recurso: recurso
+                }
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                try {
+                    const response = await fetch('/getUrlChecklist', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(params)
+                    });
+                    const data = await response.json();
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    return data.urlChecklist
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração da URL do Checklist ', error);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            }
             async function openIframe(element) {
                 function executeIfrmae(idContainer, idElement, src) {
                     var containerFrame = document.getElementById(idContainer);
@@ -378,6 +426,15 @@
                 if (className === 'iconOP') {
                     let urlOP = await gerarOP(numeroOP, codEtapa, 1, codRecurso);
                     executeIfrmae("containerIframeOP", "iframeOP", urlOP)
+                }
+                if (className === 'iconChecklist') {
+                    let urlChecklist = await getUrlChecklist(numeroOP, codEtapa, codRecurso)
+                    console.log(urlChecklist)
+                    if (urlChecklist) {
+                        executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
+                    } else {
+                        executeIfrmae("containerIframeError", "iframeError")
+                    }
                 }
             }
             function closeIFrame(element) {

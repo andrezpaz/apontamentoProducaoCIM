@@ -247,6 +247,11 @@ router.get('/fila/:recurso', function(req, res) {
     })();
  
 })
+
+router.get('/errorPage', function(req,res){
+    res.render('fila_sem_prog')
+})
+
 router.get('/perfilcores/:item', function(req, res) {
     (async () => {
         const db = require("./db");
@@ -272,6 +277,7 @@ router.get('/componentes/:op/:etapa/:recurso', function(req, res) {
 
 const auth = require('./auth');
 const e = require('express');
+const { deflate } = require('zlib');
 
 
 router.get('/images/itens/delete', auth, function(req, res){
@@ -322,6 +328,26 @@ router.get('/images/itens/:imageName', (req, res) =>{
         res.status(404).send('Imagem não encontrada')
     }
 
+})
+
+router.post('/getUrlChecklist', jsonParser, async (req, res) =>{
+    let connCreds = require('./connectionsConfig.json');
+    const apiURL = connCreds['URL_CHECKLIST'];
+    const numeroOP = req.body.op;
+    const codEtapa = req.body.etapa;
+    const codRecurso = req.body.codRecurso;
+    const urlChecklist = `${apiURL}?op=${numeroOP}&etapa=${codEtapa}&recurso=${codRecurso}`;
+    try {
+        const response = await axios.get(urlChecklist);
+        if (response.status === 200) {
+            res.json({ urlChecklist });
+        } else {
+            res.status(500).json({error:'URL com erro' + response.status})
+        }
+    }
+    catch (error) {
+        res.status(500).json({error:'Falha ao obter a URL', details:error.message})
+    }
 })
 
 router.post('/gerarOP', jsonParser, async (req, res) =>{
