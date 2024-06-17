@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fila Producao</title>
+    <title>Fila Produção - <%=maquina[0].recurso%></title>
     <style>
     body {
     background-color: #0a192f;
@@ -263,7 +263,7 @@
     </div>
     
     <div>
-        <span class="titleFila">Recurso: <strong class="codRecurso"><%=maquina[0].recurso %> </strong> </span>
+        <span class="titleFila">Recurso: <strong class="codRecurso"><%=maquina[0].recurso%></strong></span>
         <span class="titleFila">Etapa: <strong class="codEtapa"><%=maquina[0].etapa%></strong> </span>
         <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
             <table class="tableFila" style="width:100%">
@@ -433,7 +433,6 @@
                 }
                 if (className === 'iconChecklist') {
                     let urlChecklist = await getUrlChecklist(numeroOP, codEtapa, codRecurso)
-                    console.log(urlChecklist)
                     if (urlChecklist) {
                         executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
                     } else {
