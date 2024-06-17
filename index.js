@@ -336,7 +336,7 @@ router.post('/getUrlChecklist', jsonParser, async (req, res) =>{
     const apiURL = connCreds['URL_CHECKLIST'];
     const numeroOP = req.body.op;
     const codEtapa = req.body.etapa;
-    const codRecurso = req.body.codRecurso;
+    const codRecurso = req.body.recurso;
     const urlChecklist = `${apiURL}?op=${numeroOP}&etapa=${codEtapa}&recurso=${codRecurso}`;
     try {
         const response = await axios.get(urlChecklist);
