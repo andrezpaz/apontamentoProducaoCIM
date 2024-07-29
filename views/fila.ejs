@@ -426,7 +426,8 @@
                 if (className === 'iconOP') {
                     let urlOP = await gerarOP(numeroOP, codEtapa, 1, codRecurso);
                     if (urlOP) {
-                        executeIfrmae("containerIframeOP", "iframeOP", urlOP)
+                        //executeIfrmae("containerIframeOP", "iframeOP", urlOP)
+                        window.open(urlOP, '_blank')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
@@ -434,7 +435,8 @@
                 if (className === 'iconChecklist') {
                     let urlChecklist = await getUrlChecklist(numeroOP, codEtapa, codRecurso)
                     if (urlChecklist) {
-                        executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
+                        //executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
+                        window.open(urlChecklist, '_blank')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
