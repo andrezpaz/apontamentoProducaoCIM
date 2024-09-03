@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Máquinas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 15px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<script>
+    async function getUrlFila(recurso) {
+        const params = {recurso: recurso}
+                try {
+                    const response = await fetch('/getUrlFila', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(params)
+                    });
+                    const data = await response.json();
+                    return data.urlFila
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração da URL da Fila ', error);
+                }
+            }
+    async function openFila(recurso) {
+        let urlFila = await getUrlFila(recurso)
+        window.open(`${urlFila}`, '_blank')
+    }
+</script>
+<body>
+
+    <h1>Máquinas Disponíveis</h1>
+
+    <div class="button-container">
+        <% listMaquinasFila.forEach(function(maquina) { 
+            let recurso = maquina.recurso;
+            %>
+            <button onclick="openFila(<%=recurso%>)"><%=recurso%></button>
+        <% }) %>
+    </div>
+
+</body>
+</html>

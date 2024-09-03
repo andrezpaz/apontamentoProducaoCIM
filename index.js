@@ -174,6 +174,21 @@ router.get('/defultIframe', function (req, res) {
     res.sendFile(path.join(__dirname+'/defaultIfrme.html'))
 })
 
+router.get('/fila/tipo_recurso/:tipo_recurso', function(req, res) {
+    (async () => {
+        const db = require("./db");
+        const tipo_recurso = req.params.tipo_recurso;
+        const listMaquinasFila = await db.selectRecursoFila(tipo_recurso);
+        console.log(listMaquinasFila)
+        if (listMaquinasFila.length > 0) {
+            res.render('recursos_fila', {listMaquinasFila: listMaquinasFila, functions:functions})
+        } else {
+            res.render('errorPage', {msg:"Recurso não encontrado ou Sem OPs programadas !"})
+        }
+    })();
+    
+})
+
 router.get('/fila/:recurso', function(req, res) {
     (async () => {
         const db = require("./db");
@@ -330,6 +345,25 @@ router.get('/images/itens/:imageName', (req, res) =>{
         res.status(404).send('Imagem não encontrada')
     }
 
+})
+
+router.post('/getUrlFila', jsonParser, async (req, res) => {
+    let connCreds = require('./connectionsConfig.json');
+    const codRecurso = req.body.recurso;
+    const apiURL = connCreds['URL_FILA'];
+    const urlFila = `${apiURL}/${codRecurso}`;
+    console.log(urlFila);
+    try {
+        const response = await axios.get(urlFila);
+        if (response.status === 200) {
+            res.json({ urlFila });
+        } else {
+            res.status(500).json({error:'URL com erro' + response.status})
+        }
+    }
+    catch (error) {
+        res.status(500).json({error:'Falha ao obter a URL', details:error.message})
+    }
 })
 
 router.post('/getUrlChecklist', jsonParser, async (req, res) =>{
