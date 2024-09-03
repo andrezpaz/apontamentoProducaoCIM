@@ -174,7 +174,7 @@ router.get('/defultIframe', function (req, res) {
     res.sendFile(path.join(__dirname+'/defaultIfrme.html'))
 })
 
-router.get('/fila/tipo_recurso/:tipo_recurso', function(req, res) {
+router.get('/fila_tipo_recurso/:tipo_recurso', function(req, res) {
     (async () => {
         const db = require("./db");
         const tipo_recurso = req.params.tipo_recurso;
@@ -351,7 +351,6 @@ router.post('/getUrlFila', jsonParser, async (req, res) => {
     const codRecurso = req.body.recurso;
     const apiURL = connCreds['URL_FILA'];
     const urlFila = `${apiURL}/${codRecurso}`;
-    console.log(urlFila);
     try {
         const response = await axios.get(urlFila);
         if (response.status === 200) {
