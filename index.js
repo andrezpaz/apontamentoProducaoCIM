@@ -359,6 +359,7 @@ router.post('/getUrlConsumo', jsonParser, async (req, res) =>{
     const codEtapa = req.body.etapa;
     const codRecurso = req.body.recurso;
     const urlConsumo = `${apiURL}?op=${numeroOP}&etapa=${codEtapa}&recurso=${codRecurso}`;
+    console.log(urlConsumo);
 
     // Criando um agente HTTPS que ignora a verificação de certificado
     const agent = new https.Agent({
@@ -366,7 +367,7 @@ router.post('/getUrlConsumo', jsonParser, async (req, res) =>{
     });
 
     try {
-        const response = await axios.get(urlConsumo, { httpsAgent: agent });
+        const response = await axios.get(urlConsumo); //, { httpsAgent: agent }); por enqunato nao usa https na api
         if (response.status === 200) {
             res.json({ urlConsumo });
         } else {
