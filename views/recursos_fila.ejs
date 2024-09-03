@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Máquinas</title>
+    <title>Lista de Recursos - Fila</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -35,6 +35,17 @@
             background-color: #0056b3;
         }
     </style>
+<!-- Favicon para vários dispositivos -->
+<link rel="icon" href="/images/favicon/faviconPelicano.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/images/favicon/faviconPelicano.ico" type="image/x-icon">
+
+<!-- Favicon para navegadores modernos -->
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/faviconPelicano.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/faviconPelicano16.png">
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/faviconPelicano180.png">
+
 </head>
 <script>
     async function getUrlFila(recurso) {
@@ -63,7 +74,7 @@
 </script>
 <body>
 
-    <h1>Máquinas Disponíveis</h1>
+    <h1>Lista de Recursos - Fila</h1>
 
     <div class="button-container">
         <% listMaquinasFila.forEach(function(maquina) { 
