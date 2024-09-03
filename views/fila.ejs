@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fila Produção - <%=maquina[0].recurso%></title>
     <style>
-    body {
+body {
     background-color: #0a192f;
     font-family: 'Roboto', sans-serif;
     color: #ffffff;
@@ -19,145 +19,135 @@
     min-height: 100vh;
 }
 
+.tableFila {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.tableFila th, .tableFila td {
+    padding: 10px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.tableFila th {
+    border: 3px solid #ffffff;
+    background-color: #394867;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tableFila td {
+    border: 1px solid #2e3d58;
+    background-color: #4f608b;
+}
+
+.containerIframe, .containerIframeOP, .containerIframeChecklist, .containerIframeError {
+    position: fixed;
+    z-index: 50;
+    color: #ffffff;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.containerIframe {
+    top: 15%;
+    left: 20%;
+    width: 80%;
+    max-width: 1000px;
+    height: 60%;
+}
+
+.containerIframeOP {
+    top: 1%;
+    width: 95%;
+    height: 90%;
+}
+
+.containerIframeChecklist, .containerIframeError {
+    top: 1%;
+    width: 70%;
+    height: 95%;
+}
+
+#myImg {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#myImg:hover {
+    opacity: 0.8;
+}
+
+.buttonImagem,.buttonIframeClose {
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.buttonImagem {
+    background-color: #3d84b8;
+    color: #ffffff;
+    margin-top: 10px;
+}
+.buttonImagem:hover,.buttonIframeClose:hover {
+    opacity: 0.8;
+}
 
 
+.iconPerfil, .iconOP, .iconChecklist, .iconConsumo {
+    width: 32px;
+    height: 32px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.iconPerfil:hover, .iconOP:hover, .iconChecklist:hover, .iconConsumo:hover {
+    cursor: pointer;
+}
 
-    .tableFila {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-    }
-
-    .tableFila th {
-        border: 3px solid #ffffff;
-        padding: 10px;
-        text-align: center;
-        background-color: #394867;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-
-    .tableFila td {
-        border: 1px solid #2e3d58;
-        padding: 5px;
-        text-align: center;
-        background-color: #4f608b;
-        font-size: 16px;
-    }
-
-    .containerIframe {
-        position: fixed;
-        top: 15%;
-        left: 20%;
-        width: 80%;
-        max-width: 1000px;
-        height: 60%;
-        z-index: 50;
-        color: #ffffff;
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 70px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    }
-    .containerIframeOP {
-        position: fixed;
-        top: 1%;
-        width: 95%;
-        height: 90%;
-        z-index: 50;
-        color: #ffffff;
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .containerIframeChecklist, .containerIframeError{
-        position: fixed;
-        top: 1%;
-        width: 70%;
-        height: 95%;
-        z-index: 50;
-        color: #ffffff;
-        background-color: rgba(0, 0, 0, 0.8);
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    #myImg {
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    #myImg:hover {
-        opacity: 0.8;
-    }
-
-    .buttonImagem,
-    .buttonIframeClose {
-        padding: 8px 20px;
-        font-size: 14px;
-        font-weight: bold;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .buttonImagem {
-        background-color: #3d84b8;
-        color: #ffffff;
-        margin-top: 10px;
-    }
-
-    .buttonImagem:hover,
-    .buttonIframeClose:hover {
-        opacity: 0.8;
-    }
-
-    .iconPerfil,
-    .iconOP,
-    .iconChecklist {
-        width: 32px;
-        height: 32px;
-        margin-right: 5px;
-    }
-
-    .iconPerfil:hover, .iconOP:hover, .iconChecklist:hover {
-        cursor: pointer;
-    }
-
-    .imgRefreshFila {
+.imgRefreshFila {
         width: 18px;
         height: 18px;
         margin-right: 5px;
     }
 
-    .buttonRefreshFila {
-        font-size: 20px;
-        font-weight: bold;
-        background-color: #70a9a1;
-        color: #ffffff;
-        padding: 6px 12px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: 0.3s;
-    }
+.buttonRefreshFila {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #70a9a1;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    align-items: center;
+}
 
-    .buttonRefreshFila:hover {
-        opacity: 0.8;
-    }
+.buttonRefreshFila:hover {
+    opacity: 0.8;
+}
 
-    .titleFila {
-        font-size: 36px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        color: #ffffff;
-    }
-    /* The Close Button */
-    .close {
+.titleFila {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff;
+    text-align: center;
+}
+
+.close {
     position: absolute;
     top: 15px;
     right: 35px;
@@ -165,71 +155,118 @@
     font-size: 40px;
     font-weight: bold;
     transition: 0.3s;
-    }
+}
 
-    .close:hover,
-    .close:focus {
+.close:hover,
+.close:focus {
     color: #bbb;
     text-decoration: none;
     cursor: pointer;
+}
+
+.gradiente-animado {
+    background: linear-gradient(45deg, #cedb57, rgb(211, 7, 51), #5c0c0c, #fa7373);
+    background-size: 400% 400%;
+    animation: gradientAnimation 2s ease infinite;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.componentesOP:hover {
+    cursor: pointer;
+}
+
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-spinner {
+    border: 8px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 8px solid #3498db;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .titleFila {
+        font-size: 24px;
     }
 
-    /* 100% Image Width on Smaller Screens */
-    @media only screen and (max-width: 700px){
-    .modal-content {
-        width: 100%;
-    }
-    }
-    
-    .gradiente-animado {
-        background: linear-gradient(45deg, #cedb57, rgb(211, 7, 51), #5c0c0c, #fa7373);
-        background-size: 400% 400%;
-        animation: gradientAnimation 2s ease infinite;
+    .buttonIframeClose {
+        font-size: 12px;
+        padding: 6px 12px;
     }
 
-    @keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    .containerIframe, .containerIframeOP, .containerIframeChecklist, .containerIframeError {
+        width: 90%;
+        height: 80%;
+        top: 10%;
+        left: 5%;
     }
 
-    .componentesOP:hover {
-        cursor: pointer;
+    .tableFila th, .tableFila td {
+        font-size: 14px;
+        padding: 5px;
     }
 
+    .buttonRefreshFila {
+        font-size: 16px;
+        padding: 5px 10px;
+    }
+}
 
-    /* CSS para o ícone de carregamento */
-    .loading-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9999;
-            justify-content: center;
-            align-items: center;
-        }
-        .loading-spinner {
-            border: 8px solid #f3f3f3;
-            border-radius: 50%;
-            border-top: 8px solid #3498db;
-            width: 50px;
-            height: 50px;
-            animation: spin 2s linear infinite;
-        }
+@media (max-width: 670px) {
+    .titleFila {
+        font-size: 20px;
+    }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }    
+    .tableFila th, .tableFila td {
+        font-size: 10px;
+        padding: 3px;
+    }
+
+    .buttonRefreshFila {
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .titleFila {
+        font-size: 15px;
+    }
+
+    .tableFila th, .tableFila td {
+        font-size: 8px;
+        padding: 3px;
+    }
+
+    .buttonRefreshFila {
+        font-size: 14px;
+        padding: 4px 8px;
+    }
+}
+
     </style>
     
 </head>
@@ -276,14 +313,16 @@
                     <th>Qtd. OP</th>   
                     <th>Item</th>
                     <th>Descrição Item</th>
-                    <th>Entrega</th>
-                    <th>Cores</th>
-                    <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
-                        <th>Velocidade (mpm)</th>
+                    <% if ( !maquina[0].etapa.toString().startsWith('1')) { %>
+                        <th>Entrega</th>
+                        <th>Cores</th>
+                        <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
+                            <th>Velocidade (mpm)</th>
+                        <% } %>
+                        <th>Imagem do Item</th>
+                        <th>Perfil de Cores</th>
+                        <th>Componentes</th>
                     <% } %>
-                    <th>Imagem do Item</th>
-                    <th>Perfil de Cores</th>
-                    <th>Componentes</th>
                     <th>OP</th>
                 </tr>
                 <tr>
@@ -314,38 +353,44 @@
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td><%=maquina.descricao_item%></td>
-                        <td><%=maquina.previsoes_entregas%></td>
-                        <td><%=maquina.quantidade_cores%></td>
-                        <% if ( maquina.recurso.toString().startsWith("2") ){ 
-                            velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
-                            <td style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
-                        <% } %>
-                        <td>
-                            <% if (maquina.TIPO_IMAGEM) {
-                                maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){ 
-                                let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
-                                <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
-                            <%  })
-                            } %>
-                        <td>
-                            <% if (maquina.tem_perfil > 0) {%> <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> <% } %>
-                        </td>
-                            <%
-                            let fraseColunaComponentes;
-                            if (maquina.componente_bob_extrusada) {
-                                fraseColunaComponentes = 'Qtd Extrusada: ' + maquina.saldo_componentes;
-                            }
-                            if (maquina.componente_bob_terceiro) {
-                                fraseColunaComponentes = 'Bob Terceiro Disponível';
-                            }
-                            if (!maquina.componente_op_negativo) {%> 
-                                <td> <strong class="componentesOP" onclick="openIframe(this)" ><%=fraseColunaComponentes%> </strong> </td> <% } %>
-                            <% if (maquina.componente_op_negativo) {%> 
-                                <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
-                        
+                        <% if ( !maquina.etapa.toString().startsWith('1')) { %>
+                            <td><%=maquina.previsoes_entregas%></td>
+                            <td><%=maquina.quantidade_cores%></td>
+                            <% if ( maquina.recurso.toString().startsWith("2") ){ 
+                                velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
+                                <td style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
+                            <% } %>
+                            <td>
+                                <% if (maquina.TIPO_IMAGEM) {
+                                    maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){ 
+                                    let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
+                                    <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
+                                <%  })
+                                } %>
+                            <td>
+                                <% if (maquina.tem_perfil > 0) {%> <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> <% } %>
+                            </td>
+                                <%
+                                let fraseColunaComponentes;
+                                if (maquina.componente_bob_extrusada) {
+                                    fraseColunaComponentes = 'Qtd Extrusada: ' + maquina.saldo_componentes;
+                                }
+                                if (maquina.componente_bob_terceiro) {
+                                    fraseColunaComponentes = 'Bob Terceiro Disponível';
+                                }
+                                if (!maquina.componente_op_negativo) {%> 
+                                    <td> <strong class="componentesOP" onclick="openIframe(this)" ><%=fraseColunaComponentes%> </strong> </td> <% } %>
+                                <% if (maquina.componente_op_negativo) {%> 
+                                    <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
+                        <% } %> 
                         <td>
                             <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img>
-                            <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>  
+                            <% if ( maquina.etapa.toString().startsWith('1')) { %>
+                                <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></a></img>  
+                            <%} else { %>
+                                <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>  
+                                <%}%>
+                            
                         </td>
                         <tr></tr>
                     <% }); %>
@@ -403,6 +448,29 @@
                     document.getElementById('loadingOverlay').style.display = 'none';
                 }
             }
+            async function getUrlConsumo(op, etapa, recurso) {
+                const params = {
+                    op: op,
+                    etapa: etapa,
+                    recurso: recurso
+                }
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                try {
+                    const response = await fetch('/getUrlConsumo', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(params)
+                    });
+                    const data = await response.json();
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    return data.urlConsumo;
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração da URL do Consumo de compnente ', error);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            }
             async function openIframe(element) {
                 function executeIfrmae(idContainer, idElement, src) {
                     var containerFrame = document.getElementById(idContainer);
@@ -437,6 +505,15 @@
                     if (urlChecklist) {
                         //executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
                         window.open(urlChecklist, '_blank')
+                    } else {
+                        executeIfrmae("containerIframeError", "iframeError")
+                    }
+                }
+                if (className === 'iconConsumo') {
+                    let urlConsumo = await getUrlConsumo(numeroOP, codEtapa, codRecurso)
+                    if (urlConsumo) {
+                        //executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
+                        window.open(urlConsumo, '_blank')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
                     }

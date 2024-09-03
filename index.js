@@ -9,7 +9,8 @@ const { render } = require('ejs');
 var functions = require('./scripts/client');
 var fs = require('fs');
 const { resourceLimits } = require('worker_threads');
-const axios = require('axios')
+const axios = require('axios');
+const https = require('https');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -342,6 +343,32 @@ router.post('/getUrlChecklist', jsonParser, async (req, res) =>{
         const response = await axios.get(urlChecklist);
         if (response.status === 200) {
             res.json({ urlChecklist });
+        } else {
+            res.status(500).json({error:'URL com erro' + response.status})
+        }
+    }
+    catch (error) {
+        res.status(500).json({error:'Falha ao obter a URL', details:error.message})
+    }
+})
+
+router.post('/getUrlConsumo', jsonParser, async (req, res) =>{
+    let connCreds = require('./connectionsConfig.json');
+    const apiURL = connCreds['URL_CONSUMO'];
+    const numeroOP = req.body.op;
+    const codEtapa = req.body.etapa;
+    const codRecurso = req.body.recurso;
+    const urlConsumo = `${apiURL}?op=${numeroOP}&etapa=${codEtapa}&recurso=${codRecurso}`;
+
+    // Criando um agente HTTPS que ignora a verificação de certificado
+    const agent = new https.Agent({
+        rejectUnauthorized: false
+    });
+
+    try {
+        const response = await axios.get(urlConsumo, { httpsAgent: agent });
+        if (response.status === 200) {
+            res.json({ urlConsumo });
         } else {
             res.status(500).json({error:'URL com erro' + response.status})
         }
