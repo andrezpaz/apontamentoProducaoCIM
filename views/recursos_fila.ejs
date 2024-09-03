@@ -55,7 +55,11 @@
             }
     async function openFila(recurso) {
         let urlFila = await getUrlFila(recurso)
-        window.open(`${urlFila}`, '_blank')
+        console.log(urlFila)
+        if (urlFila) {
+            window.open(`${urlFila}`, '_blank')
+        }
+        
     }
 </script>
 <body>

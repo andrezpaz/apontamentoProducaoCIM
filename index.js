@@ -179,7 +179,6 @@ router.get('/fila/tipo_recurso/:tipo_recurso', function(req, res) {
         const db = require("./db");
         const tipo_recurso = req.params.tipo_recurso;
         const listMaquinasFila = await db.selectRecursoFila(tipo_recurso);
-        console.log(listMaquinasFila)
         if (listMaquinasFila.length > 0) {
             res.render('recursos_fila', {listMaquinasFila: listMaquinasFila, functions:functions})
         } else {
