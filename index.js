@@ -460,7 +460,18 @@ app.use('/styles', express.static(__dirname+'/styles'))
 
 
 
-const server = app.listen(8000, function () {
+/*const server = app.listen(8000, function () {
+    console.log("\nCIM Rodando na Porta 8000 \\o/")
+    process.send('ready');
+})*/
+
+const pathSSL = '/etc/letsencrypt/live/cim.bazei.com.br/';
+const options = {
+    key: fs.readFileSync(path.join(pathSSL, 'privkey.pem')),
+    cert: fs.readFileSync(path.join(pathSSL,'cert.pem'))
+}
+
+https.createServer(options, app).listen(8000, () =>{
     console.log("\nCIM Rodando na Porta 8000 \\o/")
     process.send('ready');
 })
