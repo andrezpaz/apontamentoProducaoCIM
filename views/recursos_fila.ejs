@@ -46,6 +46,18 @@
 <!-- Apple Touch Icon -->
 <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/faviconPelicano180.png">
 
+<!-- Meta tags básicas -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+
+<!-- Link para o arquivo manifest.json -->
+<link rel="manifest" href="/files/manifestExtrusao.json">
+
+<!-- Tags para iOS (Safari) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/images/favicon/faviconPelicano180.png">
+
 </head>
 <script>
     async function getUrlFila(recurso) {
@@ -67,7 +79,7 @@
     async function openFila(recurso) {
         let urlFila = await getUrlFila(recurso)
         if (urlFila) {
-            window.open(`${urlFila}`, '_blank')
+            window.open(`${urlFila}`, '_self')
         }
         
     }

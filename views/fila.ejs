@@ -513,7 +513,7 @@ body {
                     let urlConsumo = await getUrlConsumo(numeroOP, codEtapa, codRecurso)
                     if (urlConsumo) {
                         //executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
-                        window.open(urlConsumo, '_blank')
+                        window.open(urlConsumo, '_self')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
