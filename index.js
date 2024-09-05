@@ -468,7 +468,7 @@ app.use('/styles', express.static(__dirname+'/styles'))
 const pathSSL = '/etc/letsencrypt/live/cim.bazei.com.br/';
 const options = {
     key: fs.readFileSync(path.join(pathSSL, 'privkey.pem')),
-    cert: fs.readFileSync(path.join(pathSSL,'cert.pem'))
+    cert: fs.readFileSync(path.join(pathSSL,'fullchain.pem'))
 }
 
 https.createServer(options, app).listen(8000, () =>{
