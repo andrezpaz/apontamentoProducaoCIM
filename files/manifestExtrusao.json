@@ -1,6 +1,6 @@
 {
-    "name": "Pelicano consumo de componentes",
-    "short_name": "Pelicano",
+    "name": "Pelicano Fila",
+    "short_name": "Pelicano Fila",
     "description": "Sistema de consumo de componentes através da leitura de codigo de barras",
     "start_url": "/fila_tipo_recurso/1",
     "display": "fullscreen",
