@@ -320,7 +320,9 @@ body {
                             <th>Velocidade (mpm)</th>
                         <% } %>
                         <th>Imagem do Item</th>
-                        <th>Perfil de Cores</th>
+                        <% if ( maquina[0].recurso.toString().startsWith("2") ) {%> 
+                            <th>Perfil de Cores</th>
+                        <% } %>
                         <th>Componentes</th>
                     <% } %>
                     <th>OP</th>
@@ -367,9 +369,14 @@ body {
                                     <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
                                 <%  })
                                 } %>
-                            <td>
-                                <% if (maquina.tem_perfil > 0) {%> <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> <% } %>
-                            </td>
+                            <% if (maquina.etapa.toString().startsWith('2')) { %> 
+                                <td>
+                                    <% if ( maquina.tem_perfil > 0 ) {%> 
+                                        <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> 
+                                    <% } %>   
+                                </td>
+                                <%  } %>
+                            
                                 <%
                                 let fraseColunaComponentes;
                                 if (maquina.componente_bob_extrusada) {
@@ -385,7 +392,7 @@ body {
                         <% } %> 
                         <td>
                             <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img>
-                            <% if ( maquina.etapa.toString().startsWith('1')) { %>
+                            <% if ( maquina.etapa.toString().startsWith('1') || maquina.etapa.toString().startsWith('3') ) { %>
                                 <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></a></img>  
                             <%} else { %>
                                 <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>  
