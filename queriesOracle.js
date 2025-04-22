@@ -8,7 +8,6 @@ const sql = {
             AND pcpapproducao.op        = :op
             AND pcpapproducao.etapa     = :etapa
        GROUP BY pcpapproducao.op`,
-
     selectEntregasOP:`
         SELECT pcpopep.pedido,
                pcpopep.seq_entrega,
@@ -20,7 +19,12 @@ const sql = {
            AND pcpopep.op        = pcpop.op 
            AND pcpop.produto     = estitem.codigo 
            AND pcpopep.op        = :op
-      ORDER BY pcpopep.seq_entrega
-    `
+      ORDER BY pcpopep.seq_entrega`,
+    selectTarasOP: `
+        SELECT distinct pcpapproducao.peso_tara taras
+          FROM pcpapproducao
+         WHERE pcpapproducao.empresa   = :empresa
+           AND pcpapproducao.op        = :op
+           AND pcpapproducao.etapa     = :etapa`
 }
 module.exports = sql;

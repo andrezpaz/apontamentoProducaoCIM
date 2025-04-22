@@ -505,7 +505,6 @@ async function selecProdProgOP(ordemProducao, etapa) {
    let result = await queryOracle(sqlOracle.selectProdProg, binds);
    return result
 }
-
 async function selectEntregasOP(ordemProducao) {
     const binds = {
        empresa: 1,
@@ -514,22 +513,33 @@ async function selectEntregasOP(ordemProducao) {
    let result = await queryOracle(sqlOracle.selectEntregasOP, binds);
    return result
 }
+async function selectTarasOP(ordemProducao, etapa) {
+    const binds = {
+       empresa: 1,
+       op: ordemProducao,
+       etapa: etapa
+    }
+   let result = await queryOracle(sqlOracle.selectTarasOP, binds);
+   return result
+}
 
 router.get('/gerarRelProducaoOP', async function(req, res) {
     const {op, etapa} = req.query;
     let connection;
     let producaoOP;
     let entregasOP;
+    let tarasOP;
 
     try {
         connection = await connectionOracle();
         producaoOP = await selecProdProgOP(op,etapa);
         entregasOP = await selectEntregasOP(op);
+        tarasOP = await selectTarasOP(op, etapa);
         await connection.close()
     
         if (producaoOP.length > 0 || !producaoOP) {
             //res.status(200).json(result)
-            res.render('produzidoOP', {producao: producaoOP, entregasOP:entregasOP})
+            res.render('produzidoOP', {producao: producaoOP, entregasOP:entregasOP, tarasOP:tarasOP})
         } else {
             //res.status(404).json({ mensagem: 'Dados não encontrados'})
             res.render('errorPage', {msg:"OP SEM Produção Encontrada !"})
