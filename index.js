@@ -33,31 +33,30 @@ async function queryOracle(query, binds = [], insert) {
         const result = await connection.execute(
             query,
             binds,
-        [],
-    );
-    if (insert) {
-        await connection.commit();
-    } else {
-        if (!result.rows || result.rows.length === 0) {
-            throw new Error('Nenhum resultado encontrado')
-        }
-    }
+            []
+        );
 
-    return result.rows;
+        if (insert) {
+            await connection.commit();
+        }
+
+        return result.rows || [];
+        
     } catch (err) {
         console.log(err);
         throw err;
     } finally {
-        if(connection) {
+        if (connection) {
             try {
                 await connection.close();
             } catch (err) {
-            console.log(err);
-            throw err;
+                console.log(err);
+                throw err;
             }
         }
     }
 }
+
 
 function showDate() {
     return " - Data: " + new Date()
@@ -527,6 +526,7 @@ router.get('/gerarRelProducaoOP', async function(req, res) {
         connection = await connectionOracle();
         producaoOP = await selecProdProgOP(op,etapa);
         entregasOP = await selectEntregasOP(op);
+        console.log(entregasOP)
         await connection.close()
     
         if (producaoOP.length > 0 || !producaoOP) {
