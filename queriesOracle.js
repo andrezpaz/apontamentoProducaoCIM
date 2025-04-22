@@ -12,9 +12,13 @@ const sql = {
     selectEntregasOP:`
         SELECT pcpopep.pedido,
                pcpopep.seq_entrega,
-               pcpopep.quantidade 
-          FROM pcpopep
+               pcpopep.quantidade,
+               estitem.unidade 
+          FROM pcpopep, pcpop, estitem
          WHERE pcpopep.empresa   = :empresa
+           AND pcpopep.empresa   = pcpop.empresa 
+           AND pcpopep.op        = pcpop.op 
+           AND pcpop.produto     = estitem.codigo 
            AND pcpopep.op        = :op
       ORDER BY pcpopep.seq_entrega
     `
