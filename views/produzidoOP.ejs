@@ -74,7 +74,7 @@ td {
                         %>
                         <td class= "td-cor"><%=entrega.PEDIDO%></td>
                         <td class= "td-cor"><%=entrega.SEQ_ENTREGA%></td>
-                        <td class= "td-cor"><%=entrega.QUANTIDADE%></td>
+                        <td class= "td-cor"><%=entrega.QUANTIDADE.toLocaleString('pt-BR')%></td>
                         <td class= "td-cor"><%=entrega.UNIDADE%></td>
                         <tr></tr>
                     <% }); %>
@@ -88,7 +88,7 @@ td {
                 <tr>
                     <% tarasOP.forEach(function(tara) { 
                         %>
-                        <td class= "td-cor"><%=tara.TARAS%></td>
+                        <td class= "td-cor"><%=tara.TARAS.toLocaleString('pt-BR')%></td>
                         <tr></tr>
                     <% }); %>
                 </tr>

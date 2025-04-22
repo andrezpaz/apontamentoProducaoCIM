@@ -21,6 +21,8 @@ const sql = {
            AND pcpopep.op        = :op
       ORDER BY pcpopep.seq_entrega`,
     selectTarasOP: `
+     SELECT taras 
+       FROM (   
         SELECT distinct NVL(pcpapprodlote.peso_tara, pcpapproducao.peso_tara) taras
           FROM pcpapproducao
      LEFT JOIN pcpapprodlote 
@@ -28,6 +30,8 @@ const sql = {
            AND pcpapproducao.sequencial     = pcpapprodlote.seq_ap  
          WHERE pcpapproducao.empresa   = :empresa
            AND pcpapproducao.op        = :op
-           AND pcpapproducao.etapa     = :etapa`
+           AND pcpapproducao.etapa     = :etapa
+          )
+     WHERE taras > 0`
 }
 module.exports = sql;
