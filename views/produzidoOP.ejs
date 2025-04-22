@@ -68,7 +68,6 @@ td {
                     <th>Entrega</th>
                     <th>Qtd Entrega</th>
                     <th>Un do Item</th>
-                    <th>Taras Utilizadas</th>
                 </tr>
                 <tr>
                     <% entregasOP.forEach(function(entrega) { 
@@ -77,7 +76,6 @@ td {
                         <td class= "td-cor"><%=entrega.SEQ_ENTREGA%></td>
                         <td class= "td-cor"><%=entrega.QUANTIDADE%></td>
                         <td class= "td-cor"><%=entrega.UNIDADE%></td>
-                        <td class= "td-cor"><%=tarasOP[0].TARAS%></td>
                         <tr></tr>
                     <% }); %>
                 </tr>
