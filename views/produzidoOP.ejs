@@ -88,7 +88,7 @@ td {
                 <tr>
                     <% tarasOP.forEach(function(tara) { 
                         %>
-                        <td class= "td-cor"><%=tara.TARAS.toLocaleString('pt-BR')%></td>
+                        <td class= "td-cor"><%=tara.TARAS.toLocaleString('pt-BR',{minimumFractionDigits: 2, maximumFractionDigits: 2})%></td>
                         <tr></tr>
                     <% }); %>
                 </tr>
