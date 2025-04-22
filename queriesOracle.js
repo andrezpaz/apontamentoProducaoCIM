@@ -21,8 +21,11 @@ const sql = {
            AND pcpopep.op        = :op
       ORDER BY pcpopep.seq_entrega`,
     selectTarasOP: `
-        SELECT distinct pcpapproducao.peso_tara taras
+        SELECT distinct NVL(pcpapprodlote.peso_tara, pcpapproducao.peso_tara) taras
           FROM pcpapproducao
+     LEFT JOIN pcpapprodlote 
+            ON pcpapproducao.empresa        = pcpapprodlote.empresa 
+           AND pcpapproducao.sequencial     = pcpapprodlote.seq_ap  
          WHERE pcpapproducao.empresa   = :empresa
            AND pcpapproducao.op        = :op
            AND pcpapproducao.etapa     = :etapa`
