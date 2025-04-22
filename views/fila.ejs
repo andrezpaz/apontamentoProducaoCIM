@@ -353,7 +353,7 @@ body {
                             <td class="numero_op"><%=maquina.op%></td>
                         <%
                         }%>
-
+                        <td class="codigo_etapa" style="display: none;"><%=maquina.etapa%></td>
                         <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
                         <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>
                         <td><%=maquina.peso.toLocaleString('pt-BR')%></td>
@@ -511,7 +511,7 @@ body {
 
                 let codigo_item = elementParent.querySelector('.codigo_item').innerHTML;
                 let numeroOP = elementParent.querySelector('.numero_op').innerHTML;
-                let codEtapa = document.querySelector('.codEtapa').innerHTML;
+                let codEtapa = elementParent.querySelector('.codigo_etapa').innerHTML;
                 let codRecurso = document.querySelector('.codRecurso').innerHTML;
                 let className = element.className;
                 if (className === 'iconPerfil') {

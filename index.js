@@ -434,7 +434,6 @@ router.post('/getUrlConsumo', jsonParser, async (req, res) =>{
     const codEtapa = req.body.etapa;
     const codRecurso = req.body.recurso;
     const urlConsumo = `${apiURL}?op=${numeroOP}&etapa=${codEtapa}&recurso=${codRecurso}`;
-    console.log(urlConsumo);
 
     // Criando um agente HTTPS que ignora a verificação de certificado
     const agent = new https.Agent({
@@ -526,14 +525,14 @@ router.get('/gerarRelProducaoOP', async function(req, res) {
         connection = await connectionOracle();
         producaoOP = await selecProdProgOP(op,etapa);
         entregasOP = await selectEntregasOP(op);
-        console.log(entregasOP)
         await connection.close()
     
         if (producaoOP.length > 0 || !producaoOP) {
             //res.status(200).json(result)
             res.render('produzidoOP', {producao: producaoOP, entregasOP:entregasOP})
         } else {
-            res.status(404).json({ mensagem: 'Dados não encontrados'})
+            //res.status(404).json({ mensagem: 'Dados não encontrados'})
+            res.render('errorPage', {msg:"OP SEM Produção Encontrada !"})
         }
         
     } catch (error) {
