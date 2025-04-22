@@ -12,8 +12,52 @@ const { resourceLimits } = require('worker_threads');
 const axios = require('axios');
 const https = require('https');
 
+const oracledb = require('oracledb');
+oracledb.initOracleClient({ libDir: '/opt/oracle/instantclient_21_8/' });
+const sqlOracle = require('./queriesOracle');
+
 app.use(bodyParser.urlencoded({ extended: false }));
 
+
+async function connectionOracle() {
+    oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+    require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
+    let conn = await oracledb.getConnection({ user: process.env.DB_USER, password: process.env.DB_PASS, connectionString: process.env.DB_HOST});
+    return conn;
+}
+
+async function queryOracle(query, binds = [], insert) {
+    let connection;
+    try {
+        connection = await connectionOracle();
+        const result = await connection.execute(
+            query,
+            binds,
+        [],
+    );
+    if (insert) {
+        await connection.commit();
+    } else {
+        if (!result.rows || result.rows.length === 0) {
+            throw new Error('Nenhum resultado encontrado')
+        }
+    }
+
+    return result.rows;
+    } catch (err) {
+        console.log(err);
+        throw err;
+    } finally {
+        if(connection) {
+            try {
+                await connection.close();
+            } catch (err) {
+            console.log(err);
+            throw err;
+            }
+        }
+    }
+}
 
 function showDate() {
     return " - Data: " + new Date()
@@ -452,6 +496,50 @@ router.post('/gerarOP', jsonParser, async (req, res) =>{
         res.status(500).send('Erro ao gerar OP');
     }
     
+})
+
+async function selecProdProgOP(ordemProducao, etapa) {
+    const binds = {
+       empresa: 1,
+       etapa: etapa,
+       op: ordemProducao
+    }
+   let result = await queryOracle(sqlOracle.selectProdProg, binds);
+   return result
+}
+
+async function selectEntregasOP(ordemProducao) {
+    const binds = {
+       empresa: 1,
+       op: ordemProducao
+    }
+   let result = await queryOracle(sqlOracle.selectEntregasOP, binds);
+   return result
+}
+
+router.get('/gerarRelProducaoOP', async function(req, res) {
+    const {op, etapa} = req.query;
+    let connection;
+    let producaoOP;
+    let entregasOP;
+
+    try {
+        connection = await connectionOracle();
+        producaoOP = await selecProdProgOP(op,etapa);
+        entregasOP = await selectEntregasOP(op);
+        await connection.close()
+    
+        if (producaoOP.length > 0 || !producaoOP) {
+            //res.status(200).json(result)
+            res.render('produzidoOP', {producao: producaoOP, entregasOP:entregasOP})
+        } else {
+            res.status(404).json({ mensagem: 'Dados não encontrados'})
+        }
+        
+    } catch (error) {
+        console.log('Erro ao gerar Relatório de OP', error);
+        res.status(500).send('Erro ao gerar Relatório de OP');
+    }
 })
 
 app.use('/', router);

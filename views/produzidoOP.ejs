@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produção da OP</title>
+    <style>
+ body {
+    background-color: #0a192f;
+    font-family: 'Roboto', sans-serif;
+    color: #ffffff;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid #2e3d58;
+    width: 100%;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+th {
+    border: 2px solid #2e3d58;
+    background-color: #394867;
+    color: #ffffff;
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+td {
+    border: 2px solid #2e3d58;
+    background-color: #4f608b;
+    padding: 8px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
+.td-cor {
+    text-shadow: 0 0 3px #000000, 0 0 5px #000000;
+}
+     
+    </style>
+    
+</head>
+<body>
+
+    <div>
+        <h1>OP: 
+            <%=producao[0].OP %>
+        </h1>
+        <h2 style="background-color: green;">Produção Total (KG): 
+            <%=producao[0].TOTALPRODUZIDOPESO.toLocaleString('pt-BR') %>
+        </h2>
+        
+            <table style="width:100%">
+                <tr>
+                    <th>Pedido</th>
+                    <th>Entrega</th>
+                    <th>Qtd Entrega</th>
+                </tr>
+                <tr>
+                    <% entregasOP.forEach(function(entrega) { 
+                        %>
+                        <td class= "td-cor"><%=entrega.PEDIDO%></td>
+                        <td class= "td-cor"><%=entrega.SEQ_ENTREGA%></td>
+                        <td class= "td-cor"><%=entrega.QUANTIDADE%></td>
+                        <tr></tr>
+                    <% }); %>
+                </tr>
+            </table>
+            <p> 
+                Produções da OP - CIM
+            </p> 
+        </div>    
+        <script>
+        </script>
+</body>
+
+</html>

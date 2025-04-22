@@ -43,7 +43,6 @@ body {
     border: 1px solid #2e3d58;
     background-color: #4f608b;
 }
-
 .containerIframe, .containerIframeOP, .containerIframeChecklist, .containerIframeError {
     position: fixed;
     z-index: 50;
@@ -86,7 +85,6 @@ body {
 #myImg:hover {
     opacity: 0.8;
 }
-
 .buttonImagem,.buttonIframeClose {
     padding: 8px 20px;
     font-size: 14px;
@@ -107,13 +105,13 @@ body {
 }
 
 
-.iconPerfil, .iconOP, .iconChecklist, .iconConsumo {
+.iconPerfil, .iconOP, .iconRelProdOP, .iconChecklist, .iconConsumo {
     width: 32px;
     height: 32px;
     margin-right: 5px;
     cursor: pointer;
 }
-.iconPerfil:hover, .iconOP:hover, .iconChecklist:hover, .iconConsumo:hover {
+.iconPerfil:hover, .iconOP:hover, .iconRelProdOP:hover, .iconChecklist:hover, .iconConsumo:hover {
     cursor: pointer;
 }
 
@@ -134,7 +132,6 @@ body {
     transition: 0.3s;
     align-items: center;
 }
-
 .buttonRefreshFila:hover {
     opacity: 0.8;
 }
@@ -179,7 +176,6 @@ body {
 .componentesOP:hover {
     cursor: pointer;
 }
-
 .loading-overlay {
     display: none;
     position: fixed;
@@ -279,7 +275,12 @@ body {
     <div style="display:none;" class="containerIframe" id ="containerIframeComponentes">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
         <iframe id="iframeComponentesOP" src="/errorPage" width="100%" height="100%"></iframe>
-        </div>
+    </div>
+
+    <div style="display:none;" class="containerIframe" id ="containerIframeRelProducao">
+        <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
+        <iframe id="iframeRelProducao" src="/errorPage" width="100%" height="80%"></iframe>
+    </div>
 
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-spinner"></div>
@@ -298,7 +299,7 @@ body {
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
         <iframe id="iframeError" src="/errorPage" width="100%" height="95%"></iframe>
     </div>
-    
+
     <div>
         <span class="titleFila">Recurso: <strong class="codRecurso"><%=maquina[0].recurso%></strong></span>
         <span class="titleFila">Etapa: <strong class="codEtapa"><%=maquina[0].etapa%></strong> </span>
@@ -310,7 +311,7 @@ body {
                     <th>Ini Prog.</th>
                     <th>Fim Prog.</th>
                     <th>Peso OP.</th>
-                    <th>Qtd. OP</th>   
+                    <th>Qtd. OP</th>
                     <th>Item</th>
                     <th>Descrição Item</th>
                     <% if ( !maquina[0].etapa.toString().startsWith('1')) { %>
@@ -320,7 +321,7 @@ body {
                             <th>Velocidade (mpm)</th>
                         <% } %>
                         <th>Imagem do Item</th>
-                        <% if ( maquina[0].recurso.toString().startsWith("2") ) {%> 
+                        <% if ( maquina[0].recurso.toString().startsWith("2") ) {%>
                             <th>Perfil de Cores</th>
                         <% } %>
                         <th>Componentes</th>
@@ -328,27 +329,31 @@ body {
                     <th>OP</th>
                 </tr>
                 <tr>
-                    <% 
+                    <%
                     let opMRP = maquina.filter(ele => ele.mrp !== null);
                     let guposDeMrp = [];
                     let velocidade_item;
-                    maquina.forEach(function(maquina) 
-                    { 
+                    maquina.forEach(function(maquina)
+                    {
                         if (maquina.codigo_cor_mrp !== null) {
                         %>
                             <td style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></td>
-                        <% } 
+                        <% }
                         else { %>
-                            <td><%=maquina.seq_fila%></td> <% } 
-                        
+                            <td><%=maquina.seq_fila%></td> <% }
+
                         if (maquina.situacao_recurso === 'P') { %>
-                            <td style="background-color:#7a366d;"><strong class="numero_op"><%=maquina.op%></strong> <br>Em Prod.</td> <%
+                            <td 
+                                style="background-color:#7a366d;"><strong class="numero_op"><%=maquina.op%></strong> <br>Em Prod.
+                                <img src="/images/iconRelProdOP.png" class="iconRelProdOP" onclick="openIframe(this)"></a></img>
+                            </td> 
+                            <%
                         }
                         else { %>
                             <td class="numero_op"><%=maquina.op%></td>
                         <%
                         }%>
-                        
+
                         <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
                         <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>
                         <td><%=maquina.peso.toLocaleString('pt-BR')%></td>
@@ -358,25 +363,25 @@ body {
                         <% if ( !maquina.etapa.toString().startsWith('1')) { %>
                             <td><%=maquina.previsoes_entregas%></td>
                             <td><%=maquina.quantidade_cores%></td>
-                            <% if ( maquina.recurso.toString().startsWith("2") ){ 
+                            <% if ( maquina.recurso.toString().startsWith("2") ){
                                 velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
                                 <td style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
                             <% } %>
                             <td>
                                 <% if (maquina.TIPO_IMAGEM) {
-                                    maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){ 
+                                    maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){
                                     let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
                                     <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
                                 <%  })
                                 } %>
-                            <% if (maquina.etapa.toString().startsWith('2')) { %> 
+                            <% if (maquina.etapa.toString().startsWith('2')) { %>
                                 <td>
-                                    <% if ( maquina.tem_perfil > 0 ) {%> 
-                                        <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img> 
-                                    <% } %>   
+                                    <% if ( maquina.tem_perfil > 0 ) {%>
+                                        <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img>
+                                    <% } %>
                                 </td>
                                 <%  } %>
-                            
+
                                 <%
                                 let fraseColunaComponentes;
                                 if (maquina.componente_bob_extrusada) {
@@ -385,28 +390,28 @@ body {
                                 if (maquina.componente_bob_terceiro) {
                                     fraseColunaComponentes = 'Bob Terceiro Disponível';
                                 }
-                                if (!maquina.componente_op_negativo) {%> 
+                                if (!maquina.componente_op_negativo) {%>
                                     <td> <strong class="componentesOP" onclick="openIframe(this)" ><%=fraseColunaComponentes%> </strong> </td> <% } %>
-                                <% if (maquina.componente_op_negativo) {%> 
+                                <% if (maquina.componente_op_negativo) {%>
                                     <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
-                        <% } %> 
+                        <% } %>
                         <td>
                             <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img>
                             <% if ( maquina.etapa.toString().startsWith('1') || maquina.etapa.toString().startsWith('3') ) { %>
-                                <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></a></img>  
+                                <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></a></img>
                             <%} else { %>
-                                <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>  
+                                <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>
                                 <%}%>
-                            
+
                         </td>
                         <tr></tr>
                     <% }); %>
                 </tr>
             </table>
-            <p> 
+            <p>
                 Fila de Producao CIM
-            </p> 
-        </div>    
+            </p>
+        </div>
         <script>
             async function gerarOP(op, etapa, seqEtapa, recurso) {
                 const params = {
@@ -429,6 +434,20 @@ body {
                     return data.fileURL
                 } catch (error) {
                     console.log('Erro ao requisitar a geração de OP', error);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            }
+            async function gerarRelProducaoOP(op, etapa) {
+                const params = {
+                    op: op,
+                    etapa: etapa
+                }
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                try {
+                    const url = `/gerarRelProducaoOP?op=${op}&etapa=${etapa}`
+                    return url
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração Relatório de Produção da OP', error);
                     document.getElementById('loadingOverlay').style.display = 'none';
                 }
             }
@@ -469,7 +488,7 @@ body {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(params)
-                    });
+                   });
                     const data = await response.json();
                     document.getElementById('loadingOverlay').style.display = 'none';
                     return data.urlConsumo;
@@ -483,10 +502,13 @@ body {
                     var containerFrame = document.getElementById(idContainer);
                     containerFrame.style.display = "block";
                     iframe = document.getElementById(idElement);
-                    iframe.src = src; 
+                    iframe.src = src;
+                    iframe.onload = function () {
+                        document.getElementById('loadingOverlay').style.display = 'none';
+                    };
                 }
                 elementParent = element.parentNode.parentNode;
-                
+
                 let codigo_item = elementParent.querySelector('.codigo_item').innerHTML;
                 let numeroOP = elementParent.querySelector('.numero_op').innerHTML;
                 let codEtapa = document.querySelector('.codEtapa').innerHTML;
@@ -503,6 +525,14 @@ body {
                     if (urlOP) {
                         //executeIfrmae("containerIframeOP", "iframeOP", urlOP)
                         window.open(urlOP, '_blank')
+                    } else {
+                        executeIfrmae("containerIframeError", "iframeError")
+                    }
+                }
+                if (className === 'iconRelProdOP') {
+                    let urlProducao = await gerarRelProducaoOP(numeroOP, codEtapa);
+                    if (urlProducao) {
+                        executeIfrmae("containerIframeRelProducao", "iframeRelProducao", urlProducao)                        
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
