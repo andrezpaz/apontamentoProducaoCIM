@@ -284,5 +284,11 @@
         setInterval(atualizarRelogio, 1000);
         atualizarRelogio(); // chama uma vez imediatamente
     </script>
+
+    <script>
+        setInterval(() => {
+        window.location.reload(true); // força reload total a cada minuto
+        }, 60000); // 60.000 ms = 1 minuto
+    </script>
 </body>
 </html>
