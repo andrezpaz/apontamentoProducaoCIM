@@ -32,6 +32,39 @@ const sql = {
            AND pcpapproducao.op        = :op
            AND pcpapproducao.etapa     = :etapa
           )
-     WHERE taras > 0`
+     WHERE taras > 0`,
+    selectProducaoTurnoAtual: `
+     SELECT dia dia,
+            turno,
+            recurso,
+            empresa,
+            SUM(quant_prod) quant_prod,
+            SUM(peso_prod)  peso_prod
+       FROM (SELECT pcpapproducao.empresa,
+                    TO_CHAR(periodo.dia, 'dd') dia,
+                    peso - peso_tara peso_prod,
+                    pcpapproducao.recurso recurso,
+                    periodo.turno,
+                    pcpapproducao.quantidade quant_prod
+               FROM pcpapproducao,pcprecurso,
+                                       (SELECT pcpperiodostur.dia dia,
+                                               pcpperiodostur.data_hora_ini data_hora_ini,
+                                               pcpperiodostur.data_hora_fim data_hora_fim,
+                                               pcpperiodostur.tipo_turno tipo_turno,
+                                               turno
+                                           FROM pcpperiodostur
+                                          WHERE sysdate BETWEEN data_hora_ini
+                                                           AND data_hora_fim ) periodo
+              WHERE pcpapproducao.empresa = :empresa
+                AND pcpapproducao.empresa = pcprecurso.empresa
+                AND pcpapproducao.recurso = pcprecurso.codigo
+                AND periodo.tipo_turno    = pcprecurso.tipo_turno
+                AND pcprecurso.tipo_recurso = :tipo_recurso
+                AND pcpapproducao.data_hora_fim BETWEEN periodo.data_hora_ini AND periodo.data_hora_fim)  
+   GROUP BY dia,
+            recurso,
+            empresa,
+            turno
+            `
 }
 module.exports = sql;

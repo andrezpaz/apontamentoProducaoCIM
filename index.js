@@ -95,8 +95,14 @@ app.set('view engine', 'ejs');
 // Definie Diretorios padrodes
 app.use('/images', express.static('images'));
 app.use('/files', express.static('files'));
+app.use('/styles', express.static(path.join(__dirname, 'styles')));
+
 
 router.get('/', function(req,res) {
+    res.sendFile(path.join(__dirname+'/index.html'))
+})
+
+router.get('/styles', function(req,res) {
     res.sendFile(path.join(__dirname+'/index.html'))
 })
 
@@ -523,6 +529,15 @@ async function selectTarasOP(ordemProducao, etapa) {
    return result
 }
 
+async function selectProducaoTurnoAtual(tipo_recurso) {
+    const binds = {
+        empresa: 1,
+        tipo_recurso: tipo_recurso
+     }
+    let result = await queryOracle(sqlOracle.selectProducaoTurnoAtual, binds);
+    return result
+}
+
 router.get('/gerarRelProducaoOP', async function(req, res) {
     const {op, etapa} = req.query;
     let connection;
@@ -548,6 +563,35 @@ router.get('/gerarRelProducaoOP', async function(req, res) {
     } catch (error) {
         console.log('Erro ao gerar Relatório de OP', error);
         res.status(500).send('Erro ao gerar Relatório de OP');
+    }
+})
+
+router.get('/consultaProducaoTurnoAtual', async function(req, res) {
+    const {tipo_recurso, recurso} = req.query;
+    let connection;
+    let producaoTurnoAtual;
+
+    try {
+        connection = await connectionOracle();
+        producaoTurnoAtual = await selectProducaoTurnoAtual(tipo_recurso);
+        if (recurso) {
+            producaoTurnoAtual = producaoTurnoAtual.filter(producao =>
+                producao.RECURSO == recurso
+            )
+        }
+        await connection.close()
+    
+        if (producaoTurnoAtual.length > 0 || !producaoTurnoAtual) {
+            //res.status(200).json(result)
+            res.render('producaoTurnoAtual', {producaoTurnoAtual: producaoTurnoAtual})
+        } else {
+            //res.status(404).json({ mensagem: 'Dados não encontrados'})
+            res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
+        }
+        
+    } catch (error) {
+        console.log('Erro ao gerar Relatório de produção turno atual', error);
+        res.status(500).send('Erro ao gerar Relatório de produção turno atual');
     }
 })
 

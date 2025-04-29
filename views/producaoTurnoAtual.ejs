@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produção da OP</title>
+
+    <style>
+        
+
+        @font-face {
+            font-family: 'Roboto';
+            src: url('../styles/Roboto-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'The Last Shuriken';
+            src: url('../styles/The Last Shuriken.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+        body {
+            background: linear-gradient(135deg, #0a192f, #1c2541);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1, h2, p {
+            margin: 10px 0;
+        }
+
+        h1 {
+            font-size: 3em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f; }
+            50% { box-shadow: 0 0 20px #00ff7f, 0 0 40px #00ff7f; }
+            100% { box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f; }
+        }
+
+        table {
+            width: 90%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            margin: 20px auto;
+            font-size: 1.8em;
+            box-shadow: 0 0 15px #00f0ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #394867;
+            padding: 15px 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background-color: #00f0ff;
+            color: #0a192f;
+            text-transform: uppercase;
+            font-size: 1.2em;
+        }
+
+        td {
+            color: #ffffff;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+
+        .td-cor {
+            text-shadow: 0 0 5px #00f0ff;
+        }
+
+        p {
+            font-size: 2em;
+            margin-top: 40px;
+            text-shadow: 0 0 10px #00f0ff;
+        }
+    </style>
+</head>
+
+<body>
+    <%
+    let configString = {minimumFractionDigits: 2, maximumFractionDigits: 2}
+    let metaFixa = 26000.00
+    let totalMeta = 0
+    let recurso 
+    let totalMetragem = 0;
+    let corFundoTotal = '#00ff7f' // verde neon
+    producaoTurnoAtual.forEach((producao) => {
+        totalMetragem += producao.QUANT_PROD
+        totalMeta += metaFixa
+    })
+    if (totalMetragem < totalMeta) {
+        corFundoTotal = '#ff4d4d' // vermelho vivo
+    }
+    if (producaoTurnoAtual.length > 1) {
+        recurso = 'Todos'
+    }
+    else {
+        recurso = producaoTurnoAtual[0].RECURSO
+    }
+    %>
+
+    <div id="relogio" style="
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        font-size: 2em;
+        font-weight: bold;
+        color: #00f0ff;
+        text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+        font-family: 'Roboto', sans-serif;
+    "></div>
+
+    <div>
+        <h1>Recurso: <%= recurso %></h1>
+        <h2 style="background-color: <%= corFundoTotal %>;">
+            Turno: <%= producaoTurnoAtual[0].TURNO %> - Metragem Total: 
+            <%= totalMetragem.toLocaleString('pt-BR', configString) %> MT
+        </h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Recurso</th>
+                    <th>Quantidade</th>
+                    <th>Peso</th>
+                    <th>Meta (MT)</th>
+                    <th>% Meta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% producaoTurnoAtual.forEach(function(producao) { 
+                    const percentualMeta = (producao.QUANT_PROD / metaFixa) * 100;
+                %>
+                    <tr>
+                        <td class="td-cor"><%= producao.RECURSO %></td>
+                        <td class="td-cor"><%= producao.QUANT_PROD.toLocaleString('pt-BR', configString) %></td>
+                        <td class="td-cor"><%= producao.PESO_PROD.toLocaleString('pt-BR', configString) %></td>
+                        <td class="td-cor"><%= metaFixa.toLocaleString('pt-BR', configString) %></td>
+                        <td class="td-cor"><%= percentualMeta.toFixed(1).replace('.', ',') %>%</td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <canvas id="graficoProducao" width="500" height="200"></canvas>
+        <div style="margin-top: 20px; font-size: 1.5em; color: white;">
+            <span style="display: inline-block; width: 30px; height: 3px; background: repeating-linear-gradient(to right, #ffcc00, #ffcc00 6px, transparent 6px, transparent 12px); vertical-align: middle; margin-right: 10px;"></span>
+            Linha pontilhada representa a <strong>Meta</strong> de metragem
+        </div>
+
+        <p>Metas do Setor - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
+    </div>
+
+    <script src="/styles/chart.umd.js"></script>
+    <script src="/styles/chartjs-plugin-annotation.min.js"></script>
+    <script>
+        const ctx = document.getElementById('graficoProducao');
+    
+        const valores = [
+            <% producaoTurnoAtual.forEach(p => { %> <%= p.QUANT_PROD.toFixed(2) %>, <% }); %>
+        ];
+    
+        const cores = valores.map(v => v >= <%= metaFixa %> ? '#00ff7f' : '#ff4d4d'); // verde se bateu, vermelho se não
+    
+        const dados = {
+            labels: [
+                <% producaoTurnoAtual.forEach(p => { %> '<%= p.RECURSO %>', <% }); %>
+            ],
+            datasets: [
+                {
+                    label: 'Produção (MT)',
+                    data: valores,
+                    backgroundColor: cores,
+                    borderRadius: 5
+                }
+            ]
+        };
+    
+        new Chart(ctx, {
+            type: 'bar',
+            data: dados,
+            options: {
+                responsive: true,
+                animation: {
+                    duration: 1500,
+                    easing: 'easeOutBounce'
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'white',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    annotation: {
+                        annotations: {
+                            linhaMeta: {
+                                type: 'line',
+                                yMin: <%= metaFixa %>,
+                                yMax: <%= metaFixa %>,
+                                borderColor: '#ffcc00',
+                                borderWidth: 3,
+                                borderDash: [6, 6],
+                                label: {
+                                    enabled: true,
+                                    content: 'Meta',
+                                    color: '#ffcc00',
+                                    backgroundColor: 'rgba(0,0,0,0.7)',
+                                    font: {
+                                        weight: 'bold',
+                                        size: 14
+                                    },
+                                    position: 'end'
+                                }
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    },
+                    y: {
+                        ticks: {
+                            color: 'white',
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                }
+            },
+            plugins: [Chart.registry.getPlugin('annotation')]
+        });
+    </script>
+
+    <script>
+        function atualizarRelogio() {
+            const agora = new Date();
+            const horas = agora.getHours().toString().padStart(2, '0');
+            const minutos = agora.getMinutes().toString().padStart(2, '0');
+            const segundos = agora.getSeconds().toString().padStart(2, '0');
+            const horario = `${horas}:${minutos}:${segundos}`;
+            document.getElementById('relogio').textContent = horario;
+        }
+
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio(); // chama uma vez imediatamente
+    </script>
+</body>
+</html>
