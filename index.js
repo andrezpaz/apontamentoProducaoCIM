@@ -586,7 +586,7 @@ router.get('/consultaProducaoTurnoAtual', async function(req, res) {
             res.render('producaoTurnoAtual', {producaoTurnoAtual: producaoTurnoAtual})
         } else {
             //res.status(404).json({ mensagem: 'Dados não encontrados'})
-            res.render('producaoTurnoSemProd', {msg:"Turno ainda sem Produção... !"})
+            res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
         }
         
     } catch (error) {
