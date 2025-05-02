@@ -153,8 +153,8 @@
                     <th>Recurso</th>
                     <th>Quantidade</th>
                     <th>Peso</th>
-                    <th>Meta (MT)</th>
-                    <th>% Meta</th>
+                    <!--<th>Meta (MT)</th>-->
+                    <!--<th>% Meta</th>-->
                 </tr>
             </thead>
             <tbody>
@@ -165,18 +165,18 @@
                         <td class="td-cor"><%= producao.RECURSO %></td>
                         <td class="td-cor"><%= producao.QUANT_PROD.toLocaleString('pt-BR', configString) %></td>
                         <td class="td-cor"><%= producao.PESO_PROD.toLocaleString('pt-BR', configString) %></td>
-                        <td class="td-cor"><%= metaFixa.toLocaleString('pt-BR', configString) %></td>
-                        <td class="td-cor"><%= percentualMeta.toFixed(1).replace('.', ',') %>%</td>
+                        <!--<td class="td-cor"><%= metaFixa.toLocaleString('pt-BR', configString) %></td>-->
+                        <!--<td class="td-cor"><%= percentualMeta.toFixed(1).replace('.', ',') %>%</td>-->
                     </tr>
                 <% }); %>
             </tbody>
         </table>
 
         <canvas id="graficoProducao" width="500" height="200"></canvas>
-        <div style="margin-top: 20px; font-size: 1.5em; color: white;">
+        <!--<div style="margin-top: 20px; font-size: 1.5em; color: white;">
             <span style="display: inline-block; width: 30px; height: 3px; background: repeating-linear-gradient(to right, #ffcc00, #ffcc00 6px, transparent 6px, transparent 12px); vertical-align: middle; margin-right: 10px;"></span>
             Linha pontilhada representa a <strong>Meta</strong> de metragem
-        </div>
+        </div>-->
 
         <p>Metas do Setor - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
     </div>
@@ -223,7 +223,7 @@
                                 size: 16
                             }
                         }
-                    },
+                    }/*,
                     annotation: {
                         annotations: {
                             linhaMeta: {
@@ -246,7 +246,7 @@
                                 }
                             }
                         }
-                    }
+                    }*/
                 },
                 scales: {
                     x: {
