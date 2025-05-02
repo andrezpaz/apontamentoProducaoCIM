@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard com Filtro Automático</title>
+</head>
+<body>
+  <iframe id="dashboard-frame" src="http://autoflex.bazei.com.br:7000/auto-login/fi3oo8knu5" width="100%" height="800" frameborder="0"></iframe>
+
+  <script>
+    const iframe = document.getElementById('dashboard-frame');
+
+    iframe.addEventListener('load', () => {
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+      const interval = setInterval(() => {
+        const checkbox = iframeDoc.querySelector('#02-IMPRESSORAS-0001-0208');
+        if (checkbox) {
+          checkbox.checked = true;
+
+          // Gatilho de evento para simular interação real
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+
+          clearInterval(interval);
+        }
+      }, 300);
+    });
+  </script>
+</body>
+</html>
