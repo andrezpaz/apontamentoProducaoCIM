@@ -118,9 +118,9 @@
         totalMetragem += producao.QUANT_PROD
         totalMeta += metaFixa
     })
-    if (totalMetragem < totalMeta) {
+    /*if (totalMetragem < totalMeta) {
         corFundoTotal = '#ff4d4d' // vermelho vivo
-    }
+    }*/
     if (producaoTurnoAtual.length > 1) {
         recurso = 'Todos'
     }
@@ -190,7 +190,7 @@
             <% producaoTurnoAtual.forEach(p => { %> <%= p.QUANT_PROD.toFixed(2) %>, <% }); %>
         ];
     
-        const cores = valores.map(v => v >= <%= metaFixa %> ? '#00ff7f' : '#ff4d4d'); // verde se bateu, vermelho se não
+        const cores = '#00ff7f' //valores.map(v => v >= <%= metaFixa %> ? '#00ff7f' : '#ff4d4d'); // verde se bateu, vermelho se não
     
         const dados = {
             labels: [
