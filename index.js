@@ -566,6 +566,7 @@ router.get('/gerarRelProducaoOP', async function(req, res) {
     }
 })
 
+
 router.get('/consultaProducaoTurnoAtual', async function(req, res) {
     const {tipo_recurso, recurso} = req.query;
     let connection;
@@ -586,8 +587,8 @@ router.get('/consultaProducaoTurnoAtual', async function(req, res) {
             res.render('producaoTurnoAtual', {producaoTurnoAtual: producaoTurnoAtual})
         } else {
             //res.status(404).json({ mensagem: 'Dados não encontrados'})
-            res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
-            //res.render('producaoTurnoSemProd', {msg:"Turno ainda sem Produção... !"})
+            //res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
+            res.render('producaoTurnoSemProd', {msg:"Turno ainda sem Produção... !"})
         }
         
     } catch (error) {
