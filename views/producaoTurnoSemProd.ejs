@@ -5,26 +5,33 @@
   <title>Dashboard com Filtro Automático</title>
 </head>
 <body>
-  <iframe id="dashboard-frame" src="http://autoflex.bazei.com.br:7000/auto-login/fi3oo8knu5" width="100%" height="800" frameborder="0"></iframe>
+  <iframe id="dashboard-frame" src="http://autoflex.bazei.com.br:7000/auto-login/fi3oo8knu5" width="50%" height="600" frameborder="0"></iframe>
 
   <script>
     const iframe = document.getElementById('dashboard-frame');
-
+  
     iframe.addEventListener('load', () => {
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
+  
       const interval = setInterval(() => {
-        const checkbox = iframeDoc.querySelector('#02-IMPRESSORAS-0001-0208');
-        if (checkbox) {
-          checkbox.checked = true;
-
-          // Gatilho de evento para simular interação real
-          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
-
+        const grupoId = '02-IMPRESSORAS (1)';
+        const maquinaId = '02-IMPRESSORAS-0001-0208';
+  
+        const grupoCheckbox = iframeDoc.getElementById(grupoId);
+        const maquinaCheckbox = iframeDoc.getElementById(maquinaId);
+  
+        if (grupoCheckbox && !grupoCheckbox.checked) {
+          grupoCheckbox.click(); // Expande o grupo (marca o checkbox do grupo)
+        }
+  
+        if (maquinaCheckbox) {
+          maquinaCheckbox.checked = true;
+          maquinaCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
           clearInterval(interval);
         }
       }, 300);
     });
   </script>
+  
 </body>
 </html>
