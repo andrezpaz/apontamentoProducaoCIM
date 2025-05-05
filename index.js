@@ -643,6 +643,10 @@ https.createServer(options, app).listen(8000, () =>{
     process.send('ready');
 })
 
+http.createServer(app).listen(8080, ()=>{
+    console.log("\nCIM Rodando na porta 8080 http \\o/")
+})
+
 
 process.on('message', function(msg) {
     if (msg == 'shutdown') {
