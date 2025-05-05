@@ -114,6 +114,7 @@
     let recurso 
     let totalMetragem = 0;
     let corFundoTotal = '#00ff7f' // verde neon
+    let exibeAutoflex = 'SIM';
     producaoTurnoAtual.forEach((producao) => {
         totalMetragem += producao.QUANT_PROD
         totalMeta += metaFixa
@@ -123,10 +124,11 @@
     }*/
     if (producaoTurnoAtual.length > 1) {
         recurso = 'Todos'
+        exibeAutoflex = 'NAO'
     }
     else {
         recurso = producaoTurnoAtual[0].RECURSO
-    }
+    }      
     %>
 
     <div id="relogio" style="
@@ -137,14 +139,16 @@
         font-weight: bold;
         color: #00f0ff;
         text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
-        font-family: 'Roboto', sans-serif;
-    "></div>
+        font-family: 'Roboto', sans-serif;">
+    </div>
 
-    <div>
-        <h1>Recurso: <%= recurso %></h1>
-        <h2 style="background-color: <%= corFundoTotal %>;">
-            Turno: <%= producaoTurnoAtual[0].TURNO %> - Metragem Total: 
-            <%= totalMetragem.toLocaleString('pt-BR', configString) %> MT
+    <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 100%;">
+        <!-- Coluna esquerda: tabela + gráfico -->
+        <div style="flex: 1; max-width: 60%;">
+            <h1>Recurso: <%= recurso %></h1>
+            <h2 style="background-color: <%= corFundoTotal %>;">
+                Turno: <%= producaoTurnoAtual[0].TURNO %> - Metragem Total: 
+                <%= totalMetragem.toLocaleString('pt-BR', configString) %> MT
         </h2>
 
         <table>
@@ -171,8 +175,10 @@
                 <% }); %>
             </tbody>
         </table>
-
-        <canvas id="graficoProducao" width="500" height="200"></canvas>
+    
+        <% if (exibeAutoflex === 'SIM') { %>
+            <canvas id="graficoProducao" width="500" height="200"></canvas>
+        <% } %>
         <!--<div style="margin-top: 20px; font-size: 1.5em; color: white;">
             <span style="display: inline-block; width: 30px; height: 3px; background: repeating-linear-gradient(to right, #ffcc00, #ffcc00 6px, transparent 6px, transparent 12px); vertical-align: middle; margin-right: 10px;"></span>
             Linha pontilhada representa a <strong>Meta</strong> de metragem
@@ -180,7 +186,22 @@
 
         <p>Metas do Setor - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
     </div>
-
+    
+      <!-- Coluna direita: iframe -->
+    <div style="flex: 1; max-width: 40%;">
+        <% if (exibeAutoflex === 'SIM' && filtroAutoflex) { %>
+        <br><br>
+        <iframe 
+        src="http://autoflex.bazei.com.br:7000/openDashboardAutoflexFilter.html?token=fi3oo8knu5&filtro=<%=filtroAutoflex%>"
+        width="70%" height="490" frameborder="1"
+        style="box-shadow: 0 0 10px #00f0ff; border-radius: 5px;">
+        </iframe>
+    
+    <% } 
+      else { %>
+        <canvas id="graficoProducao" width="300" height="200"></canvas>
+        <% } %>
+    </div>
     <script src="/styles/chart.umd.js"></script>
     <script src="/styles/chartjs-plugin-annotation.min.js"></script>
     <script>
@@ -288,7 +309,7 @@
     <script>
         setInterval(() => {
         window.location.reload(true); // força reload total a cada minuto
-        }, 60000); // 60.000 ms = 1 minuto
+        }, 120000); // 120.000 ms = 2 minutos
     </script>
 </body>
 </html>

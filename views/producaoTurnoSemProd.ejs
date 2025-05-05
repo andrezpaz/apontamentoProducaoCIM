@@ -1,43 +1,167 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard com filtro automático</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produção da OP</title>
+
+    <style>
+        
+
+        @font-face {
+            font-family: 'Roboto';
+            src: url('../styles/Roboto-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'The Last Shuriken';
+            src: url('../styles/The Last Shuriken.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+        body {
+            background: linear-gradient(135deg, #0a192f, #1c2541);
+            font-family: 'Roboto', sans-serif;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        h1, h2, p {
+            margin: 10px 0;
+        }
+
+        h1 {
+            font-size: 3em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+        }
+
+        h2 {
+            font-size: 2.5em;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f; }
+            50% { box-shadow: 0 0 20px #00ff7f, 0 0 40px #00ff7f; }
+            100% { box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f; }
+        }
+
+        table {
+            width: 90%;
+            max-width: 1000px;
+            border-collapse: collapse;
+            margin: 20px auto;
+            font-size: 1.8em;
+            box-shadow: 0 0 15px #00f0ff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #394867;
+            padding: 15px 20px;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            background-color: #00f0ff;
+            color: #0a192f;
+            text-transform: uppercase;
+            font-size: 1.2em;
+        }
+
+        td {
+            color: #ffffff;
+            font-weight: bold;
+            backdrop-filter: blur(5px);
+        }
+
+        .td-cor {
+            text-shadow: 0 0 5px #00f0ff;
+        }
+
+        p {
+            font-size: 2em;
+            margin-top: 40px;
+            text-shadow: 0 0 10px #00f0ff;
+        }
+    </style>
 </head>
+
 <body>
-  <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      const dashboardUrl = "http://autoflex.bazei.com.br:7000/auto-login/fi3oo8knu5";
+    <%
+    let corFundoTotal = '#ff4d4d' // vermelho vivo
+    %>
 
-      // Primeiro iframe oculto para configurar o localStorage no domínio correto
-      const preparador = document.createElement('iframe');
-      preparador.style.display = 'none';
-      preparador.src = dashboardUrl;
+    <div id="relogio" style="
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        font-size: 2em;
+        font-weight: bold;
+        color: #00f0ff;
+        text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
+        font-family: 'Roboto', sans-serif;">
+    </div>
 
-      preparador.onload = () => {
-        setTimeout(() => {
-          try {
-            preparador.contentWindow.localStorage.setItem(
-              'autoflex/app/dashboard-filter',
-              JSON.stringify(['02-IMPRESSORAS-0001-0208'])
-            );
+    <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 100%;">
+        <!-- Coluna esquerda: tabela + gráfico -->
+        <div style="flex: 1; max-width: 60%;">
+            <h1>Recurso: <%= recurso %></h1>
+            <h2 style="background-color: <%= corFundoTotal %>;">
+                Sem Produção
+        </h2>
+    <p>Indicador de Produção - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
+    </div>
+    
+    <% if (recurso) { %>
+      <!-- Coluna direita: iframe -->
+    <div style="flex: 1; max-width: 40%;">
+        <br>
+        <iframe 
+        src="http://autoflex.bazei.com.br:7000/openDashboardAutoflexFilter.html?token=fi3oo8knu5&filtro=<%=filtroAutoflex%>"
+        width="70%" height="490" frameborder="1"
+        style="box-shadow: 0 0 10px #00f0ff; border-radius: 5px;">
+        </iframe>
+    </div>
+    <% } %>
+    
+    <script>
+        function atualizarRelogio() {
+            const agora = new Date();
+            const horas = agora.getHours().toString().padStart(2, '0');
+            const minutos = agora.getMinutes().toString().padStart(2, '0');
+            const segundos = agora.getSeconds().toString().padStart(2, '0');
+            const horario = `${horas}:${minutos}:${segundos}`;
+            document.getElementById('relogio').textContent = horario;
+        }
 
-            // Agora carrega o iframe visível com o filtro já salvo
-            const dashboard = document.createElement('iframe');
-            dashboard.src = dashboardUrl;
-            dashboard.width = "100%";
-            dashboard.height = "800";
-            dashboard.frameBorder = "0";
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio(); // chama uma vez imediatamente
+    </script>
 
-            document.body.appendChild(dashboard);
-          } catch (e) {
-            console.error('Erro ao acessar localStorage no iframe:', e);
-          }
-        }, 800); // ajustável conforme o carregamento da página
-      };
-
-      document.body.appendChild(preparador);
-    });
-  </script>
+    <script>
+        setInterval(() => {
+        window.location.reload(true); // força reload total a cada minuto
+        }, 120000); // 120.000 ms = 2 minutos
+    </script>
 </body>
 </html>

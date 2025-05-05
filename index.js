@@ -11,6 +11,7 @@ var fs = require('fs');
 const { resourceLimits } = require('worker_threads');
 const axios = require('axios');
 const https = require('https');
+const http = require('http');
 
 const oracledb = require('oracledb');
 oracledb.initOracleClient({ libDir: '/opt/oracle/instantclient_21_8/' });
@@ -96,6 +97,8 @@ app.set('view engine', 'ejs');
 app.use('/images', express.static('images'));
 app.use('/files', express.static('files'));
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
+
+app.use('/scripts', express.static(__dirname+'/scripts'))
 
 
 router.get('/', function(req,res) {
@@ -566,11 +569,41 @@ router.get('/gerarRelProducaoOP', async function(req, res) {
     }
 })
 
+function buscaFiltroRecursoAutoflex(recurso) {
+    let maquinasDisponiveis = {
+        208: "02-IMPRESSORAS-0001-0208",
+        205: "02-IMPRESSORAS-0001-0205",
+        210: "02-IMPRESSORAS-0001-0210",
+        206: "02-IMPRESSORAS-0001-0206",
+        215: "02-IMPRESSORAS-0001-0215",
+        302: "05-LAMINADORAS-0001-0302",
+        303: "05-LAMINADORAS-0001-0303",
+        304: "06-MAQ. ACABAMENTO-0001-0530",
+        530: "06-MAQ. ACABAMENTO-0001-0530",
+        533: "06-MAQ. ACABAMENTO-0001-0533",
+        541: "06-MAQ. ACABAMENTO-0001-0541",
+        543: "06-MAQ. ACABAMENTO-0001-0543",
+        403: "07-REFILADEIRAS-0001-0403",
+        408: "07-REFILADEIRAS-0001-0408",
+        409: "07-REFILADEIRAS-0001-0409",
+        410: "07-REFILADEIRAS-0001-0410",
+        411: "07-REFILADEIRAS-0001-0411",
+        412: "07-REFILADEIRAS-0001-0412"
+    };
+    return filtroMaquina = maquinasDisponiveis[recurso] || recurso;     
+}
 
-router.get('/consultaProducaoTurnoAtual', async function(req, res) {
+router.get('/tucano/config/idle-time', function (req, res) {
+    res.json({
+        idle_time_seconds: 120 
+    });
+})
+
+app.use('/consultaProducaoTurnoAtual', async function(req, res) {
     const {tipo_recurso, recurso} = req.query;
     let connection;
     let producaoTurnoAtual;
+    let filtroAutoflex = buscaFiltroRecursoAutoflex(recurso);
 
     try {
         connection = await connectionOracle();
@@ -584,11 +617,11 @@ router.get('/consultaProducaoTurnoAtual', async function(req, res) {
     
         if (producaoTurnoAtual.length > 0 || !producaoTurnoAtual) {
             //res.status(200).json(result)
-            res.render('producaoTurnoAtual', {producaoTurnoAtual: producaoTurnoAtual})
+            res.render('producaoTurnoAtual', {producaoTurnoAtual: producaoTurnoAtual, filtroAutoflex:filtroAutoflex})
         } else {
             //res.status(404).json({ mensagem: 'Dados não encontrados'})
-            res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
-            //res.render('producaoTurnoSemProd', {msg:"Turno ainda sem Produção... !"})
+            //res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
+            res.render('producaoTurnoSemProd', {recurso:recurso, filtroAutoflex:filtroAutoflex})
         }
         
     } catch (error) {
@@ -598,15 +631,6 @@ router.get('/consultaProducaoTurnoAtual', async function(req, res) {
 })
 
 app.use('/', router);
-app.use('/scripts', express.static(__dirname+'/scripts'))
-app.use('/styles', express.static(__dirname+'/styles'))
-
-
-
-/*const server = app.listen(8000, function () {
-    console.log("\nCIM Rodando na Porta 8000 \\o/")
-    process.send('ready');
-})*/
 
 const pathSSL = '/etc/letsencrypt/live/cim.bazei.com.br/';
 const options = {
