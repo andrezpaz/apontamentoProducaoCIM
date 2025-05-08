@@ -103,6 +103,23 @@
             margin-top: 40px;
             text-shadow: 0 0 10px #00f0ff;
         }
+        .imgVelocidade {
+            width: 76px;
+            height: 76px;
+            margin-right: 5px;
+        }
+        .velocidade-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 3.5em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            padding: 15px;
+            border-radius: 10px;
+    }
+
     </style>
 </head>
 
@@ -133,7 +150,7 @@
 
     <div id="relogio" style="
         position: absolute;
-        top: 20px;
+        top: 10px;
         right: 40px;
         font-size: 2em;
         font-weight: bold;
@@ -142,11 +159,11 @@
         font-family: 'Roboto', sans-serif;">
     </div>
 
+    <h1>Recurso: <%= recurso %></h1>
     <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 100%;">
         <!-- Coluna esquerda: tabela + gráfico -->
         <div style="flex: 1; max-width: 60%;">
-            <h1>Recurso: <%= recurso %></h1>
-            <h2 style="background-color: <%= corFundoTotal %>;">
+            <h2 id="titleMetragemTurno" style="background-color: <%= corFundoTotal %>;">
                 Turno: <%= producaoTurnoAtual[0].TURNO %> - Metragem Total: 
                 <%= totalMetragem.toLocaleString('pt-BR', configString) %> MT
         </h2>
@@ -189,8 +206,9 @@
     
       <!-- Coluna direita: iframe -->
     <div style="flex: 1; max-width: 40%;">
+        <div id="dados-maquinas"><!-- conteúdo será preenchido dinamicamente --></div>
         <% if (exibeAutoflex === 'SIM' && filtroAutoflex) { %>
-        <br><br>
+        <br>
         <iframe 
         src="http://autoflex.bazei.com.br:7000/openDashboardAutoflexFilter.html?token=fi3oo8knu5&filtro=<%=filtroAutoflex%>"
         width="70%" height="490" frameborder="1"
@@ -204,6 +222,10 @@
     </div>
     <script src="/styles/chart.umd.js"></script>
     <script src="/styles/chartjs-plugin-annotation.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/painelAutoflexApi.js"></script>
+    
+
     <script>
         const ctx = document.getElementById('graficoProducao');
     

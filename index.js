@@ -12,7 +12,8 @@ const { resourceLimits } = require('worker_threads');
 const axios = require('axios');
 const https = require('https');
 const http = require('http');
-
+const WebSocket = require('ws');
+const socketIo = require('socket.io');
 const oracledb = require('oracledb');
 oracledb.initOracleClient({ libDir: '/opt/oracle/instantclient_21_8/' });
 const sqlOracle = require('./queriesOracle');
@@ -98,7 +99,7 @@ app.use('/images', express.static('images'));
 app.use('/files', express.static('files'));
 app.use('/styles', express.static(path.join(__dirname, 'styles')));
 
-app.use('/scripts', express.static(__dirname+'/scripts'))
+router.use('/scripts', express.static(__dirname+'/scripts'))
 
 
 router.get('/', function(req,res) {
@@ -630,6 +631,74 @@ app.use('/consultaProducaoTurnoAtual', async function(req, res) {
     }
 })
 
+// Rota do painel
+router.get('/painelAutoflex', (req, res) => {
+    const {recurso} = req.query
+    res.render('painelAutoflex', {recurso:recurso}); // views/painel.ejs
+  });
+
+// Rota para obter snapshot atual do MES
+router.get('/painelAutoflex/statusAtual', (req, res) => {
+    res.json(machineDataAutoflex);
+  });
+
+// MES login
+const machineDataAutoflex = {}
+async function conectarAoMES() {
+    try {
+      const localTime = Date.now();
+      const loginUrl = `http://autoflex.bazei.com.br:7000/api/user/login?localTime=${localTime}&readOnly=N&filterCompany=0&filterMachine=0&language=pt-BR`;
+  
+      const response = await axios.get(loginUrl, {
+        headers: {
+          login: '1027',
+          password: '1027',
+          selectedmachine: '0-0'
+        }
+      });
+  
+      const { token, user } = response.data;
+  
+      const mesWS = new WebSocket(`ws://autoflex.bazei.com.br:7000/api/dashboard/0-0/${token}/${user.code}/pt-BR`);
+  
+      mesWS.on('open', () => {
+        mesWS.send(JSON.stringify({
+          token,
+          action: 'REGISTER'
+        }));
+        console.log('🔌 Conectado ao MES WebSocket');
+      });
+  
+      mesWS.on('message', (data) => {
+        try {
+          const msg = JSON.parse(data);
+          machineDataAutoflex[msg.id] = { //atualiza variavel global com os dados atuais
+            ...machineDataAutoflex[msg.id],
+            ...msg
+          };
+          //console.log(`[🧩] Chegou: ID=${msg.id}, Máquina=${msg.title}, Vel=${msg.productionSpeed}`);
+          if (msg.id) {
+            io.emit('update', msg); // envia para todos os navegadores conectados
+          }
+        } catch (e) {
+          console.error('Erro ao parsear mensagem MES:', e.message);
+        }
+      });
+  
+      mesWS.on('error', err => console.error('Erro MES WS:', err.message));
+      mesWS.on('close', () => console.log('WebSocket MES fechado.'));
+  
+      process.on('SIGINT', () => {
+        console.log('🛑 Encerrando WebSocket MES...');
+        if (mesWS) mesWS.close();
+        process.exit();
+      });
+
+    } catch (e) {
+      console.error('Erro ao conectar ao MES:', e.message);
+    }
+  }
+  
 app.use('/', router);
 
 const pathSSL = '/etc/letsencrypt/live/cim.bazei.com.br/';
@@ -638,15 +707,17 @@ const options = {
     cert: fs.readFileSync(path.join(pathSSL,'fullchain.pem'))
 }
 
-https.createServer(options, app).listen(8000, () =>{
+const server = https.createServer(options, app).listen(8000, () =>{
     console.log("\nCIM Rodando na Porta 8000 \\o/")
+    conectarAoMES();
     process.send('ready');
 })
+
+const io = socketIo(server);
 
 http.createServer(app).listen(8080, ()=>{
     console.log("\nCIM Rodando na porta 8080 http \\o/")
 })
-
 
 process.on('message', function(msg) {
     if (msg == 'shutdown') {

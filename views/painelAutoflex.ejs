@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel em Tempo Real</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Painel de Monitoramento</h1>
+
+  <div id="dados-maquinas">
+    <!-- conteúdo será preenchido dinamicamente -->
+  </div>
+
+  <script>
+    const socket = io();
+    const machineData = {};
+    let recurso;
+    if ('<%=recurso%>') {
+      recurso = '1-<%=recurso%>';
+    }
+  
+    const container = document.getElementById('dados-maquinas');
+  
+    function renderizar(maquina) {
+      const id = maquina.id;
+      const html = `
+        <div>
+          <strong>ID:</strong> ${maquina.id}<br>
+          <strong>Máquina:</strong> ${maquina.machine || id}<br>
+          <strong>Situação:</strong> ${maquina.state || '---'}<br>
+          <strong>OP:</strong> ${maquina.op || '---'}<br>
+          <strong>Velocidade:</strong> ${maquina.productionSpeed ?? '---'}
+        </div><hr>
+      `;
+  
+      let el = document.getElementById(id);
+      if (el) {
+        el.innerHTML = html;
+      } else {
+        el = document.createElement('div');
+        el.id = id;
+        el.innerHTML = html;
+        container.appendChild(el);
+      }
+    }
+  
+    // 🔁 Consulta inicial
+    fetch('/painelAutoflex/statusAtual')
+      .then(res => res.json())
+      .then(data => {
+        for (const id in data) {
+          const m = data[id];
+  
+          if (recurso && m.machine !== recurso) continue;
+  
+          machineData[id] = m;
+          renderizar(m);
+        }
+      });
+  
+    // 🔄 Atualizações em tempo real
+    socket.on('update', data => {
+      if (!data.id) return;
+  
+      if (recurso && data.machine !== recurso) return;
+  
+      machineData[data.id] = {
+        ...machineData[data.id],
+        ...data
+      };
+  
+      renderizar(machineData[data.id]);
+    });
+  </script>
+  
+</body>
+</html>

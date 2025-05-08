@@ -121,11 +121,10 @@
         text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
         font-family: 'Roboto', sans-serif;">
     </div>
-
+    <h1>Recurso: <%= recurso %></h1>
     <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 100%;">
         <!-- Coluna esquerda: tabela + gráfico -->
         <div style="flex: 1; max-width: 60%;">
-            <h1>Recurso: <%= recurso %></h1>
             <h2 style="background-color: <%= corFundoTotal %>;">
                 Sem Produção
         </h2>
@@ -136,6 +135,9 @@
       <!-- Coluna direita: iframe -->
     <div style="flex: 1; max-width: 40%;">
         <br>
+        <div id="dados-maquinas">
+            <!-- conteúdo será preenchido dinamicamente -->
+        </div>
         <iframe 
         src="http://autoflex.bazei.com.br:7000/openDashboardAutoflexFilter.html?token=fi3oo8knu5&filtro=<%=filtroAutoflex%>"
         width="70%" height="490" frameborder="1"
@@ -144,6 +146,8 @@
     </div>
     <% } %>
     
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/painelAutoflexApi.js"></script>
     <script>
         function atualizarRelogio() {
             const agora = new Date();
