@@ -709,15 +709,14 @@ const options = {
 
 const server = https.createServer(options, app).listen(8000, () =>{
     console.log("\nCIM Rodando na Porta 8000 \\o/")
-    conectarAoMES();
     process.send('ready');
 })
 
-const io = socketIo(server);
-
-http.createServer(app).listen(8080, ()=>{
+const serverHttp = http.createServer(app).listen(8080, ()=>{
     console.log("\nCIM Rodando na porta 8080 http \\o/")
+    conectarAoMES();
 })
+const io = socketIo(serverHttp);
 
 process.on('message', function(msg) {
     if (msg == 'shutdown') {
