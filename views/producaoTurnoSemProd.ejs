@@ -103,6 +103,22 @@
             margin-top: 40px;
             text-shadow: 0 0 10px #00f0ff;
         }
+        .imgVelocidade {
+            width: 76px;
+            height: 76px;
+            margin-right: 5px;
+        }
+        .velocidade-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 3.5em;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+            padding: 15px;
+            border-radius: 10px;
+    }
     </style>
 </head>
 
@@ -123,21 +139,17 @@
     </div>
     <h1>Recurso: <%= recurso %></h1>
     <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 100%;">
-        <!-- Coluna esquerda: tabela + gráfico -->
         <div style="flex: 1; max-width: 60%;">
-            <h2 style="background-color: <%= corFundoTotal %>;">
-                Sem Produção
-        </h2>
-    <p>Indicador de Produção - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
+            <h2 id="titleMetragemTurno" style="background-color: <%= corFundoTotal %>;">Sem Produção</h2>
+        <p>Indicador de Produção - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
     </div>
     
     <% if (recurso) { %>
       <!-- Coluna direita: iframe -->
     <div style="flex: 1; max-width: 40%;">
         <br>
-        <div id="dados-maquinas">
-            <!-- conteúdo será preenchido dinamicamente -->
-        </div>
+        <div id="dados-maquinas"></div>
+        <br>
         <iframe 
         src="http://autoflex.bazei.com.br:7000/openDashboardAutoflexFilter.html?token=fi3oo8knu5&filtro=<%=filtroAutoflex%>"
         width="70%" height="490" frameborder="1"
