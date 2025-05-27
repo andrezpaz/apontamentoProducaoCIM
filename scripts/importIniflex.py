@@ -71,6 +71,20 @@ def check_value_index(data, index, newData=None):
         else:
             return None
 
+def get_value(row, index, default=""):
+    try:
+        return row[index].strip()
+    except IndexError:
+        print(f"Coluna {index} ausente na linha: {row}. Usando padrão '{default}'")
+        return default
+
+def parse_float(value, default=0.0):
+    try:
+        return round(float(value.replace(',','.').strip()),3)
+    except (ValueError, AttributeError):
+        print(f"############ !!!!!!!  Valor Inválido para float: '{value}'. Usando Padrão {default}")
+        return default
+
 def format_date(data):
     return datetime(int(data.split("/")[2].split(" ")[0]), #Ano
                     int(data.split("/")[1]), #Mes
@@ -91,8 +105,8 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding=
         op = row[4]
         cod_item = row[5]
         desc_item = row[7]
-        quantidade = round(float(row[8].replace(',','.')),3)
-        peso = round(float(row[9].replace(',','.')),3)
+        quantidade = parse_float(get_value(row, 8))
+        peso = parse_float(get_value(row, 9)) 
         ini_prog = check_value_index(row,10)
         fim_prog = check_value_index(row,11)
         cod_clicheria = check_value_index(row,12)
