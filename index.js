@@ -825,12 +825,12 @@ const options = {
     cert: fs.readFileSync(path.join(pathSSL,'fullchain.pem'))
 }
 
-const server = https.createServer(options, app).listen(8000, 'localhost', () =>{
+const server = https.createServer(options, app).listen(8000, () =>{
     console.log("\nCIM Rodando na Porta 8000 \\o/")
     process.send('ready');
 })
 
-const serverHttp = http.createServer(app).listen(8081, 'localhost', ()=>{
+const serverHttp = http.createServer(app).listen(8081, ()=>{
     console.log("\nCIM Rodando na porta 8080 http \\o/")
     conectarAoMES();
 })
