@@ -1,92 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perfil de Cores</title>
-    <style>
- body {
-    background-color: #0a192f;
-    font-family: 'Roboto', sans-serif;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    text-align: center;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Perfil de Cores</title>
+  <style>
+    body {
+      background-color: #0a192f;
+      font-family: 'Roboto', sans-serif;
+      color: #ffffff;
+      margin: 0;
+      padding: 20px;
+    }
 
-table {
-    border-collapse: collapse;
-    border: 2px solid #2e3d58;
-    width: 100%;
-    max-width: 900px;
-    margin: 20px auto;
-}
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
 
-th {
-    border: 2px solid #2e3d58;
-    background-color: #394867;
-    color: #ffffff;
-    padding: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
+    .table-wrapper {
+      overflow-x: auto;
+      margin-bottom: 40px;
+    }
 
-td {
-    border: 2px solid #2e3d58;
-    background-color: #4f608b;
-    padding: 8px;
-    font-weight: bold;
-    color: #ffffff;
-}
+    table {
+      width: 100%;
+      max-width: 100%;
+      border-collapse: collapse;
+      margin: auto;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+    }
 
-.td-cor {
-    text-shadow: 0 0 3px #000000, 0 0 5px #000000;
-}
-     
-    </style>
-    
+    th, td {
+      border: 1px solid #2e3d58;
+      padding: 12px 15px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #394867;
+      color: #ffffff;
+      text-transform: uppercase;
+      font-size: 0.9em;
+    }
+
+    td {
+      background-color: #4f608b;
+      color: #ffffff;
+      font-weight: 500;
+    }
+
+    .td-cor {
+      text-shadow: 0 0 3px #000000, 0 0 5px #000000;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        font-size: 0.85em;
+      }
+
+      th, td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
 </head>
 <body>
+  <h1>Componentes da OP: <%= componentes_op[0].op %></h1>
 
-    <div>
-        <h1>Componentes da OP: 
-            <%= componentes_op[0].op %>
-        </h1>
-        
-            <table style="width:100%">
-                <tr>
-                    <th>OP Componente</th>
-                    <th>Etapa</th>
-                    <th>Recurso</th>
-                    <th>Componete</th>
-                    <th>Saldo</th>
-                    <th>Tipo Material</th>
-                </tr>
-                <tr>
-                    <% componentes_op.forEach(function(componentes) { 
-                        %>
-                        <td class= "td-cor"><%=componentes.op_componente%></td>
-                        <td class= "td-cor"><%=componentes.etapa%></td>
-                        <td class= "td-cor"><%=componentes.recurso%></td>
-                        <td class= "td-cor"><%=componentes.componente%></td>
-                        <td class= "td-cor"><%=componentes.saldo%></td>
-                        <td class= "td-cor"><%=componentes.tipo_componente%></td>
-                        <tr></tr>
-                    <% }); %>
-                </tr>
-            </table>
-            <p> 
-                Componentes da OP - CIM
-            </p> 
-        </div>    
-        <script>
-        </script>
+  <div class="table-wrapper">
+    <table class="tableComponentes">
+      <thead>
+        <tr>
+          <th>OP Componente</th>
+          <th>Etapa</th>
+          <th>Recurso</th>
+          <th>Componente</th>
+          <th>Saldo</th>
+          <th>Tipo Material</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% componentes_op.forEach(function(componentes) { %>
+          <tr>
+            <td class="td-cor"><%= componentes.op_componente %></td>
+            <td class="td-cor"><%= componentes.etapa %></td>
+            <td class="td-cor"><%= componentes.recurso %></td>
+            <td class="td-cor"><%= componentes.componente %></td>
+            <td class="td-cor"><%= componentes.saldo %></td>
+            <td class="td-cor"><%= componentes.tipo_componente %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="tableEnderecos">
+      <thead>
+        <tr>
+          <th>Pallet</th>
+          <th>Endereço</th>
+          <th>Situação</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% enderecosVolumesPallet.forEach(function(pallets) { %>
+          <tr>
+            <td class="td-cor"><%= pallets.PALLET %></td>
+            <td class="td-cor"><%= pallets.ENDERECO %></td>
+            <td class="td-cor"><%= pallets.SITUACAO %></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+
+  <p style="text-align: center;">Componentes da OP - CIM</p>
 </body>
-
 </html>

@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fila Produção - <%=maquina[0].recurso%></title>
     <style>
+
+* {
+  box-sizing: border-box;
+}
+
 body {
     background-color: #0a192f;
     font-family: 'Roboto', sans-serif;
@@ -167,6 +172,7 @@ body {
     animation: gradientAnimation 2s ease infinite;
 }
 
+
 @keyframes gradientAnimation {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -197,6 +203,8 @@ body {
     height: 50px;
     animation: spin 2s linear infinite;
 }
+
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
@@ -229,6 +237,12 @@ body {
         font-size: 16px;
         padding: 5px 10px;
     }
+    .buttonImagem {
+        display: none;
+    }
+    .hide-mobile {
+        display: none;
+    }
 }
 
 @media (max-width: 670px) {
@@ -245,6 +259,9 @@ body {
         font-size: 14px;
         padding: 4px 8px;
     }
+    .hide-mobile {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {
@@ -253,13 +270,16 @@ body {
     }
 
     .tableFila th, .tableFila td {
-        font-size: 8px;
-        padding: 3px;
+        font-size: 7px;
+        padding: 2px;
     }
 
     .buttonRefreshFila {
-        font-size: 14px;
-        padding: 4px 8px;
+        font-size: 12px;
+        padding: 3px 7px;
+    }
+    .hide-mobile {
+        display: none;
     }
 }
 
@@ -306,23 +326,23 @@ body {
         <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
             <table class="tableFila" style="width:100%">
                 <tr>
-                    <th>Seq.</th>
+                    <th class="hide-mobile">Seq.</th>
                     <th>OP</th>
                     <th>Ini Prog.</th>
                     <th>Fim Prog.</th>
                     <th>Peso OP.</th>
                     <th>Qtd. OP</th>
                     <th>Item</th>
-                    <th>Descrição Item</th>
+                    <th class="hide-mobile">Descrição Item</th>
                     <% if ( !maquina[0].etapa.toString().startsWith('1')) { %>
-                        <th>Entrega</th>
-                        <th>Cores</th>
+                        <th class="hide-mobile">Entrega</th>
+                        <th class="hide-mobile">Cores</th>
                         <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
-                            <th>Velocidade (mpm)</th>
+                            <th class="hide-mobile">Velocidade (mpm)</th>
                         <% } %>
-                        <th>Imagem do Item</th>
+                        <th class="hide-mobile">Imagem do Item</th>
                         <% if ( maquina[0].recurso.toString().startsWith("2") ) {%>
-                            <th>Perfil de Cores</th>
+                            <th class="hide-mobile">Perfil de Cores</th>
                         <% } %>
                         <th>Componentes</th>
                     <% } %>
@@ -337,10 +357,10 @@ body {
                     {
                         if (maquina.codigo_cor_mrp !== null) {
                         %>
-                            <td style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></td>
+                            <td class="hide-mobile" style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></td>
                         <% }
                         else { %>
-                            <td><%=maquina.seq_fila%></td> <% }
+                            <td class="hide-mobile"><%=maquina.seq_fila%></td> <% }
 
                         if (maquina.situacao_recurso === 'P') { %>
                             <td 
@@ -359,15 +379,15 @@ body {
                         <td><%=maquina.peso.toLocaleString('pt-BR')%></td>
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
                         <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
-                        <td><%=maquina.descricao_item%></td>
+                        <td class="hide-mobile"><%=maquina.descricao_item%></td>
                         <% if ( !maquina.etapa.toString().startsWith('1')) { %>
-                            <td><%=maquina.previsoes_entregas%></td>
-                            <td><%=maquina.quantidade_cores%></td>
+                            <td class="hide-mobile"><%=maquina.previsoes_entregas%></td>
+                            <td class="hide-mobile"><%=maquina.quantidade_cores%></td>
                             <% if ( maquina.recurso.toString().startsWith("2") ){
                                 velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
-                                <td style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
+                                <td class="hide-mobile" style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
                             <% } %>
-                            <td>
+                            <td class="hide-mobile">
                                 <% if (maquina.TIPO_IMAGEM) {
                                     maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){
                                     let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
@@ -375,7 +395,7 @@ body {
                                 <%  })
                                 } %>
                             <% if (maquina.etapa.toString().startsWith('2')) { %>
-                                <td>
+                                <td class="hide-mobile">
                                     <% if ( maquina.tem_perfil > 0 ) {%>
                                         <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img>
                                     <% } %>

@@ -338,8 +338,18 @@ router.get('/componentes/:op/:etapa/:recurso', function(req, res) {
         const etapa = req.params.etapa;
         const recurso = req.params.recurso;
         const componentes_op = await db.selectComponetesFilaDetalhes(recurso, op, etapa);
+        let enderecosVolumesPallet
+        try {
+            connection = await connectionOracle();
+            enderecosVolumesPallet = await selectPalletsVolumesEnderecos(op, etapa);
+            await connection.close()
+            
+        } catch (error) {
+            console.log('Erro ao gerar dados de endereços dos componentes', error);
+            res.status(500).send('Erro ao gerar dados de endereços dos componentes');
+        }
         console.log("\nIniciando busca dos componentes da OP : " + op + showDate())
-        res.render('componentes_detalhes', {componentes_op: componentes_op})
+        res.render('componentes_detalhes', {componentes_op: componentes_op, enderecosVolumesPallet:enderecosVolumesPallet})
     })();
 })
 
@@ -533,12 +543,74 @@ async function selectTarasOP(ordemProducao, etapa) {
    return result
 }
 
+async function selectItensBobinasComposicao() {
+    const binds = {
+        empresa: 1
+     }
+    let result = await queryOracle(sqlOracle.selectItensBobinasComposicao, binds);
+    const itensAgrupados = result.reduce((acc, item) =>{
+        const key = `${item.PRODUTO}-${item.versao}`;
+        if (!acc[key]) {
+            acc[key] = {
+                PRODUTO: item.PRODUTO,
+                VERSAO: item.VERSAO,
+                DESCRICAO: item.DESCRICAO,
+                GRUPO: item.GRUPO,
+                INSUMOS: []
+            }
+        }
+        acc[key].INSUMOS.push({
+            CODIGO_INSUMO: item.CODIGO_INSUMO,
+            DESCRICAO_INSUMO: item.DESCRICAO_INSUMO,
+            QUANTIDADE_APLICADA: item.QUANTIDADE_APLICADA
+        })
+        return acc
+    }, {})
+    const resultado = Object.values(itensAgrupados)
+    //console.log(resultado)
+    return resultado
+    //return res.status(500)
+}
+
+async function selectItensEstoque() {
+    const binds = {
+        empresa: 1
+     }
+    let result = await queryOracle(sqlOracle.selectItensEstoque, binds);
+    return result
+}
+
+async function selectFatDia() {
+    const binds = {
+        empresa: 1
+     }
+    let result = await queryOracle(sqlOracle.selectFaturamentoDia, binds);
+    return result
+}
+async function selectFilaAtual() {
+    const binds = {
+        empresa: 1
+     }
+    let result = await queryOracle(sqlOracle.selectFilaAtual, binds);
+    return result
+}
+
 async function selectProducaoTurnoAtual(tipo_recurso) {
     const binds = {
         empresa: 1,
         tipo_recurso: tipo_recurso
      }
     let result = await queryOracle(sqlOracle.selectProducaoTurnoAtual, binds);
+    return result
+}
+
+async function selectPalletsVolumesEnderecos(op, etapa) {
+    const binds = {
+        empresa: 1,
+        op: op,
+        etapa: etapa
+     }
+    let result = await queryOracle(sqlOracle.selectPalletsVolumesEnderecos, binds);
     return result
 }
 
@@ -631,6 +703,52 @@ app.use('/consultaProducaoTurnoAtual', async function(req, res) {
     }
 })
 
+//rota api para n8n
+/* Comentado para ambiente de Produção 
+app.use('/consultaItensBobinasComposicao', async function (req, res) {
+    let connection;
+    try {
+        connection = await connectionOracle();
+        const itensBobinas = await selectItensBobinasComposicao();
+        res.status(200).json(itensBobinas)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de bobinas')
+    }
+})
+//rota api para n8n
+app.use('/selectItensEstoque', async function (req, res) {
+    let connection;
+    try {
+        connection = await connectionOracle();
+        const itensEstoque = await selectItensEstoque();
+        res.status(200).json(itensEstoque)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de estoque')
+    }
+})
+//rota api para n8n
+app.use('/selectFatDia', async function (req, res) {
+    let connection;
+    try {
+        connection = await connectionOracle();
+        const notasFaturadas = await selectFatDia();
+        res.status(200).json(notasFaturadas)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de notas faturadas')
+    }
+})
+//rota api para n8n
+app.use('/selectFilaAtual', async function (req, res) {
+    let connection;
+    try {
+        connection = await connectionOracle();
+        const filaProducao = await selectFilaAtual();
+        res.status(200).json(filaProducao)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de notas faturadas')
+    }
+})*/
+
 // Rota do painel
 router.get('/painelAutoflex', (req, res) => {
     const {recurso} = req.query
@@ -707,12 +825,12 @@ const options = {
     cert: fs.readFileSync(path.join(pathSSL,'fullchain.pem'))
 }
 
-const server = https.createServer(options, app).listen(8000, () =>{
+const server = https.createServer(options, app).listen(8000, 'localhost', () =>{
     console.log("\nCIM Rodando na Porta 8000 \\o/")
     process.send('ready');
 })
 
-const serverHttp = http.createServer(app).listen(8080, ()=>{
+const serverHttp = http.createServer(app).listen(8081, 'localhost', ()=>{
     console.log("\nCIM Rodando na porta 8080 http \\o/")
     conectarAoMES();
 })
