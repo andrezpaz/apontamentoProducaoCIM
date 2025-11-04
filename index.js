@@ -233,7 +233,7 @@ router.get('/fila_tipo_recurso/:tipo_recurso', function(req, res) {
         const tipo_recurso = req.params.tipo_recurso;
         const listMaquinasFila = await db.selectRecursoFila(tipo_recurso);
         if (listMaquinasFila.length > 0) {
-            res.render('recursos_fila', {listMaquinasFila: listMaquinasFila, functions:functions})
+            res.render('recursos_fila', {listMaquinasFila: listMaquinasFila, tipo_recurso:tipo_recurso, functions:functions})
         } else {
             res.render('errorPage', {msg:"Recurso não encontrado ou Sem OPs programadas !"})
         }
