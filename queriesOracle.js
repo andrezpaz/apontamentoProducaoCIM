@@ -123,7 +123,7 @@ const sql = {
                                                              AND pcpetapa.tipo_recurso in (2, 3)
                                                              AND estitem2.tipo_item = 2 
                                                         GROUP BY pcpopcomponente2.componente, pcpopcomponente2.versao, pcpopcomponente2.op_componente),  2, pcpapprodlote.lote, pcpopcomponente.etapa_aplicacao) 
-      ORDER BY decode(estpallet.situacao,'I',1,'F',2,3), estpallet.sequencial
+      ORDER BY decode(estpallet.situacao,'F',1,'I',2,3), estpallet.sequencial
     `,
      selectItensBobinasComposicao: `
      select pcpversao.produto, 
