@@ -289,17 +289,14 @@ body {
 <body>
     <div style="display: none;" class="containerIframe" id ="containerIframe">
     <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-    <iframe id="iframePerfil" src="/errorPage" width="100%" height="100%"></iframe>
     </div>
 
     <div style="display:none;" class="containerIframe" id ="containerIframeComponentes">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-        <iframe id="iframeComponentesOP" src="/errorPage" width="100%" height="100%"></iframe>
     </div>
 
     <div style="display:none;" class="containerIframe" id ="containerIframeRelProducao">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-        <iframe id="iframeRelProducao" src="/errorPage" width="100%" height="80%"></iframe>
     </div>
 
     <div id="loadingOverlay" class="loading-overlay">
@@ -307,17 +304,14 @@ body {
     </div>
     <div style="display: none;" class="containerIframeOP" id ="containerIframeOP">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-        <iframe id="iframeOP" src="/errorPage" width="100%" height="100%"></iframe>
     </div>
 
     <div style="display: none;" class="containerIframeChecklist" id ="containerIframeChecklist">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-        <iframe id="iframeChecklist" src="/errorPage" width="100%" height="95%"></iframe>
     </div>
 
     <div style="display: none;" class="containerIframeError" id ="containerIframeError">
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
-        <iframe id="iframeError" src="/errorPage" width="100%" height="95%"></iframe>
     </div>
 
     <div>
@@ -457,6 +451,16 @@ body {
                     document.getElementById('loadingOverlay').style.display = 'none';
                 }
             }
+            async function gerarUrlComponentes(op, etapa, recurso) {
+                document.getElementById('loadingOverlay').style.display = 'flex';
+                try {
+                    const url = `/componentes/${op}/${etapa}/${recurso}`
+                    return url
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração Relatório de componentes da OP', error);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                }
+            }
             async function gerarRelProducaoOP(op, etapa) {
                 const params = {
                     op: op,
@@ -519,13 +523,26 @@ body {
             }
             async function openIframe(element) {
                 function executeIfrmae(idContainer, idElement, src) {
-                    var containerFrame = document.getElementById(idContainer);
-                    containerFrame.style.display = "block";
-                    iframe = document.getElementById(idElement);
+                    const container = document.getElementById(idContainer);
+                    // Limpa o conteúdo anterior (remove iframe antigo, se houver)
+                    container.innerHTML = `
+                        <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
+                    `;
+
+                    // Cria novo iframe dinamicamente
+                    const iframe = document.createElement('iframe');
+                    iframe.id = idElement;
+                    iframe.width = '100%';
+                    iframe.height = '100%';
                     iframe.src = src;
                     iframe.onload = function () {
                         document.getElementById('loadingOverlay').style.display = 'none';
                     };
+
+                    // Adiciona ao container
+                    container.appendChild(iframe);
+                    container.style.display = 'block';
+
                 }
                 elementParent = element.parentNode.parentNode;
 
@@ -538,12 +555,17 @@ body {
                     executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)
                 }
                 if (className === 'componentesOP') {
-                    executeIfrmae("containerIframeComponentes", "iframeComponentesOP", `/componentes/${numeroOP}/${codEtapa}/${codRecurso}`)
+                    let urlComponentes = await gerarUrlComponentes(numeroOP, codEtapa, codRecurso);
+                    if (urlComponentes) {
+                        executeIfrmae("containerIframeComponentes", "iframeComponentesOP", urlComponentes)
+                    }
+                    else {
+                        executeIfrmae("containerIframeError", "iframeError")
+                    }
                 }
                 if (className === 'iconOP') {
                     let urlOP = await gerarOP(numeroOP, codEtapa, 1, codRecurso);
                     if (urlOP) {
-                        //executeIfrmae("containerIframeOP", "iframeOP", urlOP)
                         window.open(urlOP, '_blank')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
@@ -560,7 +582,6 @@ body {
                 if (className === 'iconChecklist') {
                     let urlChecklist = await getUrlChecklist(numeroOP, codEtapa, codRecurso)
                     if (urlChecklist) {
-                        //executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
                         window.open(urlChecklist, '_blank')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
@@ -569,18 +590,18 @@ body {
                 if (className === 'iconConsumo') {
                     let urlConsumo = await getUrlConsumo(numeroOP, codEtapa, codRecurso)
                     if (urlConsumo) {
-                        //executeIfrmae("containerIframeChecklist", "iframeChecklist", urlChecklist)
                         window.open(urlConsumo, '_self')
                     } else {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
                 }
+
+                history.replaceState(null, null, location.href);
             }
             function closeIFrame(element) {
-                var frame = element.parentElement;
-                let iframeSRC = frame.querySelector('iframe');
-                iframeSRC.src = '/errorPage';
-                frame.style.display = "none";
+                const container = element.parentElement;
+                container.style.display = "none";
+                container.innerHTML = ''; // remove o conteúdo, inclusive o iframe
             }
         </script>
 </body>

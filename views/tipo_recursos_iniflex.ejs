@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tipo de Recursos - Iniflex</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .button-container button {
+            padding: 15px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+<!-- Favicon para vários dispositivos -->
+<link rel="icon" href="/images/favicon/faviconPelicano.ico" type="image/x-icon">
+<link rel="shortcut icon" href="/images/favicon/faviconPelicano.ico" type="image/x-icon">
+
+<!-- Favicon para navegadores modernos -->
+<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/faviconPelicano.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/faviconPelicano16.png">
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/faviconPelicano180.png">
+
+<!-- Meta tags básicas -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#000000">
+
+<!-- Link para o arquivo manifest.json -->
+<link rel="manifest" href="/files/manifestTipoRecursosIniflex.json">
+
+<!-- Tags para iOS (Safari) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="/images/favicon/faviconPelicano180.png">
+
+</head>
+<script>
+    async function getUrlFilaTpRecurso(tipoRecurso) {
+        const params = {tipoRecurso: tipoRecurso}
+                try {
+                    const response = await fetch('/getUrlFilaTpRecurso', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(params)
+                    });
+                    const data = await response.json();
+                    return data.urlFila
+                } catch (error) {
+                    console.log('Erro ao requisitar a geração da URL da Fila ', error);
+                }
+            }
+    async function openFila(tipoRecurso) {
+        let urlFila = await getUrlFilaTpRecurso(tipoRecurso)
+        if (urlFila) {
+            window.open(`${urlFila}`, '_self')
+        }
+        
+    }
+</script>
+<body>
+
+    <h1>Lista de Recursos - Fila</h1>
+
+    <div class="button-container">
+        <% tipoRecursosIniflex.forEach(function(tipos) { 
+            let tipo_recurso = tipos.CODIGO;
+            let desc_tipo_recurso = tipos.DESCRICAO;
+            %>
+            <button onclick="openFila(<%=tipo_recurso%>)"><%=tipo_recurso%> - <%=desc_tipo_recurso%></button>
+        <% }) %>
+    </div>
+
+</body>
+</html>

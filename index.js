@@ -241,6 +241,27 @@ router.get('/fila_tipo_recurso/:tipo_recurso', function(req, res) {
     
 })
 
+router.get('/tipo_recursos_iniflex/', function(req, res) {
+    (async () => {
+        let tipoRecursosIniflex;
+        try {
+            connection = await connectionOracle();
+            tipoRecursosIniflex = await selectTipoRecursosIniflex();
+            await connection.close()
+            
+        } catch (error) {
+            console.log('Erro ao gerar dados de tipo de Recursos do Iniflex', error);
+            res.status(500).send('Erro ao gerar dados de tipo de Recursos do Iniflex');
+        }
+        if (tipoRecursosIniflex.length > 0) {
+            res.render('tipo_recursos_iniflex', {tipoRecursosIniflex:tipoRecursosIniflex, functions:functions})
+        } else {
+            res.render('errorPage', {msg:"Sem Tipo de Recurso no Iniflex!"})
+        }
+    })();
+    
+})
+
 router.get('/fila/:recurso', function(req, res) {
     (async () => {
         const db = require("./db");
@@ -427,6 +448,25 @@ router.post('/getUrlFila', jsonParser, async (req, res) => {
     }
 })
 
+router.post('/getUrlFilaTpRecurso', jsonParser, async (req, res) => {
+    let connCreds = require('./connectionsConfig.json');
+    const codTpRecurso = req.body.tipoRecurso;
+    const apiURL = connCreds['URL_FILA_TP_RECURSO'];
+    const urlFila = `${apiURL}/${codTpRecurso}`;
+    console.log(urlFila)
+    try {
+        const response = await axios.get(urlFila);
+        if (response.status === 200) {
+            res.json({ urlFila });
+        } else {
+            res.status(500).json({error:'URL com erro' + response.status})
+        }
+    }
+    catch (error) {
+        res.status(500).json({error:'Falha ao obter a URL', details:error.message})
+    }
+})
+
 router.post('/getUrlChecklist', jsonParser, async (req, res) =>{
     let connCreds = require('./connectionsConfig.json');
     const apiURL = connCreds['URL_CHECKLIST'];
@@ -540,6 +580,14 @@ async function selectTarasOP(ordemProducao, etapa) {
        etapa: etapa
     }
    let result = await queryOracle(sqlOracle.selectTarasOP, binds);
+   return result
+}
+
+async function selectTipoRecursosIniflex() {
+    const binds = {
+       empresa: 1
+    }
+   let result = await queryOracle(sqlOracle.selectTipoRecursoProdutivos, binds);
    return result
 }
 

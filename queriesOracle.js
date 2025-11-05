@@ -33,6 +33,15 @@ const sql = {
            AND pcpapproducao.etapa     = :etapa
           )
      WHERE taras > 0`,
+    selectTipoRecursoProdutivos: `
+    SELECT pcptprecurso.codigo, pcptprecurso.descricao 
+      FROM pcptprecurso, cadccusto
+     WHERE pcptprecurso.empresa = :empresa
+       AND pcptprecurso.empresa = cadccusto.empresa 
+       AND pcptprecurso.centro_custo = cadccusto.codigo
+       AND cadccusto.produtivo = 'S'
+  ORDER BY pcptprecurso.codigo
+    `,
     selectProducaoTurnoAtual: `
      SELECT dia dia,
             turno,
