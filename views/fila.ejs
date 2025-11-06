@@ -323,10 +323,10 @@ body {
                     <th class="hide-mobile">Seq.</th>
                     <th>OP</th>
                     <th>Ini Prog.</th>
-                    <th>Fim Prog.</th>
+                    <th class="hide-mobile">Fim Prog.</th>
                     <th>Peso OP.</th>
                     <th>Qtd. OP</th>
-                    <th>Item</th>
+                    <th class="hide-mobile">Item</th>
                     <th class="hide-mobile">Descrição Item</th>
                     <% if ( !maquina[0].etapa.toString().startsWith('1')) { %>
                         <th class="hide-mobile">Entrega</th>
@@ -369,10 +369,10 @@ body {
                         }%>
                         <td class="codigo_etapa" style="display: none;"><%=maquina.etapa%></td>
                         <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
-                        <td><%=functions.dateFormat("custom",maquina.fimprog)%></td>
+                        <td class="hide-mobile"><%=functions.dateFormat("custom",maquina.fimprog)%></td>
                         <td><%=maquina.peso.toLocaleString('pt-BR')%></td>
                         <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
-                        <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
+                        <td class="codigo_item hide-mobile" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
                         <td class="hide-mobile"><%=maquina.descricao_item%></td>
                         <% if ( !maquina.etapa.toString().startsWith('1')) { %>
                             <td class="hide-mobile"><%=maquina.previsoes_entregas%></td>

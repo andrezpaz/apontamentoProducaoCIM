@@ -107,11 +107,16 @@
         </tr>
       </thead>
       <tbody>
-        <% enderecosVolumesPallet.forEach(function(pallets) { %>
+        <% enderecosVolumesPallet.forEach(function(pallets) { 
+            let corFundoSituacao = '';
+            if (pallets.SITUACAO === 'I') {
+              corFundoSituacao = 'grey';
+            }
+          %>
           <tr>
             <td class="td-cor"><%= pallets.PALLET %></td>
             <td class="td-cor"><%= pallets.ENDERECO %></td>
-            <td class="td-cor"><%= pallets.SITUACAO %></td>
+            <td class="td-cor" style="background-color: <%=corFundoSituacao%>;"><%= pallets.SITUACAO %></td>
           </tr>
         <% }); %>
       </tbody>
