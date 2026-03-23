@@ -87,7 +87,7 @@ const sql = {
                estpalletvol.quantidade,
                estpalletvol.peso_liquido,
                pcpapprodlote.seq_lote,
-               estpallet.situacao
+               DECODE(estpallet.situacao,'F','Fechado','I','Consumo Interno','X','Faturado','D', 'Cancelado', 'A', 'Aberto', 'C', 'Carregado'),
           FROM pcpopcomponente
           JOIN estitem
             ON pcpopcomponente.empresa = estitem.empresa
@@ -294,6 +294,369 @@ group by pcpop.op,
        pcpoprecurso.quantidade, 
        pcpoprecurso.peso,
        pcpoprecurso.prioridade
+  `,
+  selectFilaRecursoOpInterrompida: 
+  `select pcpoprecurso.empresa ,                    
+                    pcpoprecurso.etapa,                     
+                    pcpoprecurso.recurso,                     
+                    pcpoprecurso.prioridade,                     
+                    pcpoprecurso.op,                     
+                    pcpop.produto, 
+                    pcpop.versao,
+                    f_descricao_item(pcpop.empresa, pcpop.produto, pcpop.versao) descricao_item,
+                    pcpoprecurso.quantidade,                     
+                    pcpoprecurso.peso,                     
+                    to_char(pcpoprecurso.data_prog_ini, 'dd/mm/yyyy hh24:mi') data_prog_ini,                     
+                    to_char(pcpoprecurso.data_prog_fim, 'dd/mm/yyyy hh24:mi') data_prog_fim,
+                    -- Codigo Clicheria
+                    REGEXP_REPLACE(f_busca_valor_ficha(pcpoprecurso.empresa,pcpop.produto,pcpop.versao, null, 3241),'[[:space:]]','') codigo_clicheria,
+                    pcpop.plano,
+                    -- Velocidade Recomendada
+                    f_busca_valor_ficha(pcpoprecurso.empresa,pcpop.produto,pcpop.versao, null, 3253) velocidade_recomendada,
+                    -- Previsões de entrega dos pedidos relacionados na OP
+                    (SELECT wm_concat(venpedidoep.previsao_entrega)
+                       FROM pcpopep, venpedidoep
+                      WHERE pcpopep.empresa       = :empresa
+                        AND pcpopep.empresa       = venpedidoep.empresa
+                        AND pcpopep.pedido        = venpedidoep.pedido
+                        AND pcpopep.item_pedido   = venpedidoep.item_pedido
+                        AND pcpopep.seq_entrega   = venpedidoep.sequencia
+                        AND pcpopep.op            = f_op_do_pedido(1, pcpop.op)) previsao_entrega,
+                    -- Quantidade de Cores cadastrada na OP
+                    (SELECT COUNT(*)
+                       FROM pcpopcomponente, pcpopgrupocomp
+                      WHERE pcpopcomponente.empresa   = :empresa
+                        AND pcpopcomponente.empresa   = pcpopgrupocomp.empresa
+                        AND pcpopcomponente.op        = pcpop.op
+                        AND pcpopcomponente.op        = pcpopgrupocomp.op
+                        AND pcpopcomponente.seq_grupo = pcpopgrupocomp.seq_grupo
+                        AND pcpopgrupocomp.grupo like 'COR%') qtd_cores_op,
+                    pcpoprecurso.situacao
+
+               from pcpoprecurso, pcpop                                                      
+              where pcpoprecurso.empresa    = :empresa                                               
+                and pcpoprecurso.empresa    = pcpop.empresa                                                      
+                and pcpoprecurso.op         = pcpop.op                                                   
+                and pcpop.situacao          in ('A','P')                                                     
+                and pcpoprecurso.situacao   in ('T')
+                and pcpoprecurso.recurso    = :recurso                                       
+           order by pcpoprecurso.recurso, pcpoprecurso.prioridade, pcpoprecurso.op
+  `,
+
+  selectOPsEmAberto:
   `
+  select op, etapa, descricao_item, recurso, 
+       total_produzido, total_perdido, total_consumido,
+       case when resultado_equacao > 0 
+       then resultado_equacao
+       else 0 end QTD_FALTA_CONSUMIR,
+       case when resultado_equacao < 0 
+       then resultado_equacao
+       else 0 end QTD_FALTA_APONT_PROD_PERD,
+       bobinas_para_consumir,
+       componentes_para_consumir
+  from 
+(
+WITH producao AS (
+    SELECT
+        pcpapproducao.empresa,
+        pcpapproducao.op,
+        pcpapproducao.etapa,
+        SUM(pcpapprodlote.peso - NVL(pcpapprodlote.peso_tara, 0)) AS total_produzido
+    FROM pcpapproducao
+    JOIN pcpapprodlote
+      ON pcpapprodlote.empresa = pcpapproducao.empresa
+     AND pcpapprodlote.seq_ap  = pcpapproducao.sequencial
+    GROUP BY
+        pcpapproducao.empresa,
+        pcpapproducao.op,
+        pcpapproducao.etapa
+),
+perda AS (
+    SELECT
+        pcpapperda.empresa,
+        pcpapperda.op,
+        pcpapperda.etapa,
+        SUM(pcpapperda.peso) AS total_perdido
+    FROM pcpapperda
+    GROUP BY
+        pcpapperda.empresa,
+        pcpapperda.op,
+        pcpapperda.etapa
+),
+insumo AS (
+    SELECT
+        pcpapinsumo.empresa,
+        pcpapinsumo.op,
+        pcpapinsumo.etapa,
+        ROUND(SUM(pcpapinsumo.peso), 1) AS total_consumido
+    FROM pcpapinsumo
+    GROUP BY
+        pcpapinsumo.empresa,
+        pcpapinsumo.op,
+        pcpapinsumo.etapa
+),
+bobinas AS (
+    SELECT
+        pcpopcomponente.empresa,
+        pcpopcomponente.op,
+        pcpopcomponente.etapa_aplicacao AS etapa,
+        LISTAGG(
+            pcpopcomponente.componente || ' - ' ||
+            f_descricao_item(
+                pcpopcomponente.empresa,
+                pcpopcomponente.componente,
+                pcpopcomponente.versao
+            )
+        ) WITHIN GROUP (ORDER BY pcpopcomponente.componente) AS bobinas_para_consumir
+    FROM pcpopcomponente
+    JOIN estitem
+      ON estitem.empresa = pcpopcomponente.empresa
+     AND estitem.codigo = pcpopcomponente.componente
+    WHERE estitem.tipo_item = 2
+    GROUP BY
+        pcpopcomponente.empresa,
+        pcpopcomponente.op,
+        pcpopcomponente.etapa_aplicacao
+),
+componentes AS (
+    SELECT
+        pcpopcomponente.empresa,
+        pcpopcomponente.op,
+        pcpopcomponente.etapa_aplicacao AS etapa,
+        LISTAGG(
+            pcpopcomponente.componente || ' - ' ||
+            f_descricao_item(
+                pcpopcomponente.empresa,
+                pcpopcomponente.componente,
+                pcpopcomponente.versao
+            ),
+            ' || '
+        ) WITHIN GROUP (ORDER BY pcpopcomponente.componente) AS componentes_para_consumir
+    FROM pcpopcomponente
+    JOIN estitem
+      ON estitem.empresa = pcpopcomponente.empresa
+     AND estitem.codigo = pcpopcomponente.componente
+    WHERE estitem.tipo_item = 10
+    GROUP BY
+        pcpopcomponente.empresa,
+        pcpopcomponente.op,
+        pcpopcomponente.etapa_aplicacao
+)
+
+SELECT
+    pcpoprecurso.op,
+    pcpoprecurso.etapa,
+    MIN(f_descricao_item(pcpop.empresa,pcpop.produto,pcpop.versao)) AS descricao_item,
+    MIN(pcpoprecurso.recurso) recurso, 
+    MIN(NVL(producao.total_produzido, 0)) AS total_produzido,
+    MIN(NVL(perda.total_perdido, 0)) AS total_perdido,
+    MIN(NVL(insumo.total_consumido, 0)) AS total_consumido,
+    MIN(NVL(producao.total_produzido, 0) + NVL(perda.total_perdido, 0)) AS total_prod_perdido,
+    MIN((NVL(producao.total_produzido, 0) + NVL(perda.total_perdido, 0)) - NVL(insumo.total_consumido, 0)) AS resultado_equacao,
+    bobinas.bobinas_para_consumir,
+    componentes.componentes_para_consumir
+FROM pcpoprecurso
+JOIN pcpop
+  ON pcpop.empresa = pcpoprecurso.empresa
+ AND pcpop.op      = pcpoprecurso.op
+
+LEFT JOIN producao
+  ON producao.empresa = pcpoprecurso.empresa
+ AND producao.op      = pcpoprecurso.op
+ AND producao.etapa   = pcpoprecurso.etapa
+
+LEFT JOIN perda
+  ON perda.empresa = pcpoprecurso.empresa
+ AND perda.op      = pcpoprecurso.op
+ AND perda.etapa   = pcpoprecurso.etapa
+
+LEFT JOIN insumo
+  ON insumo.empresa = pcpoprecurso.empresa
+ AND insumo.op      = pcpoprecurso.op
+ AND insumo.etapa   = pcpoprecurso.etapa
+
+LEFT JOIN bobinas
+  ON bobinas.empresa = pcpoprecurso.empresa
+ AND bobinas.op      = pcpoprecurso.op
+ AND bobinas.etapa   = pcpoprecurso.etapa
+
+LEFT JOIN componentes
+  ON componentes.empresa = pcpoprecurso.empresa
+ AND componentes.op      = pcpoprecurso.op
+ AND componentes.etapa   = pcpoprecurso.etapa
+
+WHERE pcpoprecurso.empresa  = :empresa
+  AND pcpoprecurso.etapa    IN (20, 21, 30, 31, 40, 41, 50, 51, 52, 53, 54, 55)
+  AND pcpoprecurso.op       = :op
+  AND pcpoprecurso.situacao IN ('T', 'P')
+
+GROUP BY 
+pcpoprecurso.op,
+    pcpoprecurso.etapa,
+    bobinas.bobinas_para_consumir,
+    componentes.componentes_para_consumir
+)
+  `,
+  selectPalletEmAberto:
+  `
+select 
+pallet, 
+item,
+op,
+desc_item,
+endereco,
+recurso_que_produziu,
+etapa_que_produziu,
+pcprecurso.nome setor_que_produziu,
+sum(peso_pallet) peso_pallet
+
+
+from (
+
+        SELECT estpallet.empresa,
+               estpallet.sequencial pallet,
+               estpallet.item, 
+               estpallet.op,
+               estpallet.endereco,
+               (select MAX(recurso)
+                  from pcpapproducao
+                 where pcpapproducao.empresa = pcpapprodlote.empresa
+                   and pcpapproducao.sequencial = pcpapprodlote.seq_ap) recurso_que_produziu,
+               (select MAX(etapa)
+                  from pcpapproducao
+                 where pcpapproducao.empresa = pcpapprodlote.empresa
+                   and pcpapproducao.sequencial = pcpapprodlote.seq_ap) etapa_que_produziu,
+               estpallet.situacao,
+               pcpapprodlote.seq_ap,
+               pcpapprodlote.seq_lote,
+               f_descricao_item(estpallet.empresa, estpallet.item ,estpallet.versao) desc_item,
+               (pcpapprodlote.peso - pcpapprodlote.peso_tara) peso_bobina,
+
+               (pcpapprodlote.peso - pcpapprodlote.peso_tara) -
+               NVL((SELECT SUM(pcpapinsumo.peso)
+                      FROM pcpapinsumo 
+                     WHERE pcpapinsumo.empresa = 1 
+                       AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) peso_pallet,
+               NVL((SELECT SUM(pcpapinsumo.peso)
+                      FROM pcpapinsumo 
+                     WHERE pcpapinsumo.empresa = 1 
+                       AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) total_consumido
+               
+          FROM estpallet
+          JOIN estpalletvol  
+            ON estpalletvol.empresa = estpallet.empresa
+           AND estpalletvol.sequencial = estpallet.sequencial 
+          JOIN pcpapprodlote  
+            ON pcpapprodlote.empresa = estpalletvol.empresa 
+           AND pcpapprodlote.seq_ap = estpalletvol.seq_producao  
+           AND pcpapprodlote.seq_lote = estpalletvol.seq_lote  
+          JOIN estitem
+            ON estpallet.empresa = estitem.empresa 
+           AND estpallet.item = estitem.codigo  
+         WHERE estpallet.empresa = :empresa   
+           AND nvl(estpallet.tipo_pallet,0) NOT IN (2) 
+           AND estpallet.situacao NOT IN ('D','I','X','A')
+           AND EXISTS (SELECT 1 
+                         FROM pcpopcomponente 
+                        WHERE pcpopcomponente.empresa = estpallet.empresa 
+                          AND pcpopcomponente.op      = :op
+                          AND pcpopcomponente.componente = estpallet.item )
+      
+) pallets,
+pcprecurso
+
+where pallets.empresa = pcprecurso.empresa
+  AND pallets.recurso_que_produziu = pcprecurso.codigo    
+group by pallet, 
+item,
+op,
+desc_item,
+endereco,
+recurso_que_produziu,
+etapa_que_produziu,
+pcprecurso.nome
+
+  `,
+selectPalletsLidos: `
+select 
+pallet, 
+item,
+op,
+desc_item,
+endereco,
+recurso_que_produziu,
+etapa_que_produziu,
+pcprecurso.nome setor_que_produziu,
+sum(peso_pallet) peso_pallet
+
+
+from (
+
+        SELECT estpallet.empresa,
+               estpallet.sequencial pallet,
+               estpallet.item, 
+               estpallet.op,
+               estpallet.endereco,
+               (select MAX(recurso)
+                  from pcpapproducao
+                 where pcpapproducao.empresa = pcpapprodlote.empresa
+                   and pcpapproducao.sequencial = pcpapprodlote.seq_ap) recurso_que_produziu,
+               (select MAX(etapa)
+                  from pcpapproducao
+                 where pcpapproducao.empresa = pcpapprodlote.empresa
+                   and pcpapproducao.sequencial = pcpapprodlote.seq_ap) etapa_que_produziu,
+               estpallet.situacao,
+               pcpapprodlote.seq_ap,
+               pcpapprodlote.seq_lote,
+               f_descricao_item(estpallet.empresa, estpallet.item ,estpallet.versao) desc_item,
+               (pcpapprodlote.peso - pcpapprodlote.peso_tara) peso_bobina,
+
+               (pcpapprodlote.peso - pcpapprodlote.peso_tara) -
+               NVL((SELECT SUM(pcpapinsumo.peso)
+                      FROM pcpapinsumo 
+                     WHERE pcpapinsumo.empresa = :empresa
+                       AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) peso_pallet,
+               NVL((SELECT SUM(pcpapinsumo.peso)
+                      FROM pcpapinsumo 
+                     WHERE pcpapinsumo.empresa = :empresa
+                       AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) total_consumido
+               
+          FROM estpallet
+          JOIN estpalletvol  
+            ON estpalletvol.empresa = estpallet.empresa
+           AND estpalletvol.sequencial = estpallet.sequencial 
+          JOIN pcpapprodlote  
+            ON pcpapprodlote.empresa = estpalletvol.empresa 
+           AND pcpapprodlote.seq_ap = estpalletvol.seq_producao  
+           AND pcpapprodlote.seq_lote = estpalletvol.seq_lote  
+          JOIN estitem
+            ON estpallet.empresa = estitem.empresa 
+           AND estpallet.item = estitem.codigo  
+         WHERE estpallet.empresa = :empresa
+           AND nvl(estpallet.tipo_pallet,0) NOT IN (2) 
+           AND estpallet.situacao NOT IN ('D','I','X','A')
+           and estpallet.sequencial in (select volume from ESTBALANCOITBARRA1 where empresa = :empresa and balanco = 504922 and tipo_barra = 'PALLET')
+           AND EXISTS (SELECT 1 
+                         FROM pcpopcomponente 
+                        WHERE pcpopcomponente.empresa = estpallet.empresa 
+                          AND pcpopcomponente.op      = :op
+                          AND pcpopcomponente.componente = estpallet.item )
+      
+) pallets,
+pcprecurso
+
+where pallets.empresa = pcprecurso.empresa
+  AND pallets.recurso_que_produziu = pcprecurso.codigo   
+
+group by pallet, 
+item,
+op,
+desc_item,
+endereco,
+recurso_que_produziu,
+etapa_que_produziu,
+pcprecurso.nome
+`
 }
 module.exports = sql;
