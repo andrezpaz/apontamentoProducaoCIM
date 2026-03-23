@@ -87,7 +87,7 @@ const sql = {
                estpalletvol.quantidade,
                estpalletvol.peso_liquido,
                pcpapprodlote.seq_lote,
-               DECODE(estpallet.situacao,'F','Fechado','I','Consumo Interno','X','Faturado','D', 'Cancelado', 'A', 'Aberto', 'C', 'Carregado')
+               DECODE(estpallet.situacao,'F','Fechado','I','Consumo Interno','X','Faturado','D', 'Cancelado', 'A', 'Aberto', 'C', 'Carregado') situacao
           FROM pcpopcomponente
           JOIN estitem
             ON pcpopcomponente.empresa = estitem.empresa
