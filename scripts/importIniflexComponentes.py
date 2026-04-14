@@ -39,14 +39,14 @@ def remove_table():
             cursor.close()
             connection.close()
             print("MySQL connection is closed")
-def insert_varibles_into_table(op, prioridade, recurso, etapa, componente, saldo, tipo_componente, op_componente):
+def insert_varibles_into_table(op, prioridade, recurso, etapa, componente, componente_versao, saldo_peso, saldo_qtd, unidade, tipo_componente, op_componente):
     try:
         connection = create_server_connection()
         cursor = connection.cursor()
-        mySql_insert_query = """INSERT INTO pcpfilacomponentes (op, prioridade, recurso, etapa, componente, saldo, tipo_componente, op_componente) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s) """
+        mySql_insert_query = """INSERT INTO pcpfilacomponentes (op, prioridade, recurso, etapa, componente, componente_versao, saldo_peso, saldo_qtd, unidade, tipo_componente, op_componente) 
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
 
-        record = (op, prioridade, recurso, etapa, componente, saldo, tipo_componente, op_componente)
+        record = (op, prioridade, recurso, etapa, componente, componente_versao, saldo_peso, saldo_qtd, unidade, tipo_componente, op_componente)
         print(record)
         cursor.execute(mySql_insert_query, record)
         connection.commit()
@@ -76,14 +76,20 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX_COMPONENTES.csv', newline='
         recurso = row[3]
         etapa = row[4]
         cod_componente = row[5]
-        if (row[6] == ''):
-            saldo_componente = 0
+        componente_versao = row[6]
+        if (row[7] == ''):
+            saldo_peso = 0
         else:
-            saldo_componente = row[6].replace(',','.')
-        tipo_componente = row[7]
+            saldo_peso = row[7].replace(',','.')
         if (row[8] == ''):
+            saldo_qtd = 0
+        else:
+            saldo_qtd = row[8].replace(',','.')
+        unidade = row[9]
+        tipo_componente = row[10]
+        if (row[11] == ''):
             op_componente = None
         else:
-            op_componente = row[8]
+            op_componente = row[11]
         
-        insert_varibles_into_table(op, prioridade, recurso, etapa, cod_componente, saldo_componente, tipo_componente, op_componente) ## Inicia insert no banco, de forma individual
+        insert_varibles_into_table(op, prioridade, recurso, etapa, cod_componente, componente_versao, saldo_peso, saldo_qtd, unidade, tipo_componente, op_componente) ## Inicia insert no banco, de forma individual

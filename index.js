@@ -275,13 +275,13 @@ router.get('/fila/:recurso', function(req, res) {
 
         componentes_fila.forEach(componente => {
             const chave = `${componente.op}-${componente.etapa}`;
-            if (componente.saldo === undefined || componente.saldo === null) {
-                componente.saldo = 0; // Define o saldo como 0 se for nulo ou indefinido
+            if (componente.saldo_peso === undefined || componente.saldo_peso === null) {
+                componente.saldo_peso = 0; // Define o saldo como 0 se for nulo ou indefinido
             }
             if (!saldo_somado_comp_op[chave]) {
-                saldo_somado_comp_op[chave] = parseFloat(componente.saldo);
+                saldo_somado_comp_op[chave] = parseFloat(componente.saldo_peso);
             } else {
-                saldo_somado_comp_op[chave] += parseFloat(componente.saldo);
+                saldo_somado_comp_op[chave] += parseFloat(componente.saldo_peso);
             }
         });
 
@@ -291,7 +291,7 @@ router.get('/fila/:recurso', function(req, res) {
             if (cor_mrp) codigo_cor_mrp = cor_mrp.codigo_cor 
             else codigo_cor_mrp = null;
             let componente_op_negativo = componentes_fila.some(componentes => 
-                    componentes.op === element.op && componentes.etapa === element.etapa && componentes.saldo < 1
+                    componentes.op === element.op && componentes.etapa === element.etapa && componentes.saldo_peso < 1
                 )
             let componente_bob_extrusada = componentes_fila.some(componentes => 
                 componentes.op === element.op && componentes.etapa === element.etapa && componentes.tipo_componente === 'bobina_extrusada'

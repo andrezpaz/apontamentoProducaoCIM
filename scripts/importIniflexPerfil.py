@@ -75,5 +75,6 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/PERFIL_CORES.csv', newline='', encodin
         densidade = row[4]
         tv = row[5]
         lab = row[6]
+        #versao_item = row[7]
         #   print(row)
         insert_varibles_into_table(codigo_item, seq_cor, desc_cor, anilox, densidade, tv, lab) ## Inicia insert no banco, de forma individual
