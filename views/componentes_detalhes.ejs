@@ -101,6 +101,7 @@
     <table class="tableEnderecos">
       <thead>
         <tr>
+          <th>Tipo Material</th>
           <th>Pallet</th>
           <th>Endereço</th>
           <th>Situação</th>
@@ -114,6 +115,7 @@
             }
           %>
           <tr>
+            <td class="td-cor"><%= pallets.TIPO_MATERIAL %></td>
             <td class="td-cor"><%= pallets.PALLET %></td>
             <td class="td-cor"><%= pallets.ENDERECO %></td>
             <td class="td-cor" style="background-color: <%=corFundoSituacao%>;"><%= pallets.SITUACAO %></td>

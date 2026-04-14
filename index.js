@@ -628,6 +628,34 @@ async function selectItensEstoque() {
     return result
 }
 
+async function selectOPsEmAberto(op,etapa) {
+    const binds = {
+        empresa: 1,
+        op:op,
+        etapa:etapa
+     }
+    let result = await queryOracle(sqlOracle.selectOPsEmAberto, binds);
+    return result
+}
+
+async function selectPalletEmAberto(op) {
+    const binds = {
+        empresa: 1,
+        op: op
+     }
+    let result = await queryOracle(sqlOracle.selectPalletEmAberto, binds);
+    return result
+}
+
+async function selectPalletsLidos(op) {
+    const binds = {
+        empresa: 1,
+        op: op
+     }
+    let result = await queryOracle(sqlOracle.selectPalletsLidos, binds);
+    return result
+}
+
 async function selectFatDia() {
     const binds = {
         empresa: 1
@@ -649,6 +677,15 @@ async function selectProducaoTurnoAtual(tipo_recurso) {
         tipo_recurso: tipo_recurso
      }
     let result = await queryOracle(sqlOracle.selectProducaoTurnoAtual, binds);
+    return result
+}
+
+async function selectFilaRecursoOpInterrompida(recurso) {
+    const binds = {
+        empresa: 1,
+        recurso: recurso
+     }
+    let result = await queryOracle(sqlOracle.selectFilaRecursoOpInterrompida, binds);
     return result
 }
 
@@ -751,6 +788,71 @@ app.use('/consultaProducaoTurnoAtual', async function(req, res) {
     }
 })
 
+app.use('/consultaFilaRecursoInterrompida', async function(req, res) {
+    const {recurso} = req.query;
+    let connection;
+    let filaRecursoInterrompida;
+
+    try {
+        connection = await connectionOracle();
+        filaRecursoInterrompida = await selectFilaRecursoOpInterrompida(recurso);
+        
+        await connection.close()
+    
+        if (filaRecursoInterrompida.length > 0 ) {
+            res.status(200).json(filaRecursoInterrompida)
+            //res.render('producaoTurnoAtual', {producaoTurnoAtual: producaoTurnoAtual, filtroAutoflex:filtroAutoflex})
+        } else {
+            res.status(404).json({ mensagem: 'Dados não encontrados'})
+            //res.render('errorPage', {msg:"Turno ainda sem Produção... !"})
+            //res.render('producaoTurnoSemProd', {recurso:recurso, filtroAutoflex:filtroAutoflex})
+        }
+        
+    } catch (error) {
+        console.log('Erro ao gerar Relatório de OPs Intrrompidas do Recurso', error);
+        res.status(500).send('Erro ao gerar Relatório de OPs Intrrompidas do Recurso');
+    }
+})
+
+//rota api para n8n
+app.use('/consultaOPsAberto', async function (req, res) {
+    let connection;
+    const {op, etapa} = req.query
+    try {
+        connection = await connectionOracle();
+        const opEmAberto = await selectOPsEmAberto(op, etapa);
+        res.status(200).json(opEmAberto)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de OPs em Aberto')
+    }
+})
+
+//rota api para n8n
+app.use('/consultaPalletsEmAberto', async function (req, res) {
+    let connection;
+    let {op} = req.query
+    try {
+        connection = await connectionOracle();
+        const palletEmAberto = await selectPalletEmAberto(op);
+        res.status(200).json(palletEmAberto)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de Pallets em Aberto')
+    }
+})
+
+//rota api para n8n
+app.use('/consultaPalletsLidos', async function (req, res) {
+    let connection;
+    let {op} = req.query
+    try {
+        connection = await connectionOracle();
+        const opPalletsLidos = await selectPalletsLidos(op);
+        console.log(opPalletsLidos)
+        res.status(200).json(opPalletsLidos)
+    } catch {
+        res.status(500).send('Erro ao obter a lista de Pallets Lidos no Sistema')
+    }
+})
 //rota api para n8n
 /* Comentado para ambiente de Produção 
 app.use('/consultaItensBobinasComposicao', async function (req, res) {
@@ -878,7 +980,7 @@ const server = https.createServer(options, app).listen(8000, () =>{
     process.send('ready');
 })
 
-const serverHttp = http.createServer(app).listen(8081, ()=>{
+const serverHttp = http.createServer(app).listen(8080, ()=>{
     console.log("\nCIM Rodando na porta 8080 http \\o/")
     conectarAoMES();
 })

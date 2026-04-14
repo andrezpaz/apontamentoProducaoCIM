@@ -76,9 +76,75 @@ const sql = {
             turno
             `,
     selectPalletsVolumesEnderecos: `
-        SELECT pcpopcomponente.op_componente,
+SELECT pallet,
+       endereco,
+       situacao,
+       tipo_material
+  FROM (
+SELECT pcpoprecurso.op,  
+        decode(estitem.tipo_item, 1,'PRODUTO ETAPA ANTERIOR') tipo_material, 
+       pcpapproducao.produto,
+       pcpapproducao.versao,
+       pcpoprecursoAtual.etapa,
+       f_descricao_item(pcpapproducao.empresa, pcpapproducao.produto, pcpapproducao.versao) desc_comp,
+       MAX(pcpoprecursoAtual.quantidade) quantidade_programada,
+       estpallet.sequencial pallet,
+       estpallet.endereco,
+       estpalletvol.quantidade,
+       estpalletvol.peso_liquido,
+       pcpapprodlote.seq_lote,
+       DECODE(estpallet.situacao,'F','Fechado','I','Consumo Interno','X','Faturado','D', 'Cancelado', 'A', 'Aberto', 'C', 'Carregado') situacao
+  FROM pcpoprecurso 
+  JOIN pcpapproducao
+    ON pcpoprecurso.empresa = pcpapproducao.empresa 
+   AND pcpoprecurso.seq_etapa = pcpapproducao.seq_etapa 
+   AND pcpoprecurso.op = pcpapproducao.op 
+  JOIN pcpapprodlote 
+    ON pcpapprodlote.empresa = pcpapproducao.empresa 
+   AND pcpapprodlote.seq_ap = pcpapproducao.sequencial 
+  JOIN estpalletvol
+    ON estpalletvol.empresa = pcpapprodlote.empresa
+   AND estpalletvol.seq_producao = pcpapprodlote.seq_ap
+   AND estpalletvol.seq_lote = pcpapprodlote.seq_lote   
+  JOIN estpallet 
+    ON estpallet.empresa = estpalletvol.empresa 
+   AND estpallet.sequencial = estpalletvol.sequencial
+  JOIN pcpoprecurso pcpoprecursoAtual
+    ON pcpoprecursoAtual.empresa = pcpoprecurso.empresa
+   AND pcpoprecursoAtual.op = pcpoprecurso.op
+   AND pcpoprecursoAtual.seq_etapa = pcpoprecurso.seq_etapa + 1 
+  JOIN estitem
+    ON estitem.empresa = pcpapproducao.empresa
+   AND estitem.codigo = pcpapproducao.produto  
+ WHERE pcpapproducao.empresa = :empresa 
+   AND pcpoprecurso.seq_etapa = (SELECT MIN(pcpopetapa.seq_etapa) -1
+                                   FROM pcpopetapa
+                                  WHERE pcpopetapa.empresa = :empresa
+                                    AND pcpopetapa.op = :op 
+                                    AND pcpopetapa.etapa = :etapa)   
+   AND pcpapproducao.op = :op 
+   AND estpallet.situacao NOT IN ('A','X','D') 
+ GROUP BY pcpoprecurso.op,  
+       estitem.tipo_item,
+       pcpapproducao.produto,
+       pcpapproducao.versao,
+       pcpoprecursoAtual.etapa,
+       pcpapproducao.empresa,
+       pcpapproducao.produto,
+       pcpapproducao.versao,  
+       estpallet.sequencial,
+       estpallet.endereco,
+       estpalletvol.quantidade,
+       estpalletvol.peso_liquido,
+       pcpapprodlote.seq_lote,
+       estpallet.situacao 
+
+       union 
+
+SELECT pcpopcomponente.op_componente,
+       'BOBINAS EXTRUSADAS' tipo_material,
                pcpopcomponente.componente,
-               pcpopcomponente.versao, 
+               pcpopcomponente.versao,
                pcpopcomponente.etapa_aplicacao,
                f_descricao_item(pcpopcomponente.empresa, pcpopcomponente.componente, pcpopcomponente.versao) desc_comp,
                pcpopcomponente.total_aplicado,
@@ -107,23 +173,24 @@ const sql = {
            AND pcpopcomponente.etapa_aplicacao = :etapa
            AND estitem.tipo_item = 2
            AND estpallet.situacao NOT IN ('A','X','D'/* ,'I' */)
-           AND pcpopcomponente.etapa_aplicacao = DECODE(( SELECT CASE WHEN MAX(COUNT(pcpopcomponente2.etapa_aplicacao)) > 1 
-                                                           THEN 2 
-                                                           ELSE 1 
-                                                           END 
+           AND pcpopcomponente.etapa_aplicacao = DECODE(( SELECT CASE WHEN MAX(COUNT(pcpopcomponente2.etapa_aplicacao)) > 1
+                                                           THEN 2
+                                                           ELSE 1
+                                                           END
                                                             FROM pcpopcomponente pcpopcomponente2
                                                             JOIN estitem estitem2
                                                               ON pcpopcomponente2.empresa = estitem2.empresa
                                                              AND pcpopcomponente2.componente = estitem2.codigo
-                                                            JOIN pcpetapa 
-                                                              ON pcpetapa.empresa = pcpopcomponente2.empresa 
+                                                            JOIN pcpetapa
+                                                              ON pcpetapa.empresa = pcpopcomponente2.empresa
                                                              AND pcpetapa.codigo = pcpopcomponente2.etapa_aplicacao     
-                                                           WHERE pcpopcomponente2.empresa = :empresa
+                                                           WHERE pcpopcomponente2.empresa =  :empresa
                                                              AND pcpopcomponente2.op = :op
                                                              AND pcpetapa.tipo_recurso in (2, 3)
-                                                             AND estitem2.tipo_item = 2 
-                                                        GROUP BY pcpopcomponente2.componente, pcpopcomponente2.versao, pcpopcomponente2.op_componente),  2, pcpapprodlote.lote, pcpopcomponente.etapa_aplicacao) 
-      ORDER BY decode(estpallet.situacao,'F',1,'I',2,3), estpallet.sequencial
+                                                             AND estitem2.tipo_item = 2
+                                                        GROUP BY pcpopcomponente2.componente, pcpopcomponente2.versao, pcpopcomponente2.op_componente),  2, pcpapprodlote.lote, pcpopcomponente.etapa_aplicacao)
+)
+ORDER BY decode(situacao,'Fechado',1,'Consumo Interno',2,3), tipo_material, pallet
     `,
      selectItensBobinasComposicao: `
      select pcpversao.produto, 
@@ -487,7 +554,8 @@ LEFT JOIN componentes
  AND componentes.etapa   = pcpoprecurso.etapa
 
 WHERE pcpoprecurso.empresa  = :empresa
-  AND pcpoprecurso.etapa    IN (20, 21, 30, 31, 40, 41, 50, 51, 52, 53, 54, 55)
+  --AND pcpoprecurso.etapa    IN (20, 21, 30, 31, 40, 41, 50, 51, 52, 53, 54, 55)
+  AND pcpoprecurso.etapa    = :etapa
   AND pcpoprecurso.op       = :op
   AND pcpoprecurso.situacao IN ('T', 'P')
 
@@ -636,7 +704,7 @@ from (
          WHERE estpallet.empresa = :empresa
            AND nvl(estpallet.tipo_pallet,0) NOT IN (2) 
            AND estpallet.situacao NOT IN ('D','I','X','A')
-           and estpallet.sequencial in (select volume from ESTBALANCOITBARRA1 where empresa = :empresa and balanco = 504922 and tipo_barra = 'PALLET')
+           and estpallet.sequencial in (select volume from ESTBALANCOITBARRA1 where empresa = :empresa and balanco = 504988 and tipo_barra = 'PALLET')
            AND EXISTS (SELECT 1 
                          FROM pcpopcomponente 
                         WHERE pcpopcomponente.empresa = estpallet.empresa 
