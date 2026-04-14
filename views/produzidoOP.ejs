@@ -58,10 +58,12 @@ td {
         <h1>OP: 
             <%=producao[0].OP %>
         </h1>
-        <h2 style="background-color: green;">Produção Total (KG): 
-            <%=producao[0].TOTALPRODUZIDOPESO.toLocaleString('pt-BR') %>
+        <h2 style="background-color: green;">Produção Total<br>  
+            KG: <%=producao[0].TOTALPRODUZIDOPESO.toLocaleString('pt-BR') %>
+            <br>
+            QTD: <%=producao[0].TOTALPRODUZIDOQTD.toLocaleString('pt-BR') %>
         </h2>
-        
+
             <table style="width:100%">
                 <tr>
                     <th>Pedido</th>
