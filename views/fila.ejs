@@ -410,11 +410,13 @@ body {
                                     <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
                         <% } %>
                         <td>
-                            <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></a></img>
+                            <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></img>
                             <% if ( maquina.etapa.toString().startsWith('1') || maquina.etapa.toString().startsWith('3') ) { %>
-                                <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></a></img>
+                                <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></img>
+                                <img src="/images/iconChecklist.png" class="iconChecklist hide-mobile" onclick="openIframe(this)"></img>
+                                
                             <%} else { %>
-                                <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></a></img>
+                                <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></img>
                                 <%}%>
 
                         </td>
@@ -550,11 +552,11 @@ body {
                 let numeroOP = elementParent.querySelector('.numero_op').innerHTML;
                 let codEtapa = elementParent.querySelector('.codigo_etapa').innerHTML;
                 let codRecurso = document.querySelector('.codRecurso').innerHTML;
-                let className = element.className;
-                if (className === 'iconPerfil') {
+                let className = element.classList;
+                if (className.contains('iconPerfil')) {
                     executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)
                 }
-                if (className === 'componentesOP') {
+                if (className.contains('componentesOP')) {
                     let urlComponentes = await gerarUrlComponentes(numeroOP, codEtapa, codRecurso);
                     if (urlComponentes) {
                         executeIfrmae("containerIframeComponentes", "iframeComponentesOP", urlComponentes)
@@ -563,7 +565,7 @@ body {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
                 }
-                if (className === 'iconOP') {
+                if (className.contains('iconOP')) {
                     let urlOP = await gerarOP(numeroOP, codEtapa, 1, codRecurso);
                     if (urlOP) {
                         window.open(urlOP, '_blank')
@@ -571,7 +573,7 @@ body {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
                 }
-                if (className === 'iconRelProdOP') {
+                if (className.contains('iconRelProdOP')) {
                     let urlProducao = await gerarRelProducaoOP(numeroOP, codEtapa);
                     if (urlProducao) {
                         executeIfrmae("containerIframeRelProducao", "iframeRelProducao", urlProducao)                        
@@ -579,7 +581,7 @@ body {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
                 }
-                if (className === 'iconChecklist') {
+                if (className.contains('iconChecklist')) {
                     let urlChecklist = await getUrlChecklist(numeroOP, codEtapa, codRecurso)
                     if (urlChecklist) {
                         window.open(urlChecklist, '_blank')
@@ -587,7 +589,7 @@ body {
                         executeIfrmae("containerIframeError", "iframeError")
                     }
                 }
-                if (className === 'iconConsumo') {
+                if (className.contains('iconConsumo')) {
                     let urlConsumo = await getUrlConsumo(numeroOP, codEtapa, codRecurso)
                     if (urlConsumo) {
                         window.open(urlConsumo, '_self')
