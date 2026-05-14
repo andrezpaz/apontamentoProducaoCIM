@@ -39,14 +39,14 @@ def remove_table():
             cursor.close()
             connection.close()
             print("MySQL connection is closed")
-def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso):
+def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op):
     try:
         connection = create_server_connection()
         cursor = connection.cursor()
-        mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
+        mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op) 
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
 
-        record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso)
+        record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op)
         print(record)
         cursor.execute(mySql_insert_query, record)
         connection.commit()
@@ -117,6 +117,18 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding=
         previsaoEntrega = check_value_index(row,15)
         quantidadeCores = check_value_index(row,16)
         situacaoRecurso = check_value_index(row,17)
+        item_com_reclamacao = row[18]
+        item_novo = row[19]
+        print(item_novo)
+        tipo_aviso_op = 0
+        if item_novo == '1':
+            tipo_aviso_op = 1
+
+        if item_com_reclamacao == '1':
+            tipo_aviso_op = 2
+        if item_novo == 1 and item_com_reclamacao == 1:
+            tipo_aviso_op = 3
+        print(tipo_aviso_op)
         insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
                                    ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
-                                   previsaoEntrega, quantidadeCores, situacaoRecurso) ## Inicia insert no banco, de forma individual
+                                   previsaoEntrega, quantidadeCores, situacaoRecurso, tipo_aviso_op) ## Inicia insert no banco, de forma individual
