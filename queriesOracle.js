@@ -568,7 +568,7 @@ pcpoprecurso.op,
   `,
   selectPalletEmAberto:
   `
-select 
+SELECT
 pallet, 
 item,
 op,
@@ -577,10 +577,10 @@ endereco,
 recurso_que_produziu,
 etapa_que_produziu,
 pcprecurso.nome setor_que_produziu,
-sum(peso_pallet) peso_pallet
+SUM(peso_pallet) peso_pallet,
+'BOBINA_EXRUSADA' tipo_material
 
-
-from (
+    FROM (
 
         SELECT estpallet.empresa,
                estpallet.sequencial pallet,
@@ -604,11 +604,11 @@ from (
                (pcpapprodlote.peso - pcpapprodlote.peso_tara) -
                NVL((SELECT SUM(pcpapinsumo.peso)
                       FROM pcpapinsumo 
-                     WHERE pcpapinsumo.empresa = 1 
+                     WHERE pcpapinsumo.empresa = :empresa
                        AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) peso_pallet,
                NVL((SELECT SUM(pcpapinsumo.peso)
                       FROM pcpapinsumo 
-                     WHERE pcpapinsumo.empresa = 1 
+                     WHERE pcpapinsumo.empresa = :empresa
                        AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) total_consumido
                
           FROM estpallet
@@ -622,21 +622,21 @@ from (
           JOIN estitem
             ON estpallet.empresa = estitem.empresa 
            AND estpallet.item = estitem.codigo  
-         WHERE estpallet.empresa = :empresa   
+         WHERE estpallet.empresa = :empresa
            AND nvl(estpallet.tipo_pallet,0) NOT IN (2) 
            AND estpallet.situacao NOT IN ('D','I','X','A')
-           AND EXISTS (SELECT 1 
+           AND EXISTS (SELECT /*+ INDEX(IDX_PCPOPCOMP_OP_COMPONENTE) */  1
                          FROM pcpopcomponente 
                         WHERE pcpopcomponente.empresa = estpallet.empresa 
                           AND pcpopcomponente.op      = :op
-                          AND pcpopcomponente.componente = estpallet.item )
+                          AND pcpopcomponente.etapa_aplicacao   = :etapa
+                          AND pcpopcomponente.componente = estpallet.item)
       
-) pallets,
-pcprecurso
+    ) pallets, pcprecurso
 
-where pallets.empresa = pcprecurso.empresa
+WHERE pallets.empresa = pcprecurso.empresa
   AND pallets.recurso_que_produziu = pcprecurso.codigo    
-group by pallet, 
+GROUP BY pallet, 
 item,
 op,
 desc_item,
@@ -645,7 +645,90 @@ recurso_que_produziu,
 etapa_que_produziu,
 pcprecurso.nome
 
-  `,
+UNION
+
+SELECT
+pallet, 
+item,
+op,
+desc_comp,
+endereco,
+recurso_que_produziu,
+etapa_que_produziu,
+pcprecurso.nome setor_que_produziu,
+sum(peso_pallet) peso_pallet,
+'BOBINA_ETAPA_ANTERIOR' tipo_material
+
+    FROM (
+        SELECT estpallet.empresa,
+               estpallet.sequencial pallet,
+               estpallet.item, 
+               pcpoprecurso.op,  
+               f_descricao_item(pcpapproducao.empresa, pcpapproducao.produto, pcpapproducao.versao) desc_comp,
+               estpallet.endereco,
+               (select MAX(pcpapproducaoII.recurso)
+                  from pcpapproducao pcpapproducaoII
+                 where pcpapproducaoII.empresa = pcpapprodlote.empresa
+                   and pcpapproducaoII.sequencial = pcpapprodlote.seq_ap) recurso_que_produziu,
+               (select MAX(etapa)
+                  from pcpapproducao pcpapproducaoII
+                 where pcpapproducaoII.empresa = pcpapprodlote.empresa
+                   and pcpapproducaoII.sequencial = pcpapprodlote.seq_ap) etapa_que_produziu,
+            
+               (pcpapprodlote.peso - pcpapprodlote.peso_tara) -
+                    NVL((SELECT SUM(pcpapinsumo.peso)
+                           FROM pcpapinsumo 
+                          WHERE pcpapinsumo.empresa = :empresa 
+                            AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) peso_pallet,
+                    NVL((SELECT SUM(pcpapinsumo.peso)
+                           FROM pcpapinsumo 
+                          WHERE pcpapinsumo.empresa = :empresa
+                            AND pcpapinsumo.lote = 7000||pcpapprodlote.seq_ap||pcpapprodlote.seq_lote),0) total_consumido
+          FROM pcpoprecurso 
+          JOIN pcpapproducao
+            ON pcpoprecurso.empresa = pcpapproducao.empresa 
+           AND pcpoprecurso.seq_etapa = pcpapproducao.seq_etapa 
+           AND pcpoprecurso.op = pcpapproducao.op 
+          JOIN pcpapprodlote 
+            ON pcpapprodlote.empresa = pcpapproducao.empresa 
+           AND pcpapprodlote.seq_ap = pcpapproducao.sequencial 
+          JOIN estpalletvol
+            ON estpalletvol.empresa = pcpapprodlote.empresa
+           AND estpalletvol.seq_producao = pcpapprodlote.seq_ap
+           AND estpalletvol.seq_lote = pcpapprodlote.seq_lote   
+          JOIN estpallet 
+            ON estpallet.empresa = estpalletvol.empresa 
+           AND estpallet.sequencial = estpalletvol.sequencial
+          JOIN pcpoprecurso pcpoprecursoAtual
+            ON pcpoprecursoAtual.empresa = pcpoprecurso.empresa
+           AND pcpoprecursoAtual.op = pcpoprecurso.op
+           AND pcpoprecursoAtual.seq_etapa = pcpoprecurso.seq_etapa + 1 
+          JOIN estitem
+            ON estitem.empresa = pcpapproducao.empresa
+           AND estitem.codigo = pcpapproducao.produto  
+         WHERE pcpapproducao.empresa = :empresa
+           AND pcpoprecurso.seq_etapa = (SELECT MIN(pcpopetapa.seq_etapa) -1
+                                           FROM pcpopetapa
+                                          WHERE pcpopetapa.empresa = :empresa
+                                            AND pcpopetapa.op = :op
+                                            AND pcpopetapa.etapa = :etapa)   
+           AND pcpapproducao.op = :op
+           AND estpallet.situacao NOT IN ('A','X','D') 
+) pallets, pcprecurso
+
+WHERE pallets.empresa = pcprecurso.empresa
+  AND pallets.recurso_que_produziu = pcprecurso.codigo    
+
+GROUP BY 
+pallet, 
+item,
+op,
+desc_comp,
+endereco,
+recurso_que_produziu,
+etapa_que_produziu,
+pcprecurso.nome
+`,
 selectPalletsLidos: `
 select 
 pallet, 

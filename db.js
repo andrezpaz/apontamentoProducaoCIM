@@ -75,6 +75,15 @@ async function selectFila(recurso) {
     conn.end();
     return rows;
 }
+async function selectOpcoesFila() {
+    const conn = await connect();
+    const [rows] = await conn.query(`SELECT etapa, recurso
+                                       FROM pcpfila
+                                   GROUP BY etapa, recurso
+                                   ORDER BY etapa, recurso`);
+    conn.end();
+    return rows;
+}
 async function selectRecursoFila(tipo_recurso) {
     const conn = await connect();
     const [rows] = await conn.query(`SELECT recurso FROM pcpfila WHERE recurso like '${tipo_recurso}%' GROUP BY recurso`);
@@ -140,5 +149,5 @@ async function selectComponetesFilaDetalhes(recurso, op, etapa) {
     conn.end();
     return rows;
 }
-module.exports = {connectionClose, selectProducao, insertProducao, selectMaquina, updateOPMaquina, deleteOPMaquina, updateProducao, selectFila, 
+module.exports = {connectionClose, selectProducao, insertProducao, selectMaquina, updateOPMaquina, deleteOPMaquina, updateProducao, selectFila, selectOpcoesFila,
     numBob, selectPerfilCores, selectTipoImagem, selectOPsMrp, selectComponetesFila, selectComponetesFilaDetalhes, selectRecursoFila}

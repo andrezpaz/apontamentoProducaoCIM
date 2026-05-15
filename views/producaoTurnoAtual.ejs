@@ -5,138 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produção da OP</title>
-
-    <style>
-        
-
-        @font-face {
-            font-family: 'Roboto';
-            src: url('../styles/Roboto-Bold.ttf') format('truetype');
-            font-weight: 700;
-            font-style: normal;
-        }
-
-        @font-face {
-            font-family: 'The Last Shuriken';
-            src: url('../styles/The Last Shuriken.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-
-
-        body {
-            background: linear-gradient(135deg, #0a192f, #1c2541);
-            font-family: 'Roboto', sans-serif;
-            color: #ffffff;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            overflow: hidden;
-        }
-
-        h1, h2, p {
-            margin: 10px 0;
-        }
-
-        h1 {
-            font-size: 3em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
-        }
-
-        h2 {
-            font-size: 2.5em;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f; }
-            50% { box-shadow: 0 0 20px #00ff7f, 0 0 40px #00ff7f; }
-            100% { box-shadow: 0 0 10px #00ff7f, 0 0 20px #00ff7f; }
-        }
-
-        table {
-            width: 90%;
-            max-width: 1000px;
-            border-collapse: collapse;
-            margin: 20px auto;
-            font-size: 1.8em;
-            box-shadow: 0 0 15px #00f0ff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            border: 1px solid #394867;
-            padding: 15px 20px;
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        th {
-            background-color: #00f0ff;
-            color: #0a192f;
-            text-transform: uppercase;
-            font-size: 1.2em;
-        }
-
-        td {
-            color: #ffffff;
-            font-weight: bold;
-            backdrop-filter: blur(5px);
-        }
-
-        .td-cor {
-            text-shadow: 0 0 5px #00f0ff;
-        }
-
-        p {
-            font-size: 2em;
-            margin-top: 40px;
-            text-shadow: 0 0 10px #00f0ff;
-        }
-        .imgVelocidade {
-            width: 76px;
-            height: 76px;
-            margin-right: 5px;
-        }
-        .velocidade-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-size: 3.5em;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-            padding: 15px;
-            border-radius: 10px;
-    }
-
-    .gear {
-        width: 40px;
-        height: 40px;
-        animation-name: spin;
-        animation-timing-function: linear;
-        animation-iteration-count: infinite;
-    }
-
-    @keyframes spin {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-
-    </style>
+    <link rel="stylesheet" href="/styles/cim-theme.css">
 </head>
 
-<body>
+<body class="cim-page">
     <%
     let configString = {minimumFractionDigits: 2, maximumFractionDigits: 2}
     let metaFixa = 26000.00
@@ -161,27 +33,24 @@
     }      
     %>
 
-    <div id="relogio" style="
-        position: absolute;
-        top: 10px;
-        right: 40px;
-        font-size: 2em;
-        font-weight: bold;
-        color: #00f0ff;
-        text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff;
-        font-family: 'Roboto', sans-serif;">
-    </div>
+    <main class="cim-shell">
+    <header class="cim-header">
+        <div>
+            <h1 class="cim-title">Recurso <strong><%= recurso %></strong></h1>
+            <p class="cim-subtitle">Indicador de producao do turno atual</p>
+        </div>
+        <div id="relogio" class="cim-clock"></div>
+    </header>
 
-    <h1>Recurso: <%= recurso %></h1>
-    <div style="display: flex; flex-direction: row; justify-content: center; align-items: flex-start; gap: 40px; width: 100%;">
-        <!-- Coluna esquerda: tabela + gráfico -->
-        <div style="flex: 1; max-width: 60%;">
-            <h2 id="titleMetragemTurno" style="background-color: <%= corFundoTotal %>;">
+    <div class="cim-grid">
+        <section class="cim-panel">
+            <h2 id="titleMetragemTurno" class="cim-metric" style="background-color: <%= corFundoTotal %>;">
                 Turno: <%= producaoTurnoAtual[0].TURNO %> - Metragem Total: 
                 <%= totalMetragem.toLocaleString('pt-BR', configString) %> MT
-        </h2>
+            </h2>
 
-        <table>
+        <div class="cim-table-wrapper">
+        <table class="cim-table">
             <thead>
                 <tr>
                     <th>Recurso</th>
@@ -196,15 +65,16 @@
                     const percentualMeta = (producao.QUANT_PROD / metaFixa) * 100;
                 %>
                     <tr>
-                        <td class="td-cor"><%= producao.RECURSO %></td>
-                        <td class="td-cor"><%= producao.QUANT_PROD.toLocaleString('pt-BR', configString) %></td>
-                        <td class="td-cor"><%= producao.PESO_PROD.toLocaleString('pt-BR', configString) %></td>
+                        <td class="td-cor" data-label="Recurso"><%= producao.RECURSO %></td>
+                        <td class="td-cor" data-label="Quantidade"><%= producao.QUANT_PROD.toLocaleString('pt-BR', configString) %></td>
+                        <td class="td-cor" data-label="Peso"><%= producao.PESO_PROD.toLocaleString('pt-BR', configString) %></td>
                         <!--<td class="td-cor"><%= metaFixa.toLocaleString('pt-BR', configString) %></td>-->
                         <!--<td class="td-cor"><%= percentualMeta.toFixed(1).replace('.', ',') %>%</td>-->
                     </tr>
                 <% }); %>
             </tbody>
         </table>
+        </div>
     
         <% if (exibeAutoflex === 'SIM') { %>
             <canvas id="graficoProducao" width="500" height="200"></canvas>
@@ -214,25 +84,26 @@
             Linha pontilhada representa a <strong>Meta</strong> de metragem
         </div>-->
 
-        <p>Metas do Setor - <span style="font-family: The Last Shuriken, sans-serif;"> CIM </span></p>
-    </div>
+        <p class="cim-footer">Metas do Setor - CIM</p>
+        </section>
     
       <!-- Coluna direita: iframe -->
-    <div style="flex: 1; max-width: 40%;">
+    <aside class="cim-panel">
         <div id="dados-maquinas"><!-- conteúdo será preenchido dinamicamente --></div>
         <% if (exibeAutoflex === 'SIM' && filtroAutoflex) { %>
         <br>
         <iframe 
         src="http://autoflex.bazei.com.br:7000/openDashboardAutoflexFilter.html?token=fi3oo8knu5&filtro=<%=filtroAutoflex%>"
-        width="70%" height="490" frameborder="1"
-        style="box-shadow: 0 0 10px #00f0ff; border-radius: 5px;">
+        class="cim-iframe" frameborder="1">
         </iframe>
     
     <% } 
       else { %>
         <canvas id="graficoProducao" width="300" height="200"></canvas>
         <% } %>
+    </aside>
     </div>
+    </main>
     <script src="/styles/chart.umd.js"></script>
     <script src="/styles/chartjs-plugin-annotation.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>

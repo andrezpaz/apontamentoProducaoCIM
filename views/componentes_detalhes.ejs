@@ -3,75 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Perfil de Cores</title>
-  <style>
-    body {
-      background-color: #0a192f;
-      font-family: 'Roboto', sans-serif;
-      color: #ffffff;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-
-    .table-wrapper {
-      overflow-x: auto;
-      margin-bottom: 40px;
-    }
-
-    table {
-      width: 100%;
-      max-width: 100%;
-      border-collapse: collapse;
-      margin: auto;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
-    }
-
-    th, td {
-      border: 1px solid #2e3d58;
-      padding: 12px 15px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #394867;
-      color: #ffffff;
-      text-transform: uppercase;
-      font-size: 0.9em;
-    }
-
-    td {
-      background-color: #4f608b;
-      color: #ffffff;
-      font-weight: 500;
-    }
-
-    .td-cor {
-      text-shadow: 0 0 3px #000000, 0 0 5px #000000;
-    }
-
-    @media (max-width: 768px) {
-      table {
-        font-size: 0.85em;
-      }
-
-      th, td {
-        padding: 8px 10px;
-      }
-    }
-  </style>
+  <title>Componentes da OP</title>
+  <link rel="stylesheet" href="/styles/cim-theme.css">
 </head>
-<body>
-  <h1>Componentes da OP: <%= componentes_op[0].op %></h1>
+<body class="cim-page">
+  <main class="cim-shell">
+    <header class="cim-header">
+      <div>
+        <h1 class="cim-title">Componentes da OP <strong><%= componentes_op[0].op %></strong></h1>
+        <p class="cim-subtitle">Materiais programados e enderecos disponiveis</p>
+      </div>
+    </header>
 
-  <div class="table-wrapper">
-    <table class="tableComponentes">
+  <div class="cim-table-wrapper">
+    <table class="cim-table tableComponentes">
       <thead>
         <tr>
           <th>OP Componente</th>
@@ -87,22 +32,22 @@
       <tbody>
         <% componentes_op.forEach(function(componentes) { %>
           <tr>
-            <td class="td-cor"><%= componentes.op_componente %></td>
-            <td class="td-cor"><%= componentes.etapa %></td>
-            <td class="td-cor"><%= componentes.recurso %></td>
-            <td class="td-cor"><%= componentes.componente %></td>
-            <td class="td-cor"><%= componentes.saldo_peso %></td>
-            <td class="td-cor"><%= componentes.saldo_qtd %></td>
-            <td class="td-cor"><%= componentes.unidade %></td>
-            <td class="td-cor"><%= componentes.tipo_componente %></td>
+            <td class="td-cor" data-label="OP Componente"><%= componentes.op_componente %></td>
+            <td class="td-cor" data-label="Etapa"><%= componentes.etapa %></td>
+            <td class="td-cor" data-label="Recurso"><%= componentes.recurso %></td>
+            <td class="td-cor" data-label="Componente"><%= componentes.componente %></td>
+            <td class="td-cor" data-label="Saldo KG"><%= componentes.saldo_peso %></td>
+            <td class="td-cor" data-label="Saldo QTD"><%= componentes.saldo_qtd %></td>
+            <td class="td-cor" data-label="Unidade"><%= componentes.unidade %></td>
+            <td class="td-cor" data-label="Tipo Material"><%= componentes.tipo_componente %></td>
           </tr>
         <% }); %>
       </tbody>
     </table>
   </div>
 
-  <div class="table-wrapper">
-    <table class="tableEnderecos">
+  <div class="cim-table-wrapper">
+    <table class="cim-table tableEnderecos">
       <thead>
         <tr>
           <th>Tipo Material</th>
@@ -113,22 +58,25 @@
       </thead>
       <tbody>
         <% enderecosVolumesPallet.forEach(function(pallets) { 
-            let corFundoSituacao = '';
-            if (pallets.SITUACAO === 'Consumo Interno') {
-              corFundoSituacao = 'grey';
-            }
+            let palletConsumido = pallets.SITUACAO === 'Consumo Interno';
           %>
-          <tr>
-            <td class="td-cor"><%= pallets.TIPO_MATERIAL %></td>
-            <td class="td-cor"><%= pallets.PALLET %></td>
-            <td class="td-cor"><%= pallets.ENDERECO %></td>
-            <td class="td-cor" style="background-color: <%=corFundoSituacao%>;"><%= pallets.SITUACAO %></td>
+          <tr class="<%= palletConsumido ? 'linha-consumida' : '' %>">
+            <td class="td-cor" data-label="Tipo Material"><%= pallets.TIPO_MATERIAL %></td>
+            <td class="td-cor" data-label="Pallet"><%= pallets.PALLET %></td>
+            <td class="td-cor" data-label="Endereco"><%= pallets.ENDERECO %></td>
+            <td class="td-cor" data-label="Situacao">
+              <%= pallets.SITUACAO %>
+              <% if (palletConsumido) { %>
+                <span class="cim-badge cim-badge-muted">Consumido</span>
+              <% } %>
+            </td>
           </tr>
         <% }); %>
       </tbody>
     </table>
   </div>
 
-  <p style="text-align: center;">Componentes da OP - CIM</p>
+  <p class="cim-footer">Componentes da OP - CIM</p>
+  </main>
 </body>
 </html>

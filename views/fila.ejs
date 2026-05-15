@@ -1,289 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fila Produção - <%=maquina[0].recurso%></title>
-    <style>
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-    background-color: #0a192f;
-    font-family: 'Roboto', sans-serif;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-}
-
-.tableFila {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    overflow-x: auto;
-}
-
-.tableFila th, .tableFila td {
-    padding: 10px;
-    text-align: center;
-    font-size: 16px;
-}
-
-.tableFila th {
-    border: 3px solid #ffffff;
-    background-color: #394867;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.tableFila td {
-    border: 1px solid #2e3d58;
-    background-color: #4f608b;
-}
-.containerIframe, .containerIframeOP, .containerIframeChecklist, .containerIframeError {
-    position: fixed;
-    z-index: 50;
-    color: #ffffff;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.containerIframe {
-    top: 15%;
-    left: 20%;
-    width: 80%;
-    max-width: 1000px;
-    height: 60%;
-}
-
-.containerIframeOP {
-    top: 1%;
-    width: 95%;
-    height: 90%;
-}
-
-.containerIframeChecklist, .containerIframeError {
-    top: 1%;
-    width: 70%;
-    height: 95%;
-}
-
-#myImg {
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-#myImg:hover {
-    opacity: 0.8;
-}
-.buttonImagem,.buttonIframeClose {
-    padding: 8px 20px;
-    font-size: 14px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.buttonImagem {
-    background-color: #3d84b8;
-    color: #ffffff;
-    margin-top: 10px;
-}
-.buttonImagem:hover,.buttonIframeClose:hover {
-    opacity: 0.8;
-}
-
-
-.iconPerfil, .iconOP, .iconRelProdOP, .iconChecklist, .iconConsumo {
-    width: 32px;
-    height: 32px;
-    margin-right: 5px;
-    cursor: pointer;
-}
-.iconPerfil:hover, .iconOP:hover, .iconRelProdOP:hover, .iconChecklist:hover, .iconConsumo:hover {
-    cursor: pointer;
-}
-
-.imgRefreshFila {
-        width: 18px;
-        height: 18px;
-        margin-right: 5px;
-    }
-
-.buttonRefreshFila {
-    font-size: 20px;
-    font-weight: bold;
-    background-color: #70a9a1;
-    color: #ffffff;
-    padding: 6px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
-    align-items: center;
-}
-.buttonRefreshFila:hover {
-    opacity: 0.8;
-}
-
-.titleFila {
-    font-size: 36px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #ffffff;
-    text-align: center;
-}
-
-.close {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.close:hover,
-.close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.gradiente-animado {
-    background: linear-gradient(45deg, #cedb57, rgb(211, 7, 51), #5c0c0c, #fa7373);
-    background-size: 400% 400%;
-    animation: gradientAnimation 2s ease infinite;
-}
-
-
-@keyframes gradientAnimation {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}
-
-.componentesOP:hover {
-    cursor: pointer;
-}
-.loading-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-}
-
-.loading-spinner {
-    border: 8px solid #f3f3f3;
-    border-radius: 50%;
-    border-top: 8px solid #3498db;
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
-}
-
-
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 768px) {
-    .titleFila {
-        font-size: 24px;
-    }
-
-    .buttonIframeClose {
-        font-size: 12px;
-        padding: 6px 12px;
-    }
-
-    .containerIframe, .containerIframeOP, .containerIframeChecklist, .containerIframeError {
-        width: 90%;
-        height: 80%;
-        top: 10%;
-        left: 5%;
-    }
-
-    .tableFila th, .tableFila td {
-        font-size: 14px;
-        padding: 5px;
-    }
-
-    .buttonRefreshFila {
-        font-size: 16px;
-        padding: 5px 10px;
-    }
-    .buttonImagem {
-        display: none;
-    }
-    .hide-mobile {
-        display: none;
-    }
-}
-
-@media (max-width: 670px) {
-    .titleFila {
-        font-size: 20px;
-    }
-
-    .tableFila th, .tableFila td {
-        font-size: 10px;
-        padding: 3px;
-    }
-
-    .buttonRefreshFila {
-        font-size: 14px;
-        padding: 4px 8px;
-    }
-    .hide-mobile {
-        display: none;
-    }
-}
-
-@media (max-width: 480px) {
-    .titleFila {
-        font-size: 15px;
-    }
-
-    .tableFila th, .tableFila td {
-        font-size: 7px;
-        padding: 2px;
-    }
-
-    .buttonRefreshFila {
-        font-size: 12px;
-        padding: 3px 7px;
-    }
-    .hide-mobile {
-        display: none;
-    }
-}
-
-    </style>
+    <link rel="stylesheet" href="/styles/cim-theme.css">
+    <link rel="stylesheet" href="/styles/fila.css">
 
 </head>
 <body>
@@ -314,121 +37,228 @@ body {
         <button class="buttonIframeClose" onclick="closeIFrame(this);">X</button><br>
     </div>
 
-    <div>
-        <span class="titleFila">Recurso: <strong class="codRecurso"><%=maquina[0].recurso%></strong></span>
-        <span class="titleFila">Etapa: <strong class="codEtapa"><%=maquina[0].etapa%></strong> </span>
-        <button class="buttonRefreshFila" onclick="document.location.reload(true)"><img class="imgRefreshFila" src="/images/RefreshArrow.png">Atualizar</button>
-            <table class="tableFila" style="width:100%">
-                <tr>
-                    <th class="hide-mobile">Seq.</th>
-                    <th>OP</th>
-                    <th>Ini Prog.</th>
-                    <th class="hide-mobile">Fim Prog.</th>
-                    <th>Peso OP.</th>
-                    <th>Qtd. OP</th>
-                    <th>Item</th>
-                    <th class="hide-mobile">Descrição Item</th>
-                    <% if ( !maquina[0].etapa.toString().startsWith('1')) { %>
-                        <th class="hide-mobile">Entrega</th>
-                        <th class="hide-mobile">Cores</th>
-                        <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
-                            <th class="hide-mobile">Velocidade (mpm)</th>
+    <main class="pageFila">
+        <header class="filaHeader">
+            <div>
+                <div class="filaTitle">
+                    <div class="filaSelectGroup filaSelectGroupHero">
+                        <label for="selectRecursoFila">Recurso</label>
+                        <select id="selectRecursoFila" class="selectFila selectFilaHero codRecurso"></select>
+                    </div>
+                    <div class="filaSelectGroup filaSelectGroupHero">
+                        <label for="selectEtapaFila">Etapa</label>
+                        <select id="selectEtapaFila" class="selectFila selectFilaHero codEtapa"></select>
+                    </div>
+                </div>
+                <p class="filaSubtitle">Fila de producao CIM</p>
+            </div>
+            <div class="filaHeaderActions">
+                <button class="buttonRefreshFila" onclick="document.location.reload(true)">
+                    <img class="imgRefreshFila" src="/images/RefreshArrow.png" alt="">
+                    Atualizar
+                </button>
+            </div>
+        </header>
+
+        <div class="tableWrap">
+            <table class="tableFila">
+                <thead>
+                    <tr>
+                        <th class="hide-mobile">Seq.</th>
+                        <th>OP</th>
+                        <th>Ini Prog.</th>
+                        <th class="hide-mobile">Fim Prog.</th>
+                        <th>Peso OP.</th>
+                        <th>Qtd. OP</th>
+                        <th>Item</th>
+                        <th class="hide-mobile">Descricao Item</th>
+                        <% if ( !maquina[0].etapa.toString().startsWith('1')) { %>
+                            <th class="hide-mobile">Entrega</th>
+                            <th class="hide-mobile">Cores</th>
+                            <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
+                                <th class="hide-mobile">Velocidade</th>
+                            <% } %>
+                            <th class="hide-mobile">Imagem</th>
+                            <% if ( maquina[0].recurso.toString().startsWith("2") ) {%>
+                                <th class="hide-mobile">Perfil</th>
+                            <% } %>
+                            <th>Componentes</th>
                         <% } %>
-                        <th class="hide-mobile">Imagem do Item</th>
-                        <% if ( maquina[0].recurso.toString().startsWith("2") ) {%>
-                            <th class="hide-mobile">Perfil de Cores</th>
-                        <% } %>
-                        <th>Componentes</th>
-                    <% } %>
-                    <th>OP</th>
-                </tr>
-                <tr>
+                        <th>Acoes</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <%
-                    let opMRP = maquina.filter(ele => ele.mrp !== null);
-                    let guposDeMrp = [];
                     let velocidade_item;
                     maquina.forEach(function(maquina)
                     {
-                        if (maquina.codigo_cor_mrp !== null) {
-                        %>
-                            <td class="hide-mobile" style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></td>
-                        <% }
-                        else { %>
-                            <td class="hide-mobile"><%=maquina.seq_fila%></td> <% }
-
-                        if (maquina.situacao_recurso === 'P') { %>
-                            <td 
-                                style="background-color:#7a366d;"><strong class="numero_op"><%=maquina.op%></strong> <br>Em Prod.
-                                <img src="/images/iconRelProdOP.png" class="iconRelProdOP" onclick="openIframe(this)"></a></img>
-                            </td> 
-                            <%
+                        let tipoAvisoOp = Number(maquina.tipo_aviso_op || 0);
+                        let textoAvisoOp = '';
+                        if (tipoAvisoOp == 1) {
+                            textoAvisoOp = 'Produto Novo';
                         }
-                        else { %>
-                            <td class="numero_op"><%=maquina.op%></td>
-                        <%
-                        }%>
-                        <td class="codigo_etapa" style="display: none;"><%=maquina.etapa%></td>
-                        <td><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
-                        <td class="hide-mobile"><%=functions.dateFormat("custom",maquina.fimprog)%></td>
-                        <td><%=maquina.peso.toLocaleString('pt-BR')%></td>
-                        <td><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
-                        <td class="codigo_item" name="codigo_item" id="codigo_item"><%=maquina.codigo_item%></td>
-                        <td class="hide-mobile"><%=maquina.descricao_item%></td>
-                        <% if ( !maquina.etapa.toString().startsWith('1')) { %>
-                            <td class="hide-mobile"><%=maquina.previsoes_entregas%></td>
-                            <td class="hide-mobile"><%=maquina.quantidade_cores%></td>
-                            <% if ( maquina.recurso.toString().startsWith("2") ){
-                                velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
-                                <td class="hide-mobile" style="background-color:rgb(2, 167, 52);font-size: 30px"><%=velocidade_item%></td>
-                            <% } %>
-                            <td class="hide-mobile">
-                                <% if (maquina.TIPO_IMAGEM) {
-                                    maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){
-                                    let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
-                                    <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
-                                <%  })
-                                } %>
-                            <% if (maquina.etapa.toString().startsWith('2')) { %>
-                                <td class="hide-mobile">
-                                    <% if ( maquina.tem_perfil > 0 ) {%>
-                                        <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)"></a></img>
-                                    <% } %>
+                        if (tipoAvisoOp == 2) {
+                            textoAvisoOp = 'Reclamação de Cliente';
+                        }
+                        let fraseColunaComponentes = '';
+                        if (maquina.componente_bob_extrusada) {
+                            fraseColunaComponentes = 'Qtd Extrusada: ' + maquina.saldo_componentes;
+                        }
+                        if (maquina.componente_bob_terceiro) {
+                            fraseColunaComponentes = 'Bob Terceiro Disponivel';
+                        }
+                    %>
+                        <tr class="linha-op aviso-op-<%=tipoAvisoOp%>">
+                            <td class="seqFila hide-mobile" data-label="Seq.">
+                                <% if (maquina.codigo_cor_mrp !== null) { %>
+                                    <span class="mrpMarker" style="background-color: <%=maquina.codigo_cor_mrp%>;"><%=maquina.seq_fila%></span>
+                                <% } else { %>
+                                    <%=maquina.seq_fila%>
+                                <% } %>
+                            </td>
+
+                            <td class="opCell" data-label="OP">
+                                <div class="opContent">
+                                <% if (maquina.situacao_recurso === 'P') { %>
+                                    <strong class="numero_op"><%=maquina.op%></strong>
+                                    <img src="/images/iconRelProdOP.png" class="iconRelProdOP" onclick="openIframe(this)" title="Relatorio de producao" alt="Relatorio de producao">
+                                    <span class="statusBadge">Em Prod.</span>
+                                <% } else { %>
+                                    <strong class="numero_op"><%=maquina.op%></strong>
+                                <% } %>
+                                <% if (textoAvisoOp) { %>
+                                    <span class="avisoBadge avisoBadge-<%=tipoAvisoOp%>"><%=textoAvisoOp%></span>
+                                <% } %>
+                                </div>
+                            </td>
+
+                            <td class="codigo_etapa"><%=maquina.etapa%></td>
+                            <td data-label="Ini Prog."><%=functions.dateFormat("custom",maquina.inicioprog)%></td>
+                            <td class="hide-mobile" data-label="Fim Prog."><%=functions.dateFormat("custom",maquina.fimprog)%></td>
+                            <td data-label="Peso OP."><%=maquina.peso.toLocaleString('pt-BR')%></td>
+                            <td data-label="Qtd. OP"><%=maquina.quantidade.toLocaleString('pt-BR')%></td>
+                            <td class="codigo_item itemCode" name="codigo_item" data-label="Item"><%=maquina.codigo_item%></td>
+                            <td class="itemDescription hide-mobile" data-label="Descricao"><%=maquina.descricao_item%></td>
+
+                            <% if ( !maquina.etapa.toString().startsWith('1')) { %>
+                                <td class="hide-mobile" data-label="Entrega"><%=maquina.previsoes_entregas%></td>
+                                <td class="hide-mobile" data-label="Cores"><%=maquina.quantidade_cores%></td>
+                                <% if ( maquina.recurso.toString().startsWith("2") ){
+                                    velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>
+                                    <td class="hide-mobile" data-label="Velocidade"><span class="speedBadge"><%=velocidade_item%></span></td>
+                                <% } %>
+
+                                <td class="hide-mobile" data-label="Imagem">
+                                    <div class="imageActions">
+                                        <% if (maquina.TIPO_IMAGEM) {
+                                            maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){
+                                            let codItemTipoImg = tipo_imagem.codigo_item + '-' + tipo_imagem.descricao_tipo_imagem.charAt(0); %>
+                                                <button class="buttonImagem"><a target="_blank" href="/images/itens/<%=codItemTipoImg%>"><%=tipo_imagem.descricao_tipo_imagem%></a></button>
+                                        <%  })
+                                        } %>
+                                    </div>
                                 </td>
+
+                                <% if (maquina.recurso.toString().startsWith("2")) { %>
+                                    <td class="hide-mobile" data-label="Perfil">
+                                        <% if ( maquina.tem_perfil > 0 ) {%>
+                                            <img src="/images/iconView.png" class="iconPerfil" onclick="openIframe(this)" title="Perfil de cores" alt="Perfil de cores">
+                                        <% } %>
+                                    </td>
                                 <%  } %>
 
-                                <%
-                                let fraseColunaComponentes;
-                                if (maquina.componente_bob_extrusada) {
-                                    fraseColunaComponentes = 'Qtd Extrusada: ' + maquina.saldo_componentes;
-                                }
-                                if (maquina.componente_bob_terceiro) {
-                                    fraseColunaComponentes = 'Bob Terceiro Disponível';
-                                }
-                                if (!maquina.componente_op_negativo) {%>
-                                    <td> <strong class="componentesOP" onclick="openIframe(this)" ><%=fraseColunaComponentes%> </strong> </td> <% } %>
+                                <% if (!maquina.componente_op_negativo) {%>
+                                    <td data-label="Componentes">
+                                        <strong class="componentesOP componentBadge" onclick="openIframe(this)"><%=fraseColunaComponentes%></strong>
+                                    </td>
+                                <% } %>
                                 <% if (maquina.componente_op_negativo) {%>
-                                    <td class="gradiente-animado"><strong class="componentesOP" onclick="openIframe(this)"  style="color:#ffffff;">INDISPONÍVEL</strong> </td> <% } %>
-                        <% } %>
-                        <td>
-                            <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)"></img>
-                            <% if ( maquina.etapa.toString().startsWith('1') || maquina.etapa.toString().startsWith('3') ) { %>
-                                <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)"></img>
-                                <img src="/images/iconChecklist.png" class="iconChecklist hide-mobile" onclick="openIframe(this)"></img>
-                                
-                            <%} else { %>
-                                <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)"></img>
-                                <%}%>
+                                    <td class="gradiente-animado" data-label="Componentes">
+                                        <strong class="componentesOP componentBadge" onclick="openIframe(this)">INDISPONIVEL</strong>
+                                    </td>
+                                <% } %>
+                            <% } %>
 
-                        </td>
-                        <tr></tr>
+                            <td data-label="Acoes">
+                                <div class="rowActions">
+                                    <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)" title="Gerar OP" alt="Gerar OP">
+                                    <% if ( maquina.etapa.toString().startsWith('1') || maquina.etapa.toString().startsWith('3') ) { %>
+                                        <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)" title="Consumo" alt="Consumo">
+                                        <img src="/images/iconChecklist.png" class="iconChecklist hide-mobile" onclick="openIframe(this)" title="Checklist" alt="Checklist">
+                                    <%} else { %>
+                                        <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)" title="Checklist" alt="Checklist">
+                                    <%}%>
+                                </div>
+                            </td>
+                        </tr>
                     <% }); %>
-                </tr>
+                </tbody>
             </table>
-            <p>
-                Fila de Producao CIM
-            </p>
         </div>
+
+        <p class="filaFooter">Fila de producao CIM</p>
+    </main>
         <script>
+            const opcoesFila = <%- JSON.stringify(opcoesFila || []).replace(/</g, '\\u003c') %>;
+
+            function normalizaOpcaoFila(opcao) {
+                return {
+                    etapa: String(opcao.etapa || opcao.ETAPA || ''),
+                    recurso: String(opcao.recurso || opcao.RECURSO || '')
+                };
+            }
+
+            function ordenarNumericoTexto(a, b) {
+                return a.localeCompare(b, 'pt-BR', { numeric: true });
+            }
+
+            function inicializarSeletoresFila() {
+                const selectEtapa = document.getElementById('selectEtapaFila');
+                const selectRecurso = document.getElementById('selectRecursoFila');
+                if (!selectEtapa || !selectRecurso) return;
+
+                const etapaAtual = '<%=maquina[0].etapa%>';
+                const recursoAtual = '<%=maquina[0].recurso%>';
+                const opcoes = opcoesFila.map(normalizaOpcaoFila).filter(opcao => opcao.etapa && opcao.recurso);
+
+                if (!opcoes.some(opcao => opcao.etapa === etapaAtual && opcao.recurso === recursoAtual)) {
+                    opcoes.push({ etapa: etapaAtual, recurso: recursoAtual });
+                }
+
+                const etapas = [...new Set(opcoes.map(opcao => opcao.etapa))].sort(ordenarNumericoTexto);
+
+                selectEtapa.innerHTML = etapas.map(etapa =>
+                    `<option value="${etapa}" ${etapa === etapaAtual ? 'selected' : ''}>${etapa}</option>`
+                ).join('');
+
+                function carregarRecursos(etapaSelecionada, recursoPreferido) {
+                    const recursos = [...new Set(
+                        opcoes
+                            .filter(opcao => opcao.etapa === etapaSelecionada)
+                            .map(opcao => opcao.recurso)
+                    )].sort(ordenarNumericoTexto);
+
+                    const placeholder = '<option value="">Selecione o recurso</option>';
+                    selectRecurso.innerHTML = placeholder + recursos.map(recurso =>
+                        `<option value="${recurso}" ${recurso === recursoPreferido ? 'selected' : ''}>${recurso}</option>`
+                    ).join('');
+                }
+
+                carregarRecursos(selectEtapa.value || etapaAtual, recursoAtual);
+
+                selectEtapa.addEventListener('change', () => {
+                    carregarRecursos(selectEtapa.value, '');
+                });
+
+                selectRecurso.addEventListener('change', () => {
+                    if (selectRecurso.value && selectRecurso.value !== recursoAtual) {
+                        window.location.href = `/fila/${encodeURIComponent(selectRecurso.value)}`;
+                    }
+                });
+            }
+
+            inicializarSeletoresFila();
+
             async function gerarOP(op, etapa, seqEtapa, recurso) {
                 const params = {
                     op: op,
@@ -524,6 +354,12 @@ body {
                 }
             }
             async function openIframe(element) {
+                function getElementValue(selector) {
+                    const target = document.querySelector(selector);
+                    if (!target) return '';
+                    return (target.value || target.textContent || target.innerHTML || '').trim();
+                }
+
                 function executeIfrmae(idContainer, idElement, src) {
                     const container = document.getElementById(idContainer);
                     // Limpa o conteúdo anterior (remove iframe antigo, se houver)
@@ -546,12 +382,12 @@ body {
                     container.style.display = 'block';
 
                 }
-                elementParent = element.parentNode.parentNode;
+                let elementParent = element.closest('tr');
 
                 let codigo_item = elementParent.querySelector('.codigo_item').innerHTML;
                 let numeroOP = elementParent.querySelector('.numero_op').innerHTML;
                 let codEtapa = elementParent.querySelector('.codigo_etapa').innerHTML;
-                let codRecurso = document.querySelector('.codRecurso').innerHTML;
+                let codRecurso = getElementValue('.codRecurso');
                 let className = element.classList;
                 if (className.contains('iconPerfil')) {
                     executeIfrmae("containerIframe", "iframePerfil", `/perfilcores/${codigo_item}`)

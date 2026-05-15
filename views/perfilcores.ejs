@@ -5,70 +5,32 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Cores</title>
-    <style>
- body {
-    background-color: #0a192f;
-    font-family: 'Roboto', sans-serif;
-    color: #ffffff;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    text-align: center;
-}
-
-table {
-    border-collapse: collapse;
-    border: 2px solid #2e3d58;
-    width: 100%;
-    max-width: 900px;
-    margin: 20px auto;
-}
-
-th {
-    border: 2px solid #2e3d58;
-    background-color: #394867;
-    color: #ffffff;
-    padding: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-td {
-    border: 2px solid #2e3d58;
-    background-color: #4f608b;
-    padding: 8px;
-    font-weight: bold;
-    color: #ffffff;
-}
-
-.td-cor {
-    text-shadow: 0 0 3px #000000, 0 0 5px #000000;
-}
-     
-    </style>
+    <link rel="stylesheet" href="/styles/cim-theme.css">
     
 </head>
-<body>
+<body class="cim-page">
 
-    <div>
-        <h1>Perfil de Cores do Item: 
-            <%= perfilcores[0].codigo_item %>
-        </h1>
+    <main class="cim-shell cim-shell-narrow">
+        <header class="cim-header">
+            <div>
+                <h1 class="cim-title">Perfil de Cores do Item <strong><%= perfilcores[0].codigo_item %></strong></h1>
+                <p class="cim-subtitle">Sequencia tecnica de cores da producao</p>
+            </div>
+        </header>
         
-            <table style="width:100%">
-                <tr>
-                    <th>Seq. Cor</th>
-                    <th>Cor</th>
-                    <th>Anilox</th>
-                    <th>Densidade</th>
-                    <th>TV - 25/50/75</th>
-                    <th>LAB</th>
-                </tr>
-                <tr>
+        <div class="cim-table-wrapper">
+            <table class="cim-table">
+                <thead>
+                    <tr>
+                        <th>Seq. Cor</th>
+                        <th>Cor</th>
+                        <th>Anilox</th>
+                        <th>Densidade</th>
+                        <th>TV - 25/50/75</th>
+                        <th>LAB</th>
+                    </tr>
+                </thead>
+                <tbody>
                     <% perfilcores.forEach(function(perfilcores) { 
                         let cor; 
                         if (perfilcores.seq_cor === 1) cor = "#2ce4e9"
@@ -82,20 +44,20 @@ td {
                         if (perfilcores.seq_cor === 9) cor = "#9e007e"
                         if (perfilcores.seq_cor === 10) cor = "#00b1ac"
                         %>
-                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.seq_cor%></td>
-                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.desc_cor%></td>
-                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.anilox%></td>
-                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.densidade%></td>
-                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.tv%></td>
-                        <td class= "td-cor" style="background-color:<%=cor%>;"><%=perfilcores.lab%></td>
-                        <tr></tr>
+                        <tr>
+                            <td class="td-cor" data-label="Seq. Cor" style="background-color:<%=cor%>;"><%=perfilcores.seq_cor%></td>
+                            <td class="td-cor" data-label="Cor" style="background-color:<%=cor%>;"><%=perfilcores.desc_cor%></td>
+                            <td class="td-cor" data-label="Anilox" style="background-color:<%=cor%>;"><%=perfilcores.anilox%></td>
+                            <td class="td-cor" data-label="Densidade" style="background-color:<%=cor%>;"><%=perfilcores.densidade%></td>
+                            <td class="td-cor" data-label="TV - 25/50/75" style="background-color:<%=cor%>;"><%=perfilcores.tv%></td>
+                            <td class="td-cor" data-label="LAB" style="background-color:<%=cor%>;"><%=perfilcores.lab%></td>
+                        </tr>
                     <% }); %>
-                </tr>
+                </tbody>
             </table>
-            <p> 
-                Perfil de Cores - CIM
-            </p> 
-        </div>    
+        </div>
+        <p class="cim-footer">Perfil de Cores - CIM</p> 
+    </main>    
         <script>
         </script>
 </body>

@@ -270,6 +270,7 @@ router.get('/fila/:recurso', function(req, res) {
         const tipo_imagem = await db.selectTipoImagem(recurso);
         const mrpList = await db.selectOPsMrp(recurso);
         const componentes_fila = await db.selectComponetesFila(recurso);
+        const opcoesFila = await db.selectOpcoesFila();
         let codigo_cor_mrp;
         let saldo_somado_comp_op = {}
 
@@ -319,6 +320,7 @@ router.get('/fila/:recurso', function(req, res) {
                           'previsoes_entregas': element.previsoes_entregas,
                           'quantidade_cores': element.quantidade_cores,
                           'situacao_recurso': element.situacao_recurso,
+                          'tipo_aviso_op': element.tipo_aviso_op,
                           'componente_op_negativo': componente_op_negativo,
                           'etapa': element.etapa,
                           'saldo_componentes': saldo_somado_comp_op[`${element.op}-${element.etapa}`],
@@ -328,7 +330,7 @@ router.get('/fila/:recurso', function(req, res) {
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
         if (novafila.length > 0) {
-            res.render('fila', {maquina: novafila, functions:functions})
+            res.render('fila', {maquina: novafila, opcoesFila: opcoesFila, functions:functions})
         } else {
             res.render('errorPage', {msg:"Recurso não encontrado ou Sem OPs programadas !"})
         }
@@ -638,10 +640,11 @@ async function selectOPsEmAberto(op,etapa) {
     return result
 }
 
-async function selectPalletEmAberto(op) {
+async function selectPalletEmAberto(op,etapa) {
     const binds = {
         empresa: 1,
-        op: op
+        op: op,
+        etapa: etapa
      }
     let result = await queryOracle(sqlOracle.selectPalletEmAberto, binds);
     return result
@@ -830,10 +833,10 @@ app.use('/consultaOPsAberto', async function (req, res) {
 //rota api para n8n
 app.use('/consultaPalletsEmAberto', async function (req, res) {
     let connection;
-    let {op} = req.query
+    let {op, etapa} = req.query
     try {
         connection = await connectionOracle();
-        const palletEmAberto = await selectPalletEmAberto(op);
+        const palletEmAberto = await selectPalletEmAberto(op, etapa);
         res.status(200).json(palletEmAberto)
     } catch {
         res.status(500).send('Erro ao obter a lista de Pallets em Aberto')

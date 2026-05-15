@@ -1,0 +1,406 @@
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/Roboto-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('/styles/Roboto-Bold.ttf') format('truetype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+:root {
+    --cim-bg: #11161c;
+    --cim-panel: #18212b;
+    --cim-panel-soft: #202c37;
+    --cim-line: rgba(255, 255, 255, 0.08);
+    --cim-line-strong: #2c3947;
+    --cim-text: #f6f8fb;
+    --cim-muted: #aeb8c6;
+    --cim-accent: #22b8a7;
+    --cim-accent-strong: #2dd4bf;
+    --cim-success: #38d66b;
+    --cim-danger: #ef4444;
+    --cim-warning: #f2b705;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body.cim-page {
+    min-height: 100vh;
+    margin: 0;
+    padding: 18px;
+    color: var(--cim-text);
+    font-family: 'Roboto', Arial, sans-serif;
+    background:
+        linear-gradient(180deg, rgba(34, 184, 167, 0.08), transparent 260px),
+        var(--cim-bg);
+}
+
+body.cim-page-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cim-shell {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.cim-shell-narrow {
+    max-width: 980px;
+}
+
+.cim-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--cim-line);
+    border-radius: 8px;
+    background: rgba(24, 33, 43, 0.92);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.cim-title {
+    margin: 0;
+    color: var(--cim-text);
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.cim-title strong,
+.cim-value-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    margin-left: 8px;
+    padding: 5px 10px;
+    border-radius: 6px;
+    color: #081412;
+    background: var(--cim-accent-strong);
+    font-size: 24px;
+    font-weight: 900;
+}
+
+.cim-subtitle {
+    margin: 5px 0 0;
+    color: var(--cim-muted);
+    font-size: 14px;
+}
+
+.cim-clock {
+    min-width: 112px;
+    padding: 8px 11px;
+    border: 1px solid rgba(45, 212, 191, 0.32);
+    border-radius: 8px;
+    color: #eafffb;
+    background: rgba(34, 184, 167, 0.12);
+    font-size: 22px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.cim-table-wrapper {
+    width: 100%;
+    margin-bottom: 18px;
+    overflow-x: auto;
+    border: 1px solid var(--cim-line);
+    border-radius: 8px;
+    background: rgba(24, 33, 43, 0.92);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+}
+
+.cim-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+    padding: 8px;
+}
+
+.cim-table th {
+    padding: 10px 9px;
+    color: var(--cim-muted);
+    background: var(--cim-panel);
+    font-size: 12px;
+    font-weight: 800;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.cim-table td {
+    padding: 12px 9px;
+    color: var(--cim-text);
+    background: var(--cim-panel-soft);
+    border-top: 1px solid var(--cim-line);
+    border-bottom: 1px solid var(--cim-line);
+    font-size: 15px;
+    line-height: 1.25;
+    vertical-align: middle;
+}
+
+.cim-table tbody tr td:first-child {
+    border-left: 1px solid var(--cim-line);
+    border-radius: 8px 0 0 8px;
+}
+
+.cim-table tbody tr td:last-child {
+    border-right: 1px solid var(--cim-line);
+    border-radius: 0 8px 8px 0;
+}
+
+.cim-table tbody tr:hover td {
+    background: #263443;
+}
+
+.cim-table tbody tr.linha-consumida td {
+    color: #9aa3ae;
+    background: #22272d;
+    opacity: 0.72;
+    text-decoration: line-through;
+}
+
+.cim-table tbody tr.linha-consumida:hover td {
+    background: #262c33;
+    opacity: 0.86;
+}
+
+.cim-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 26px;
+    margin-left: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.cim-badge-muted {
+    color: #d7dde5;
+    background: rgba(148, 163, 184, 0.18);
+    border: 1px solid rgba(148, 163, 184, 0.28);
+}
+
+.td-cor {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.65);
+}
+
+.cim-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+    gap: 18px;
+    align-items: start;
+}
+
+.cim-panel {
+    border: 1px solid var(--cim-line);
+    border-radius: 8px;
+    background: rgba(24, 33, 43, 0.92);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+    padding: 16px;
+}
+
+.cim-metric {
+    margin: 0 0 16px;
+    padding: 16px;
+    border-radius: 8px;
+    color: #061411;
+    background: var(--cim-success);
+    font-size: 28px;
+    font-weight: 900;
+    text-align: center;
+}
+
+.cim-metric-danger {
+    color: #ffffff;
+    background: var(--cim-danger);
+}
+
+.cim-metric small {
+    display: block;
+    margin-top: 4px;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.cim-iframe {
+    width: 100%;
+    min-height: 490px;
+    border: 1px solid var(--cim-line);
+    border-radius: 8px;
+    background: var(--cim-panel);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.26);
+}
+
+.cim-footer {
+    margin: 14px 0 0;
+    color: var(--cim-muted);
+    font-size: 13px;
+    text-align: center;
+}
+
+.cim-empty {
+    width: min(92vw, 760px);
+    padding: 28px;
+    border: 1px solid var(--cim-line);
+    border-radius: 8px;
+    background: rgba(24, 33, 43, 0.95);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+    text-align: center;
+}
+
+.cim-empty-title {
+    margin: 0;
+    color: var(--cim-text);
+    font-size: 32px;
+    font-weight: 900;
+}
+
+canvas {
+    max-width: 100%;
+}
+
+@media (max-width: 900px) {
+    body.cim-page {
+        padding: 12px;
+    }
+
+    .cim-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .cim-title {
+        font-size: 22px;
+    }
+
+    .cim-title strong,
+    .cim-value-pill {
+        font-size: 20px;
+    }
+
+    .cim-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cim-metric {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 640px) {
+    body.cim-page {
+        font-size: 17px;
+    }
+
+    .cim-title {
+        font-size: 24px;
+    }
+
+    .cim-title strong,
+    .cim-value-pill {
+        min-height: 38px;
+        font-size: 23px;
+    }
+
+    .cim-subtitle,
+    .cim-footer {
+        font-size: 15px;
+    }
+
+    .cim-clock {
+        min-height: 44px;
+        font-size: 24px;
+    }
+
+    .cim-metric {
+        padding: 18px;
+        font-size: 25px;
+    }
+
+    .cim-metric small {
+        font-size: 18px;
+    }
+
+    .cim-table-wrapper {
+        overflow: visible;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+    }
+
+    .cim-table {
+        min-width: 0;
+        padding: 0;
+        border-spacing: 0 14px;
+    }
+
+    .cim-table thead {
+        display: none;
+    }
+
+    .cim-table,
+    .cim-table tbody,
+    .cim-table tr,
+    .cim-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .cim-table tbody tr {
+        margin-bottom: 18px;
+        border: 1px solid var(--cim-line);
+        border-radius: 8px;
+        background: var(--cim-panel-soft);
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+    }
+
+    .cim-table td {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 54px;
+        padding: 14px;
+        border: 0;
+        border-bottom: 1px solid var(--cim-line);
+        font-size: 17px;
+        text-align: right;
+    }
+
+    .cim-table td::before {
+        content: attr(data-label);
+        flex: 0 0 auto;
+        color: var(--cim-muted);
+        font-size: 13px;
+        font-weight: 800;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    .cim-table tbody tr td:first-child,
+    .cim-table tbody tr td:last-child {
+        border-radius: 0;
+    }
+
+    .cim-table tbody tr td:last-child {
+        border-bottom: 0;
+    }
+}
