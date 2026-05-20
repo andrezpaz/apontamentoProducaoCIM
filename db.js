@@ -67,11 +67,18 @@ async function deleteOPMaquina(producao) {
     conn.end();
     return resultDelete 
 }
-async function selectFila(recurso) {
+async function selectFila(recurso, listarInterrompidas = false) {
     const conn = await connect();
+    const filtroSituacao = listarInterrompidas
+        ? `AND situacao_recurso = 'T'`
+        : `AND situacao_recurso IN ('F', 'P')
+           AND imprime = 'S'`;
     const [rows] = await conn.query(`SELECT *, 
                                     (select count(codigo_item) from perfilcores where codigo_item = pcpfila.codigo_item) as tem_perfil 
-                                     FROM pcpfila where recurso = ${recurso} order by seq_fila`);
+                                     FROM pcpfila
+                                    WHERE recurso = ?
+                                      ${filtroSituacao}
+                                 ORDER BY seq_fila`, [recurso]);
     conn.end();
     return rows;
 }

@@ -266,7 +266,8 @@ router.get('/fila/:recurso', function(req, res) {
     (async () => {
         const db = require("./db");
         const recurso = req.params.recurso;
-        const maquina = await db.selectFila(recurso);
+        const listarInterrompidas = req.query.situacao === 'T';
+        const maquina = await db.selectFila(recurso, listarInterrompidas);
         const tipo_imagem = await db.selectTipoImagem(recurso);
         const mrpList = await db.selectOPsMrp(recurso);
         const componentes_fila = await db.selectComponetesFila(recurso);
@@ -330,7 +331,7 @@ router.get('/fila/:recurso', function(req, res) {
         },[]);
         console.log("\nIniciando Busca da Fila Recurso : " + recurso + showDate());
         if (novafila.length > 0) {
-            res.render('fila', {maquina: novafila, opcoesFila: opcoesFila, functions:functions})
+            res.render('fila', {maquina: novafila, opcoesFila: opcoesFila, listarInterrompidas: listarInterrompidas, functions:functions})
         } else {
             res.render('errorPage', {msg:"Recurso não encontrado ou Sem OPs programadas !"})
         }

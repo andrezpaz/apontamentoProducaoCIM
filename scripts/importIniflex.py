@@ -39,14 +39,14 @@ def remove_table():
             cursor.close()
             connection.close()
             print("MySQL connection is closed")
-def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op):
+def insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op, imprime):
     try:
         connection = create_server_connection()
         cursor = connection.cursor()
-        mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op) 
-                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
+        mySql_insert_query = """INSERT INTO pcpfila (recurso, etapa, seq_fila, op, codigo_item, descricao_item, cod_clicheria, inicioprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op, imprime) 
+                                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) """
 
-        record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op)
+        record = (recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, iniprog, fimprog, mrp, quantidade, peso, velocidade_item, previsoes_entregas, quantidade_cores, situacao_recurso, tipo_aviso_op, imprime)
         print(record)
         cursor.execute(mySql_insert_query, record)
         connection.commit()
@@ -119,7 +119,7 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding=
         situacaoRecurso = check_value_index(row,17)
         item_com_reclamacao = row[18]
         item_novo = row[19]
-        print(item_novo)
+        imprime = row[20]
         tipo_aviso_op = 0
         if item_novo == '1':
             tipo_aviso_op = 1
@@ -131,4 +131,4 @@ with open (os.getenv("PATH_IMPORT_CSV")+'/CIMINIFLEX.csv', newline='', encoding=
         print(tipo_aviso_op)
         insert_varibles_into_table(recurso, etapa, seq_fila, op, cod_item, desc_item, cod_clicheria, 
                                    ini_prog_format, fim_prog_format, numeroMRP, quantidade, peso, velocidadeItem,
-                                   previsaoEntrega, quantidadeCores, situacaoRecurso, tipo_aviso_op) ## Inicia insert no banco, de forma individual
+                                   previsaoEntrega, quantidadeCores, situacaoRecurso, tipo_aviso_op, imprime) ## Inicia insert no banco, de forma individual

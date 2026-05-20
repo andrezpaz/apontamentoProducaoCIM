@@ -49,8 +49,13 @@
                         <label for="selectEtapaFila">Etapa</label>
                         <select id="selectEtapaFila" class="selectFila selectFilaHero codEtapa"></select>
                     </div>
+                    <% if (listarInterrompidas) { %>
+                        <a class="buttonModeFila buttonModeFilaActive" href="/fila/<%=maquina[0].recurso%>">Listar Fila/Producao</a>
+                    <% } else { %>
+                        <a class="buttonModeFila" href="/fila/<%=maquina[0].recurso%>?situacao=T">OPs Interrompidas</a>
+                    <% } %>
                 </div>
-                <p class="filaSubtitle">Fila de producao CIM</p>
+                <p class="filaSubtitle"><%= listarInterrompidas ? 'OPs interrompidas do recurso' : 'Fila de producao CIM' %></p>
             </div>
             <div class="filaHeaderActions">
                 <button class="buttonRefreshFila" onclick="document.location.reload(true)">
@@ -123,6 +128,9 @@
                                     <strong class="numero_op"><%=maquina.op%></strong>
                                     <img src="/images/iconRelProdOP.png" class="iconRelProdOP" onclick="openIframe(this)" title="Relatorio de producao" alt="Relatorio de producao">
                                     <span class="statusBadge">Em Prod.</span>
+                                <% } else if (maquina.situacao_recurso === 'T') { %>
+                                    <strong class="numero_op"><%=maquina.op%></strong>
+                                    <span class="statusBadge statusBadgeInterrompida">Interrompida</span>
                                 <% } else { %>
                                     <strong class="numero_op"><%=maquina.op%></strong>
                                 <% } %>
@@ -200,6 +208,7 @@
     </main>
         <script>
             const opcoesFila = <%- JSON.stringify(opcoesFila || []).replace(/</g, '\\u003c') %>;
+            const listarInterrompidas = <%= listarInterrompidas ? 'true' : 'false' %>;
 
             function normalizaOpcaoFila(opcao) {
                 return {
@@ -252,7 +261,8 @@
 
                 selectRecurso.addEventListener('change', () => {
                     if (selectRecurso.value && selectRecurso.value !== recursoAtual) {
-                        window.location.href = `/fila/${encodeURIComponent(selectRecurso.value)}`;
+                        const querySituacao = listarInterrompidas ? '?situacao=T' : '';
+                        window.location.href = `/fila/${encodeURIComponent(selectRecurso.value)}${querySituacao}`;
                     }
                 });
             }

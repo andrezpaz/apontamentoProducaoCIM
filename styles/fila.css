@@ -140,6 +140,40 @@ body {
     outline: 2px solid rgba(45, 212, 191, 0.18);
 }
 
+.buttonModeFila {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 8px 12px;
+    border: 1px solid rgba(245, 158, 11, 0.48);
+    border-radius: 8px;
+    color: #fff7ed;
+    background: #8a4d0f;
+    font-size: 14px;
+    font-weight: 900;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.buttonModeFila:hover {
+    border-color: #f59e0b;
+    background: #a35d13;
+    transform: translateY(-1px);
+}
+
+.buttonModeFilaActive {
+    border-color: rgba(45, 212, 191, 0.48);
+    color: #eafffb;
+    background: #15756c;
+}
+
+.buttonModeFilaActive:hover {
+    border-color: var(--accent-strong);
+    background: #19887d;
+}
+
 .buttonRefreshFila {
     display: inline-flex;
     align-items: center;
@@ -294,6 +328,11 @@ body {
     margin-top: 7px;
     color: #fff7ed;
     background: #9f3d76;
+}
+
+.statusBadgeInterrompida {
+    color: #fff7ed;
+    background: #b45309;
 }
 
 .componentBadge {
@@ -554,6 +593,12 @@ body {
         font-size: 14px;
     }
 
+    .buttonModeFila {
+        min-height: 38px;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
     .tableFila {
         min-width: 0;
         border-spacing: 0 6px;
@@ -681,7 +726,8 @@ body {
     }
 
     .selectFila,
-    .buttonRefreshFila {
+    .buttonRefreshFila,
+    .buttonModeFila {
         min-height: 52px;
         font-size: 17px;
     }
@@ -876,6 +922,10 @@ body {
     }
 
     .filaSelectGroupHero {
+        width: 100%;
+    }
+
+    .buttonModeFila {
         width: 100%;
     }
 
