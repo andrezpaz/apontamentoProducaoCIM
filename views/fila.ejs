@@ -149,7 +149,19 @@
                             <td class="itemDescription hide-mobile" data-label="Descricao"><%=maquina.descricao_item%></td>
 
                             <% if ( !maquina.etapa.toString().startsWith('1')) { %>
-                                <td class="hide-mobile" data-label="Entrega"><%=maquina.previsoes_entregas%></td>
+                                <td class="deliveryCell hide-mobile" data-label="Entrega">
+                                    <%
+                                        let entregas = maquina.previsoes_entregas ? String(maquina.previsoes_entregas).split(',') : [];
+                                        entregas = entregas.map(entrega => entrega.trim()).filter(entrega => entrega);
+                                    %>
+                                    <% if (entregas.length > 0) { %>
+                                        <div class="deliveryList">
+                                            <% entregas.forEach(function(entrega, index) { %>
+                                                <span><%=entrega%><%= index < entregas.length - 1 ? ',' : '' %></span>
+                                            <% }); %>
+                                        </div>
+                                    <% } %>
+                                </td>
                                 <td class="hide-mobile" data-label="Cores"><%=maquina.quantidade_cores%></td>
                                 <% if ( maquina.recurso.toString().startsWith("2") ){
                                     velocidade_item = maquina.velocidade_item ? maquina.velocidade_item.slice(0,3):''; %>

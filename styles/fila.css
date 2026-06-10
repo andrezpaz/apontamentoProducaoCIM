@@ -403,6 +403,25 @@ body {
     color: #d8dee8;
 }
 
+.deliveryCell {
+    min-width: 110px;
+    max-width: 220px;
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    line-height: 1.35;
+}
+
+.deliveryList {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.deliveryList span {
+    white-space: nowrap;
+}
+
 .imageActions,
 .rowActions {
     display: flex;
