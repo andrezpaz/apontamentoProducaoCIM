@@ -912,7 +912,10 @@ body {
     }
 
     .buttonImagem {
-        display: none;
+        display: inline-flex;
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 15px;
     }
 
     .containerIframe,

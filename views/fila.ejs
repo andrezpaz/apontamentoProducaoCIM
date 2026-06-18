@@ -83,7 +83,7 @@
                             <% if ( maquina[0].recurso.toString().startsWith("2") ){ %>
                                 <th class="hide-mobile">Velocidade</th>
                             <% } %>
-                            <th class="hide-mobile">Imagem</th>
+                            <th>Imagem</th>
                             <% if ( maquina[0].recurso.toString().startsWith("2") ) {%>
                                 <th class="hide-mobile">Perfil</th>
                             <% } %>
@@ -168,7 +168,7 @@
                                     <td class="hide-mobile" data-label="Velocidade"><span class="speedBadge"><%=velocidade_item%></span></td>
                                 <% } %>
 
-                                <td class="hide-mobile" data-label="Imagem">
+                                <td data-label="Imagem">
                                     <div class="imageActions">
                                         <% if (maquina.TIPO_IMAGEM) {
                                             maquina.TIPO_IMAGEM.forEach(function(tipo_imagem){
@@ -202,11 +202,15 @@
                             <td data-label="Acoes">
                                 <div class="rowActions">
                                     <img src="/images/iconOP.png" class="iconOP" onclick="openIframe(this)" title="Gerar OP" alt="Gerar OP">
-                                    <% if ( maquina.etapa.toString().startsWith('1') || maquina.etapa.toString().startsWith('3') ) { %>
+                                    <% if ( maquina.etapa.toString().startsWith('3') ) { %>
                                         <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)" title="Consumo" alt="Consumo">
                                         <img src="/images/iconChecklist.png" class="iconChecklist hide-mobile" onclick="openIframe(this)" title="Checklist" alt="Checklist">
+                                    <%} else if (maquina.etapa.toString().startsWith('1')) { %>
+                                        <img src="/images/iconConsumo.png" class="iconConsumo" onclick="openIframe(this)" title="Consumo" alt="Consumo">
+                                        <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)" title="Checklist" alt="Checklist">
                                     <%} else { %>
                                         <img src="/images/iconChecklist.png" class="iconChecklist" onclick="openIframe(this)" title="Checklist" alt="Checklist">
+                                        
                                     <%}%>
                                 </div>
                             </td>
